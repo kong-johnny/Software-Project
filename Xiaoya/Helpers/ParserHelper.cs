@@ -10,6 +10,23 @@ namespace Xiaoya.Helpers
     public class ParserHelper
     {
         /// <summary>
+        /// Get text of first element from a element collection
+        /// </summary>
+        /// <param name="elements">Collection of element</param>
+        /// <returns><see cref="string"/>. Returns <c>null</c> if there is no element.</returns>
+        public static string GetFirstElementText(IHtmlCollection<IElement> elements)
+        {
+            if (elements.Count() > 0)
+            {
+                return elements[0].TextContent;
+            } 
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Get first element from a element collection
         /// </summary>
         /// <param name="elements">Collection of element</param>
@@ -19,7 +36,7 @@ namespace Xiaoya.Helpers
             if (elements.Count() > 0)
             {
                 return elements[0];
-            } 
+            }
             else
             {
                 return null;

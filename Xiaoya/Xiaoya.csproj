@@ -98,6 +98,7 @@
     <Compile Include="Assist\Assistant.cs" />
     <Compile Include="Assist\Model\GradeInfo.cs" />
     <Compile Include="Assist\Model\Result.cs" />
+    <Compile Include="Assist\Model\StudentDetails.cs" />
     <Compile Include="Assist\Model\StudentInfo.cs" />
     <Compile Include="Assist\Test\TestAssist.cs" />
     <Compile Include="Helpers\ParserHelper.cs" />

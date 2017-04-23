@@ -40,6 +40,10 @@ namespace Xiaoya
         private const string URL_GRADE_INFO     // 年级专业信息
             = "http://zyfw.bnu.edu.cn/jw/common/getStuGradeSpeciatyInfo.action";
 
+        private const string URL_STUDENT_DETAILS    // 学生详细资料
+            = "http://zyfw.bnu.edu.cn/STU_BaseInfoAction.do?" +
+            "hidOption=InitData&menucode_current=JW13020101";
+
         /// <summary>
         /// Other fields
         /// </summary>
@@ -136,9 +140,7 @@ namespace Xiaoya
 
             // Update login state to avoid session expiration
             if (!UpdateLoginState(body))
-            {
                 return null;
-            }
 
             // Parse the fetched XML body
             var xmlParser = new XmlParser();
@@ -146,15 +148,15 @@ namespace Xiaoya
 
             string studentId, grade, major, majorId, schoolYear, semester;
 
-            studentId = ParserHelper.GetFirstElement(doc.GetElementsByTagName("xh")).TextContent;
-            grade = ParserHelper.GetFirstElement(doc.GetElementsByTagName("nj")).TextContent;
-            major = ParserHelper.GetFirstElement(doc.GetElementsByTagName("zymc")).TextContent;
-            majorId = ParserHelper.GetFirstElement(doc.GetElementsByTagName("zydm")).TextContent;
-            schoolYear = ParserHelper.GetFirstElement(doc.GetElementsByTagName("xn")).TextContent;
-            semester = ParserHelper.GetFirstElement(doc.GetElementsByTagName("xq_m")).TextContent;
+            studentId = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xh"));
+            grade = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("nj"));
+            major = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("zymc"));
+            majorId = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("zydm"));
+            schoolYear = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xn"));
+            semester = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xq_m"));
 
             // If no major or grade info
-            if (majorId == null || grade == null)
+            if (majorId == null || grade == null || majorId == "" || grade == "")
             {
                 // Fetch them by another way
                 GradeInfo gradeInfo = await FetchGradeInfo(studentId);
@@ -182,8 +184,65 @@ namespace Xiaoya
                 .Post();
 
             string body = await res.Content("UTF-8");
+
+            if (!UpdateLoginState(body))
+                return null;
+
             Result result = JsonConvert.DeserializeObject<Result>(body);
             return new GradeInfo(JsonConvert.DeserializeObject<GradeInfo._GradeInfo>(result.result));
+        }
+
+        /// <summary>
+        /// Get student details
+        /// </summary>
+        /// <returns><see cref="StudentDetails"/></returns>
+        public async Task<StudentDetails> GetStudentDetails()
+        {
+            var res = await m_Session.req
+                .Url(URL_STUDENT_DETAILS)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER)
+                .Post();
+
+            string body = await res.Content();
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            var xmlParser = new XmlParser();
+            var doc = xmlParser.Parse(body);
+
+            var info = ParserHelper.GetFirstElement(doc.GetElementsByTagName("info"));
+            if (info == null)
+            {
+                return null;
+            }
+            StudentDetails details = new StudentDetails(
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("txdz")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("zpid")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("csrq")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("bjmc")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("yxb")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("zymc")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("whcd")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("pycc")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("dzyx")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("gkksh")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xb")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("yhxh")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("sfzjh")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("sydw")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("dh")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xm")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("mz")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xh")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xmpy")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("rxnj")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("bdtime")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xz")),
+                ParserHelper.GetFirstElementText(info.GetElementsByTagName("lqzy"))
+                );
+            return details;
         }
 
         /// <summary>
