@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace Xiaoya.Assist.Model
 {
     public class StudentInfo
-    {        
+    {
+
         private string m_StudentId, m_Grade, m_Major, m_MajorId, m_SchoolYear, m_Semester;
 
         public string StudentId { get => m_StudentId; }

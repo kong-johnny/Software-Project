@@ -153,16 +153,25 @@ namespace Xiaoya
             schoolYear = ParserHelper.GetFirstElement(doc.GetElementsByTagName("xn")).TextContent;
             semester = ParserHelper.GetFirstElement(doc.GetElementsByTagName("xq_m")).TextContent;
 
+            // If no major or grade info
             if (majorId == null || grade == null)
             {
-                // TODO: Fetch grade info
-
+                // Fetch them by another way
+                GradeInfo gradeInfo = await FetchGradeInfo(studentId);
+                major = gradeInfo.Major;
+                majorId = gradeInfo.MajorId;
+                grade = gradeInfo.Grade;
             }
 
             m_StudentInfo = new StudentInfo(studentId, grade, major, majorId, schoolYear, semester);
             return m_StudentInfo;
         }
 
+        /// <summary>
+        /// Fetch grade and major info
+        /// </summary>
+        /// <param name="studentId">Student Id</param>
+        /// <returns><see cref="GradeInfo"/></returns>
         public async Task<GradeInfo> FetchGradeInfo(string studentId)
         {
             var res = await m_Session.req
@@ -173,9 +182,8 @@ namespace Xiaoya
                 .Post();
 
             string body = await res.Content("UTF-8");
-            // JsonConvert.DeserializeObject(body)
-            return null;
-            
+            Result result = JsonConvert.DeserializeObject<Result>(body);
+            return new GradeInfo(JsonConvert.DeserializeObject<GradeInfo._GradeInfo>(result.result));
         }
 
         /// <summary>

@@ -17,7 +17,6 @@ namespace Xiaoya.Assist.Test
             else
                 Console.WriteLine("Logined successfully.");
             var stuInfo = await assist.FetchStudentInfo();
-            var gradeInfo = await assist.FetchGradeInfo(stuInfo.StudentId);
         }
     }
 }
