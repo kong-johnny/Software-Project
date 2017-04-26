@@ -11,6 +11,7 @@ using AngleSharp.Parser.Xml;
 using Xiaoya.Helpers;
 using Xiaoya.Assist.Model;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Xiaoya
 {
@@ -29,7 +30,7 @@ namespace Xiaoya
         /// <summary>
         /// URLs
         /// </summary>
-        
+
         private const string URL_LOGIN          // 登录
             = "http://cas.bnu.edu.cn/cas/login?service=http%3A%2F%2Fzyfw.bnu.edu.cn%2FMainFrm.html";
 
@@ -44,11 +45,19 @@ namespace Xiaoya
             = "http://zyfw.bnu.edu.cn/STU_BaseInfoAction.do?" +
             "hidOption=InitData&menucode_current=JW13020101";
 
+        private const string URL_DROPLIST       // 下拉列表，参见Droplists常量
+            = "http://zyfw.bnu.edu.cn/frame/droplist/getDropLists.action";
+
+        /// <summary>
+        /// Droplists
+        /// </summary>
+        private const string DROP_EXAM_NAME = "Ms_KSSW_FBXNXQKSLC";
+
         /// <summary>
         /// Other fields
         /// </summary>
         private HtmlParser m_Parser = new HtmlParser();
-        private CXSession m_Session = CXHttp.Session("xiaoya");
+        private CXSession m_Session = CXHttp.Session();
 
         private string m_Username = "", m_Password = "";
         public string Username { get => m_Username; set { m_Username = value; m_isLogined = false; } }
@@ -74,7 +83,7 @@ namespace Xiaoya
             m_Username = username;
             m_Password = password;
         }
-        
+
         /// <summary>
         /// Get login parameters from the login page
         /// </summary>
@@ -83,8 +92,9 @@ namespace Xiaoya
         {
             string[] retParams = new string[2];                 // there'll be 2 params
 
-            var res = await m_Session.req                       // GET URL_LOGIN with specific UA
+            var res = await m_Session.Req                       // GET URL_LOGIN with specific UA
                .Url(URL_LOGIN)
+               .ClearCookie()
                .Header(HEADER_USER_AGENT, USER_AGENT)
                .Get();
 
@@ -130,7 +140,7 @@ namespace Xiaoya
         /// <returns><see cref="StudentInfo"/><returns>
         public async Task<StudentInfo> FetchStudentInfo()
         {
-            var res = await m_Session.req
+            var res = await m_Session.Req
                 .Url(URL_STUDENT_INFO)
                 .Header(HEADER_USER_AGENT, USER_AGENT)
                 .Header(HEADER_REFERER, REFERER)
@@ -176,7 +186,7 @@ namespace Xiaoya
         /// <returns><see cref="GradeInfo"/></returns>
         public async Task<GradeInfo> FetchGradeInfo(string studentId)
         {
-            var res = await m_Session.req
+            var res = await m_Session.Req
                 .Url(URL_GRADE_INFO)
                 .Header(HEADER_USER_AGENT, USER_AGENT)
                 .Header(HEADER_REFERER, REFERER)
@@ -188,8 +198,8 @@ namespace Xiaoya
             if (!UpdateLoginState(body))
                 return null;
 
-            Result result = JsonConvert.DeserializeObject<Result>(body);
-            return new GradeInfo(JsonConvert.DeserializeObject<GradeInfo._GradeInfo>(result.result));
+            RequestResult result = JsonConvert.DeserializeObject<RequestResult>(body);
+            return new GradeInfo(JsonConvert.DeserializeObject<GradeInfo._GradeInfo>(result.Result));
         }
 
         /// <summary>
@@ -198,7 +208,7 @@ namespace Xiaoya
         /// <returns><see cref="StudentDetails"/></returns>
         public async Task<StudentDetails> GetStudentDetails()
         {
-            var res = await m_Session.req
+            var res = await m_Session.Req
                 .Url(URL_STUDENT_DETAILS)
                 .Header(HEADER_USER_AGENT, USER_AGENT)
                 .Header(HEADER_REFERER, REFERER)
@@ -255,7 +265,7 @@ namespace Xiaoya
             // Fetch login params needed
             string[] loginParams = await FetchLoginParams();
 
-            var res = await m_Session.req
+            var res = await m_Session.Req
                 .Url(URL_LOGIN)
                 .Header(HEADER_USER_AGENT, USER_AGENT)
                 .Data("username", m_Username)
@@ -267,15 +277,16 @@ namespace Xiaoya
                 .Post();
 
             // Decode html body by GBK
-            string body = await res.Content("GBK");
+            string body = "";
+            body = res.Content("GBK").Result;
 
             var doc = m_Parser.Parse(body);
 
             // Init error message
             string error = "登录失败";
 
-            // If no "frmbody" found, then there will be errors
-            if (doc.GetElementById("frmBody") == null)
+            // If no "KINGOSOFT高校数字校园综合管理平台" found, then there will be errors
+            if (!body.Contains("KINGOSOFT高校数字校园综合管理平台"))
             {
                 // Get error message element: <span id="error_message_show">
                 var msg = doc.GetElementById("error_message_show");
@@ -290,7 +301,25 @@ namespace Xiaoya
             m_isLogined = true;
             return null;
         }
+
+        public async Task<List<ExamRound>> GetExamRounds()
+        {
+            var res = await m_Session.Req
+                .Url(URL_DROPLIST)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER)
+                .Data("comboBoxName", DROP_EXAM_NAME)
+                .Post();
+
+            string body = await res.Content("UTF-8");
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            var list = JsonConvert.DeserializeObject<List<ExamRound>>(body);
+            return list.OrderByDescending(o => o.Code).ToList();
+        }
+
     }
 
-    
 }

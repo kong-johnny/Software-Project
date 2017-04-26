@@ -29,9 +29,10 @@ namespace Xiaoya
             this.InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            TestAssist.Test();
+            string res = await TestAssist.Test();
+            textBox.Text = res;
         }
     }
 }
