@@ -311,6 +311,10 @@ namespace Xiaoya
             return null;
         }
 
+        /// <summary>
+        /// Get exam rounds
+        /// </summary>
+        /// <returns>A list of <see cref="ExamRound"/></returns>
         public async Task<List<ExamRound>> GetExamRounds()
         {
             var res = await m_Session.Req
@@ -329,6 +333,13 @@ namespace Xiaoya
             return list.OrderByDescending(o => o.Code).ToList();
         }
 
+        /// <summary>
+        /// Get exam scores
+        /// </summary>
+        /// <param name="year">Specific which year to query. If 0 is given, all scores will be returned.</param>
+        /// <param name="term">Specific which term to query.</param>
+        /// <param name="isOnlyMajor">Specific whether scores of minor profession will be returned.</param>
+        /// <returns>A list of <see cref="ExamScore"/></returns>
         public async Task<List<ExamScore>> GetExamScores(int year, int term, bool isOnlyMajor)
         {
             var req = m_Session.Req
@@ -388,6 +399,8 @@ namespace Xiaoya
                 {
                     lastTerm = currentTerm;
                 }
+
+                if (cols.Count() < 9) continue;
 
                 scores.Add(new ExamScore(
                         term:                   currentTerm,
