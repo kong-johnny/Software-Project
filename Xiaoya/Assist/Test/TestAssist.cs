@@ -18,11 +18,19 @@ namespace Xiaoya.Assist.Test
                 text += err;
             var stuInfo = await assist.FetchStudentInfo();
             var details = await assist.GetStudentDetails();
+
             var examRounds = await assist.GetExamRounds();
             foreach(var round in examRounds)
             {
                 text += round.Code + ": " + round.Name + "\n";
             }
+
+            var examScores = await assist.GetExamScores(true);
+            foreach(var score in examScores)
+            {
+                text += score.Term + "  " + score.CourseName + ": " + score.Score + "\n";
+            }
+
             return text;
          }
     }

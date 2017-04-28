@@ -14,24 +14,22 @@ namespace Xiaoya.Assist.Model
             public string nj, zydm, zymc, pycc, dwh;
         }
 
-        private string m_Grade, m_Major, m_MajorId;
-
-        public string Grade { get => m_Grade; }
-        public string Major { get => m_Major; }
-        public string MajorId { get => m_MajorId; }
+        public string Grade { get; private set; }
+        public string Major { get; private set; }
+        public string MajorId { get; private set; }
 
         public GradeInfo(string grade, string major, string majorId)
         {
-            m_Grade = grade;
-            m_Major = major;
-            m_MajorId = majorId;
+            Grade = grade;
+            Major = major;
+            MajorId = majorId;
         }
 
         public GradeInfo(_GradeInfo info)
         {
-            m_Grade = info.nj;
-            m_Major = info.zymc;
-            m_MajorId = info.zydm;
+            Grade = info.nj;
+            Major = info.zymc;
+            MajorId = info.zydm;
         }
     }
 }

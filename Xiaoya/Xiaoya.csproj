@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Assist\Assistant.cs" />
     <Compile Include="Assist\Model\ExamRound.cs" />
+    <Compile Include="Assist\Model\ExamScore.cs" />
     <Compile Include="Assist\Model\GradeInfo.cs" />
     <Compile Include="Assist\Model\Result.cs" />
     <Compile Include="Assist\Model\StudentDetails.cs" />
@@ -174,7 +175,7 @@
       <Version>0.9.9</Version>
     </PackageReference>
     <PackageReference Include="CXHttp">
-      <Version>1.0.7</Version>
+      <Version>1.0.8</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>5.2.3</Version>

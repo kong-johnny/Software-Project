@@ -8,104 +8,98 @@ namespace Xiaoya.Assist.Model
 {
     public class StudentDetails
     {
-        private string m_Address, m_AvatarId, m_Birthday, m_ClassName, m_College,
-            m_CollegeWill, m_CultureStandard, m_EducationLevel, m_Email, m_GaokaoId,
-            m_Gender, m_Id, m_IdNumber, m_MiddleSchool, m_Mobile, m_Name, m_Nationality,
-            m_Number, m_Pinyin, m_RegistrationGrade, m_RegistrationTime, m_SchoolSystem,
-            m_Speciality;
-
         /// <summary>
         /// 通讯地址
         /// </summary>
-        public string Address { get => m_Address; }
+        public string Address { get; private set; }
         /// <summary>
         /// 头像Id
         /// </summary>
-        public string AvatarId { get => m_AvatarId; }
+        public string AvatarId { get; private set; }
         /// <summary>
         /// 出生日期
         /// </summary>
-        public string Birthday { get => m_Birthday; }
+        public string Birthday { get; private set; }
         /// <summary>
         /// 班级名称
         /// </summary>
-        public string ClassName { get => m_ClassName; }
+        public string ClassName { get; private set; }
         /// <summary>
         /// 院系
         /// </summary>
-        public string College { get => m_College; }
+        public string College { get; private set; }
         /// <summary>
         /// 志愿名称
         /// </summary>
-        public string CollegeWill { get => m_CollegeWill; }
+        public string CollegeWill { get; private set; }
         /// <summary>
         /// 文化程度
         /// </summary>
-        public string CultureStandard { get => m_CultureStandard; }
+        public string CultureStandard { get; private set; }
         /// <summary>
         /// 培养层次
         /// </summary>
-        public string EducationLevel { get => m_EducationLevel; }
+        public string EducationLevel { get; private set; }
         /// <summary>
         /// 电子邮箱
         /// </summary>
-        public string Email { get => m_Email; }
+        public string Email { get; private set; }
         /// <summary>
         /// 高考号
         /// </summary>
-        public string GaokaoId { get => m_GaokaoId; }
+        public string GaokaoId { get; private set; }
         /// <summary>
         /// 性别
         /// </summary>
-        public string Gender { get => m_Gender; }
+        public string Gender { get; private set; }
         /// <summary>
         /// 用户序号
         /// </summary>
-        public string Id { get => m_Id; }
+        public string Id { get; private set; }
         /// <summary>
         /// 身份证号
         /// </summary>
-        public string IdNumber { get => m_IdNumber; }
+        public string IdNumber { get; private set; }
         /// <summary>
         /// 毕业中学
         /// </summary>
-        public string MiddleSchool { get => m_MiddleSchool; }
+        public string MiddleSchool { get; private set; }
         /// <summary>
         /// 手机
         /// </summary>
-        public string Mobile { get => m_Mobile; }
+        public string Mobile { get; private set; }
         /// <summary>
         /// 姓名
         /// </summary>
-        public string Name { get => m_Name; }
+        public string Name { get; private set; }
         /// <summary>
         /// 民族
         /// </summary>
-        public string Nationality { get => m_Nationality; }
+        public string Nationality { get; private set; }
         /// <summary>
         /// 学号
         /// </summary>
-        public string Number { get => m_Number; }
+        public string Number { get; private set; }
         /// <summary>
         /// 拼音
         /// </summary>
-        public string Pinyin { get => m_Pinyin; }
+        public string Pinyin { get; private set; }
         /// <summary>
         /// 入学年级
         /// </summary>
-        public string RegistrationGrade { get => m_RegistrationGrade; }
+        public string RegistrationGrade { get; private set; }
         /// <summary>
         /// 报到时间
         /// </summary>
-        public string RegistrationTime { get => m_RegistrationTime; }
+        public string RegistrationTime { get; private set; }
         /// <summary>
         /// 学制（x学年制）
         /// </summary>
-        public string SchoolSystem { get => m_SchoolSystem; }
+        public string SchoolSystem { get; private set; }
         /// <summary>
         /// 专业
         /// </summary>
-        public string Speciality { get => m_Speciality; }
+        public string Speciality { get; private set; }
 
         public StudentDetails(string address, string avatarId, string birthday,
             string className, string college, string collegeWill, string cultureStandard,
@@ -115,29 +109,29 @@ namespace Xiaoya.Assist.Model
             string registrationGrade, string registrationTime, string schoolSystem,
             string speciality)
         {
-            m_Address = address;
-            m_AvatarId = avatarId;
-            m_Birthday = birthday;
-            m_ClassName = className;
-            m_College = college;
-            m_CollegeWill = collegeWill;
-            m_CultureStandard = cultureStandard;
-            m_EducationLevel = educationLevel;
-            m_Email = email;
-            m_GaokaoId = gaokaoId;
-            m_Gender = gender;
-            m_Id = id;
-            m_IdNumber = idNumber;
-            m_MiddleSchool = middleSchool;
-            m_Mobile = mobile;
-            m_Name = name;
-            m_Nationality = nationality;
-            m_Number = number;
-            m_Pinyin = pinyin;
-            m_RegistrationGrade = registrationGrade;
-            m_RegistrationTime = registrationTime;
-            m_SchoolSystem = schoolSystem;
-            m_Speciality = speciality;
+            Address = address;
+            AvatarId = avatarId;
+            Birthday = birthday;
+            ClassName = className;
+            College = college;
+            CollegeWill = collegeWill;
+            CultureStandard = cultureStandard;
+            EducationLevel = educationLevel;
+            Email = email;
+            GaokaoId = gaokaoId;
+            Gender = gender;
+            Id = id;
+            IdNumber = idNumber;
+            MiddleSchool = middleSchool;
+            Mobile = mobile;
+            Name = name;
+            Nationality = nationality;
+            Number = number;
+            Pinyin = pinyin;
+            RegistrationGrade = registrationGrade;
+            RegistrationTime = registrationTime;
+            SchoolSystem = schoolSystem;
+            Speciality = speciality;
         }
     }
 }

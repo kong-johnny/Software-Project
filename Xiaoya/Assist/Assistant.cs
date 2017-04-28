@@ -26,6 +26,7 @@ namespace Xiaoya
             "Chrome/55.0.2883.87 Safari/537.36";
         private const string HEADER_REFERER = "Referer";
         private const string REFERER = "http://zyfw.bnu.edu.cn";
+        private const string REFERER_EXAM_SCORE = "http://zyfw.bnu.edu.cn/student/xscj.stuckcj.jsp?menucode=JW130706";
 
         /// <summary>
         /// URLs
@@ -45,6 +46,9 @@ namespace Xiaoya
             = "http://zyfw.bnu.edu.cn/STU_BaseInfoAction.do?" +
             "hidOption=InitData&menucode_current=JW13020101";
 
+        private const string URL_EXAM_SCORE     // 成绩
+            = "http://zyfw.bnu.edu.cn/student/xscj.stuckcj_data.jsp";
+
         private const string URL_DROPLIST       // 下拉列表，参见Droplists常量
             = "http://zyfw.bnu.edu.cn/frame/droplist/getDropLists.action";
 
@@ -60,8 +64,8 @@ namespace Xiaoya
         private CXSession m_Session = CXHttp.Session();
 
         private string m_Username = "", m_Password = "";
-        public string Username { get => m_Username; set { m_Username = value; m_isLogined = false; } }
-        public string Password { get => m_Password; set { m_Password = value; m_isLogined = false; } }
+        public string Username { get => m_Username; set { m_Username = value; m_isLogined = false; m_StudentInfo = null; } }
+        public string Password { get => m_Password; set { m_Password = value; m_isLogined = false; m_StudentInfo = null; } }
 
         private bool m_isLogined = false;
         public bool IsLogin { get => m_isLogined; }
@@ -140,6 +144,11 @@ namespace Xiaoya
         /// <returns><see cref="StudentInfo"/><returns>
         public async Task<StudentInfo> FetchStudentInfo()
         {
+            if (m_StudentInfo != null)
+            {
+                return m_StudentInfo;
+            }
+
             var res = await m_Session.Req
                 .Url(URL_STUDENT_INFO)
                 .Header(HEADER_USER_AGENT, USER_AGENT)
@@ -228,30 +237,30 @@ namespace Xiaoya
                 return null;
             }
             StudentDetails details = new StudentDetails(
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("txdz")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("zpid")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("csrq")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("bjmc")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("yxb")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("zymc")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("whcd")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("pycc")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("dzyx")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("gkksh")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xb")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("yhxh")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("sfzjh")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("sydw")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("dh")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xm")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("mz")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xh")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xmpy")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("rxnj")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("bdtime")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("xz")),
-                ParserHelper.GetFirstElementText(info.GetElementsByTagName("lqzy"))
-                );
+                address:            ParserHelper.GetFirstElementText(info.GetElementsByTagName("txdz")),
+                avatarId:           ParserHelper.GetFirstElementText(info.GetElementsByTagName("zpid")),
+                birthday:           ParserHelper.GetFirstElementText(info.GetElementsByTagName("csrq")),
+                className:          ParserHelper.GetFirstElementText(info.GetElementsByTagName("bjmc")),
+                college:            ParserHelper.GetFirstElementText(info.GetElementsByTagName("yxb")),
+                collegeWill:        ParserHelper.GetFirstElementText(info.GetElementsByTagName("zymc")),
+                cultureStandard:    ParserHelper.GetFirstElementText(info.GetElementsByTagName("whcd")),
+                educationLevel:     ParserHelper.GetFirstElementText(info.GetElementsByTagName("pycc")),
+                email:              ParserHelper.GetFirstElementText(info.GetElementsByTagName("dzyx")),
+                gaokaoId:           ParserHelper.GetFirstElementText(info.GetElementsByTagName("gkksh")),
+                gender:             ParserHelper.GetFirstElementText(info.GetElementsByTagName("xb")),
+                id:                 ParserHelper.GetFirstElementText(info.GetElementsByTagName("yhxh")),
+                idNumber:           ParserHelper.GetFirstElementText(info.GetElementsByTagName("sfzjh")),
+                middleSchool:       ParserHelper.GetFirstElementText(info.GetElementsByTagName("sydw")),
+                mobile:             ParserHelper.GetFirstElementText(info.GetElementsByTagName("dh")),
+                name:               ParserHelper.GetFirstElementText(info.GetElementsByTagName("xm")),
+                nationality:        ParserHelper.GetFirstElementText(info.GetElementsByTagName("mz")),
+                number:             ParserHelper.GetFirstElementText(info.GetElementsByTagName("xh")),
+                pinyin:             ParserHelper.GetFirstElementText(info.GetElementsByTagName("xmpy")),
+                registrationGrade:  ParserHelper.GetFirstElementText(info.GetElementsByTagName("rxnj")),
+                registrationTime:   ParserHelper.GetFirstElementText(info.GetElementsByTagName("bdtime")),
+                schoolSystem:       ParserHelper.GetFirstElementText(info.GetElementsByTagName("xz")),
+                speciality:         ParserHelper.GetFirstElementText(info.GetElementsByTagName("lqzy"))
+            );
             return details;
         }
 
@@ -320,6 +329,87 @@ namespace Xiaoya
             return list.OrderByDescending(o => o.Code).ToList();
         }
 
+        public async Task<List<ExamScore>> GetExamScores(int year, int term, bool isOnlyMajor)
+        {
+            var req = m_Session.Req
+                .Url(URL_EXAM_SCORE)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER_EXAM_SCORE)
+                .Data("ysyx", "yscj")
+                .Data("userCode", (await FetchStudentInfo()).StudentId)
+                .Data("zfx", isOnlyMajor ? "0" : "1")
+                .Data("ysyxS", "on")
+                .Data("sjxzS", "on")
+                .Data("zfxS", "on");
+
+            if (year == 0)
+            {
+                // If year == 0, Then get all exam scores
+                req.Data("sjxz", "sjxz1");
+            }
+            else
+            {
+                // Else get scores for specific semester
+                req.Data("sjxz", "sjxz3")
+                    .Data("xn", year.ToString())
+                    .Data("xn1", (year + 1).ToString())
+                    .Data("xq", term.ToString());
+            }
+            var res = await req.Post();
+
+            string body = await res.Content("GBK");
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            var doc = m_Parser.Parse(body);
+
+            var scores = new List<ExamScore>();
+
+            if (doc.GetElementsByTagName("tbody").Count() == 0)
+            {
+                // No result
+                return scores;
+            }
+
+            var table = doc.GetElementsByTagName("tbody")[0];
+            var rows = table.GetElementsByTagName("tr");
+            string lastTerm = "";
+
+            foreach (var tr in rows)
+            {
+                var cols = tr.GetElementsByTagName("td");
+                string currentTerm = cols[0].TextContent.Trim();
+                if (currentTerm == "")
+                {
+                    currentTerm = lastTerm;
+                }
+                else
+                {
+                    lastTerm = currentTerm;
+                }
+
+                scores.Add(new ExamScore(
+                        term:                   currentTerm,
+                        courseName:             cols[1].TextContent,
+                        courseCredit:           cols[2].TextContent,
+                        classification:         cols[3].TextContent,
+                        score1:                 cols[5].TextContent,
+                        score2:                 cols[6].TextContent,
+                        score:                  cols[7].TextContent,
+                        doLearnForFirstTime:    "初修" == cols[4].TextContent.Trim(),
+                        isMajor:                "主修" == cols[8].TextContent.Trim()
+                ));
+            }
+
+            scores.OrderByDescending(o => o.Score);
+            return scores;
+        }
+
+        public async Task<List<ExamScore>> GetExamScores(bool isOnlyMajor)
+        {
+            return await GetExamScores(0, 0, isOnlyMajor);
+        }
     }
 
 }
