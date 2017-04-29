@@ -101,6 +101,32 @@ namespace Xiaoya.Assist.Model
         /// </summary>
         public string Speciality { get; private set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="address">Address</param>
+        /// <param name="avatarId">Avatar Id</param>
+        /// <param name="birthday">Birthday</param>
+        /// <param name="className">Class name</param>
+        /// <param name="college">College</param>
+        /// <param name="collegeWill">College will</param>
+        /// <param name="cultureStandard">Culture standard</param>
+        /// <param name="educationLevel">Education level</param>
+        /// <param name="email">Email</param>
+        /// <param name="gaokaoId">Gaokao Id</param>
+        /// <param name="gender">Gender</param>
+        /// <param name="id">Student Id</param>
+        /// <param name="idNumber">ID card number</param>
+        /// <param name="middleSchool">Middle school</param>
+        /// <param name="mobile">Mobile</param>
+        /// <param name="name">Name</param>
+        /// <param name="nationality">Nationality</param>
+        /// <param name="number">Student number</param>
+        /// <param name="pinyin">Pinyin of name</param>
+        /// <param name="registrationGrade">Registration grade</param>
+        /// <param name="registrationTime">Registration time</param>
+        /// <param name="schoolSystem">The number of year of school system</param>
+        /// <param name="speciality">Speciality</param>
         public StudentDetails(string address, string avatarId, string birthday,
             string className, string college, string collegeWill, string cultureStandard,
             string educationLevel, string email, string gaokaoId, string gender,
@@ -109,29 +135,29 @@ namespace Xiaoya.Assist.Model
             string registrationGrade, string registrationTime, string schoolSystem,
             string speciality)
         {
-            Address = address;
-            AvatarId = avatarId;
-            Birthday = birthday;
-            ClassName = className;
-            College = college;
-            CollegeWill = collegeWill;
-            CultureStandard = cultureStandard;
-            EducationLevel = educationLevel;
-            Email = email;
-            GaokaoId = gaokaoId;
-            Gender = gender;
-            Id = id;
-            IdNumber = idNumber;
-            MiddleSchool = middleSchool;
-            Mobile = mobile;
-            Name = name;
-            Nationality = nationality;
-            Number = number;
-            Pinyin = pinyin;
-            RegistrationGrade = registrationGrade;
-            RegistrationTime = registrationTime;
-            SchoolSystem = schoolSystem;
-            Speciality = speciality;
+            Address           = address.Trim();
+            AvatarId          = avatarId.Trim();
+            Birthday          = birthday.Trim();
+            ClassName         = className.Trim();
+            College           = college.Trim();
+            CollegeWill       = collegeWill.Trim();
+            CultureStandard   = cultureStandard.Trim();
+            EducationLevel    = educationLevel.Trim();
+            Email             = email.Trim();
+            GaokaoId          = gaokaoId.Trim();
+            Gender            = gender.Trim();
+            Id                = id.Trim();
+            IdNumber          = idNumber.Trim();
+            MiddleSchool      = middleSchool.Trim();
+            Mobile            = mobile.Trim();
+            Name              = name.Trim();
+            Nationality       = nationality.Trim();
+            Number            = number.Trim();
+            Pinyin            = pinyin.Trim();
+            RegistrationGrade = registrationGrade.Trim();
+            RegistrationTime  = registrationTime.Trim();
+            SchoolSystem      = schoolSystem.Trim();
+            Speciality        = speciality.Trim();
         }
     }
 }

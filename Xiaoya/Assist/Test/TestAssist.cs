@@ -28,7 +28,13 @@ namespace Xiaoya.Assist.Test
             var examScores = await assist.GetExamScores(true);
             foreach(var score in examScores)
             {
-                text += score.Term + "  " + score.CourseName + ": " + score.Score + "\n";
+                text += score.Semester + "  " + score.CourseName + ": " + score.Score + "\n";
+            }
+
+            var examArrangement = await assist.GetExamArrangement(examRounds[0]);
+            foreach(var arrangement in examArrangement)
+            {
+                text += arrangement.CourseName + "  " + arrangement.Time + " " + arrangement.Location + " seat: " + arrangement.Seat + "\n";
             }
 
             return text;

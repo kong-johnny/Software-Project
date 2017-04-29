@@ -20,12 +20,12 @@ namespace Xiaoya
         /// <summary>
         /// Headers
         /// </summary>
-        private const string HEADER_USER_AGENT = "User-Agent";
-        private const string USER_AGENT =
+        private const string HEADER_USER_AGENT  = "User-Agent";
+        private const string USER_AGENT         =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
             "Chrome/55.0.2883.87 Safari/537.36";
-        private const string HEADER_REFERER = "Referer";
-        private const string REFERER = "http://zyfw.bnu.edu.cn";
+        private const string HEADER_REFERER     = "Referer";
+        private const string REFERER            = "http://zyfw.bnu.edu.cn";
         private const string REFERER_EXAM_SCORE = "http://zyfw.bnu.edu.cn/student/xscj.stuckcj.jsp?menucode=JW130706";
 
         /// <summary>
@@ -52,10 +52,18 @@ namespace Xiaoya
         private const string URL_DROPLIST       // 下拉列表，参见Droplists常量
             = "http://zyfw.bnu.edu.cn/frame/droplist/getDropLists.action";
 
+        private const string URL_DATA_TABLE     // 数据表，参见Tables常量
+            = "http://zyfw.bnu.edu.cn/taglib/DataTable.jsp?tableId=";
+
         /// <summary>
         /// Droplists
         /// </summary>
-        private const string DROP_EXAM_NAME = "Ms_KSSW_FBXNXQKSLC";
+        private const string DROP_EXAM_NAME = "Ms_KSSW_FBXNXQKSLC"; // 考试轮次
+
+        /// <summary>
+        /// Tables
+        /// </summary>
+        private const string TABLE_EXAM_ARRANGEMENT = "2538";       // 考试安排
 
         /// <summary>
         /// Other fields
@@ -163,16 +171,16 @@ namespace Xiaoya
 
             // Parse the fetched XML body
             var xmlParser = new XmlParser();
-            var doc = xmlParser.Parse(body);
+            var doc       = xmlParser.Parse(body);
 
             string studentId, grade, major, majorId, schoolYear, semester;
 
-            studentId = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xh"));
-            grade = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("nj"));
-            major = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("zymc"));
-            majorId = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("zydm"));
+            studentId  = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xh"));
+            grade      = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("nj"));
+            major      = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("zymc"));
+            majorId    = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("zydm"));
             schoolYear = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xn"));
-            semester = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xq_m"));
+            semester   = ParserHelper.GetFirstElementText(doc.GetElementsByTagName("xq_m"));
 
             // If no major or grade info
             if (majorId == null || grade == null || majorId == "" || grade == "")
@@ -229,7 +237,7 @@ namespace Xiaoya
                 return null;
 
             var xmlParser = new XmlParser();
-            var doc = xmlParser.Parse(body);
+            var doc       = xmlParser.Parse(body);
 
             var info = ParserHelper.GetFirstElement(doc.GetElementsByTagName("info"));
             if (info == null)
@@ -384,12 +392,13 @@ namespace Xiaoya
             }
 
             var table = doc.GetElementsByTagName("tbody")[0];
-            var rows = table.GetElementsByTagName("tr");
+            var rows  = table.GetElementsByTagName("tr");
             string lastTerm = "";
 
             foreach (var tr in rows)
             {
                 var cols = tr.GetElementsByTagName("td");
+
                 string currentTerm = cols[0].TextContent.Trim();
                 if (currentTerm == "")
                 {
@@ -403,7 +412,7 @@ namespace Xiaoya
                 if (cols.Count() < 9) continue;
 
                 scores.Add(new ExamScore(
-                        term:                   currentTerm,
+                        semester:                   currentTerm,
                         courseName:             cols[1].TextContent,
                         courseCredit:           cols[2].TextContent,
                         classification:         cols[3].TextContent,
@@ -419,9 +428,88 @@ namespace Xiaoya
             return scores;
         }
 
+        /// <summary>
+        /// Get exam scores of all semesters
+        /// </summary>
+        /// <param name="isOnlyMajor">Specific whether scores of minor profession will be returned.</param>
+        /// <returns>A list of <see cref="ExamScore"/></returns>
         public async Task<List<ExamScore>> GetExamScores(bool isOnlyMajor)
         {
             return await GetExamScores(0, 0, isOnlyMajor);
+        }
+
+        public async Task<List<ExamArrangement>> GetExamArrangement(ExamRound round)
+        {
+            var res = await m_Session.Req
+                .Url(URL_DATA_TABLE + TABLE_EXAM_ARRANGEMENT)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER)
+                .Data("xh", "")
+                .Data("xn", round.Year)
+                .Data("xq", round.Semester)
+                .Data("kslc", round.Round)
+                .Data("xnxqkslc", round.Code)
+                .Post();
+
+            string body = await res.Content("GBK");
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            var doc = m_Parser.Parse(body);
+
+            var arrangementList = new List<ExamArrangement>();
+
+            for (int i = 0; ; ++i)
+            {
+                string prefix = "tr" + i + "_";
+
+                var courseNameEl = doc.GetElementById(prefix + "kc");
+                if (courseNameEl == null) {
+                    // IF no tr{i}_kc, THEN no new lines.
+                    break;
+                }
+
+                ExamArrangement arrangement = new ExamArrangement(
+                    courseName:     courseNameEl.TextContent,
+                    credit:         doc.GetElementById(prefix + "xf").TextContent,
+                    classification: doc.GetElementById(prefix + "lb").TextContent,
+                    examType:       doc.GetElementById(prefix + "khfs").TextContent,
+                    time:           doc.GetElementById(prefix + "kssj").TextContent,
+                    location:       doc.GetElementById(prefix + "ksdd").TextContent,
+                    seat:           doc.GetElementById(prefix + "zwh").TextContent
+                );
+                arrangementList.Add(arrangement);
+            }
+
+            arrangementList.Sort((a, b) =>
+            {
+                if (a.BeginTime.HasValue && a.EndTime.HasValue &&
+                    b.BeginTime.HasValue && b.EndTime.HasValue)
+                {
+                    bool aHasEnded = a.EndTime.Value < DateTime.Now;
+                    bool bHasEnded = b.EndTime.Value < DateTime.Now;
+                    if (aHasEnded && bHasEnded)
+                    {
+                        return b.EndTime.Value.CompareTo(a.EndTime.Value);
+                    }
+                    else if (!aHasEnded && !bHasEnded)
+                    {
+                        return a.BeginTime.Value.CompareTo(b.BeginTime.Value);
+                    }
+                    else if (aHasEnded && !bHasEnded)
+                    {
+                        return 1000;
+                    }
+                    else
+                    {
+                        return -1000;
+                    }
+                }
+                return 1;
+            });
+
+            return arrangementList;
         }
     }
 
