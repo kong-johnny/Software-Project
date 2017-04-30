@@ -20,21 +20,33 @@ namespace Xiaoya.Assist.Test
             var details = await assist.GetStudentDetails();
 
             var examRounds = await assist.GetExamRounds();
-            foreach(var round in examRounds)
+            foreach (var round in examRounds)
             {
                 text += round.Code + ": " + round.Name + "\n";
             }
 
             var examScores = await assist.GetExamScores(true);
-            foreach(var score in examScores)
+            foreach (var score in examScores)
             {
                 text += score.Semester + "  " + score.CourseName + ": " + score.Score + "\n";
             }
 
             var examArrangement = await assist.GetExamArrangement(examRounds[0]);
-            foreach(var arrangement in examArrangement)
+            foreach (var arrangement in examArrangement)
             {
                 text += arrangement.CourseName + "  " + arrangement.Time + " " + arrangement.Location + " seat: " + arrangement.Seat + "\n";
+            }
+
+            var semesters = await assist.GetTableSemesters();
+            foreach (var semester in semesters)
+            {
+                text += semester.Name + " " + semester.Code + "\n";
+            }
+
+            var courses = await assist.GetTableCourses(semesters[1]);
+            foreach (var course in courses)
+            {
+                text += course.Name + " (" + course.Teacher + ") - " + course.LocationTime + "\n";
             }
 
             return text;

@@ -103,6 +103,8 @@
     <Compile Include="Assist\Model\Result.cs" />
     <Compile Include="Assist\Model\StudentDetails.cs" />
     <Compile Include="Assist\Model\StudentInfo.cs" />
+    <Compile Include="Assist\Model\TableCourse.cs" />
+    <Compile Include="Assist\Model\TableSemester.cs" />
     <Compile Include="Assist\Test\TestAssist.cs" />
     <Compile Include="Helpers\ParserHelper.cs" />
     <Compile Include="MainPage.xaml.cs">

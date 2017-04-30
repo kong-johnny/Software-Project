@@ -27,6 +27,7 @@ namespace Xiaoya
         private const string HEADER_REFERER     = "Referer";
         private const string REFERER            = "http://zyfw.bnu.edu.cn";
         private const string REFERER_EXAM_SCORE = "http://zyfw.bnu.edu.cn/student/xscj.stuckcj.jsp?menucode=JW130706";
+        private const string REFERER_TIMETABLE  = "http://zyfw.bnu.edu.cn/student/xkjg.wdkb.jsp?menucode=JW130418";
 
         /// <summary>
         /// URLs
@@ -55,10 +56,14 @@ namespace Xiaoya
         private const string URL_DATA_TABLE     // 数据表，参见Tables常量
             = "http://zyfw.bnu.edu.cn/taglib/DataTable.jsp?tableId=";
 
+        private const string URL_TIMETABLE      // 课程表
+            = "http://zyfw.bnu.edu.cn/wsxk/xkjg.ckdgxsxdkchj_data10319.jsp?params=";
+
         /// <summary>
         /// Droplists
         /// </summary>
         private const string DROP_EXAM_NAME = "Ms_KSSW_FBXNXQKSLC"; // 考试轮次
+        private const string DROP_SEMESTER = "Ms_KBBP_FBXQLLJXAP";  // 学期
 
         /// <summary>
         /// Tables
@@ -438,6 +443,11 @@ namespace Xiaoya
             return await GetExamScores(0, 0, isOnlyMajor);
         }
 
+        /// <summary>
+        /// Get exam arrangement of specific exam round
+        /// </summary>
+        /// <param name="round"><see cref="ExamRound"/></param>
+        /// <returns>A list of <see cref="ExamArrangement"/></returns>
         public async Task<List<ExamArrangement>> GetExamArrangement(ExamRound round)
         {
             var res = await m_Session.Req
@@ -511,6 +521,79 @@ namespace Xiaoya
 
             return arrangementList;
         }
-    }
 
+        /// <summary>
+        /// Get table semesters
+        /// </summary>
+        /// <returns>A list of <see cref="TableSemester"/></returns>
+        public async Task<List<TableSemester>> GetTableSemesters()
+        {
+            var res = await m_Session.Req
+                .Url(URL_DROPLIST)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER)
+                .Data("comboBoxName", DROP_SEMESTER)
+                .Post();
+
+            string body = await res.Content("UTF-8");
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            return JsonConvert.DeserializeObject<List<TableSemester>>(body);
+        }
+
+        /// <summary>
+        /// Get courses of timetable for specific semester
+        /// </summary>
+        /// <param name="semester"><see cref="TableSemester"/></param>
+        /// <returns>A list of <see cref="TableCourse"/></returns>
+        public async Task<List<TableCourse>> GetTableCourses(TableSemester semester)
+        {
+            // Base64 encoding content
+            string content = "xn=" + semester.Year
+                + "&xq=" + semester.Semester
+                + "&xh=" + (await FetchStudentInfo()).StudentId;
+
+            content = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(content));
+
+            var res = await m_Session.Req
+                .Url(URL_TIMETABLE + content)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER_TIMETABLE)
+                .Get();
+
+            string body = await res.Content();
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            var doc = m_Parser.Parse(body);
+
+            var courses = new List<TableCourse>();
+
+            var table = ParserHelper.GetFirstElement(doc.GetElementsByTagName("tbody"));
+            if (table == null)
+            {
+                return courses;
+            }
+
+            var rows = table.GetElementsByTagName("tr");
+            foreach (var tr in rows)
+            {
+                var cols = tr.GetElementsByTagName("td");
+                if (cols.Count() < 14) continue;
+                courses.Add(new TableCourse(
+                    code:           cols[13].TextContent,
+                    name:           cols[0].TextContent,
+                    credit:         cols[2].TextContent,
+                    teacher:        cols[4].TextContent,
+                    locationTime:   cols[5].TextContent,
+                    isFreeToListen: cols[8].TextContent == "是"
+                ));
+            }
+
+            return courses;
+        }
+    }
 }
