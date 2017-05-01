@@ -36,8 +36,8 @@ namespace Xiaoya.Assist.Model
         [JsonConstructor]
         public TableSemester(string code, string name)
         {
-            Code = code.Trim();
-            Name = name.Trim();
+            Code = Convert.ToString(code).Trim();
+            Name = Convert.ToString(name).Trim();
 
             Year = Code.Substring(0, Code.IndexOf(",")).Trim();
             Semester = Code.Substring( Code.IndexOf(",") + 1).Trim();

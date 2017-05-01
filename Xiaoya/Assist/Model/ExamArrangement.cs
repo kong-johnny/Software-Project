@@ -59,13 +59,13 @@ namespace Xiaoya.Assist.Model
         public ExamArrangement(string courseName, string credit, string classification,
             string examType, string time, string location, string seat)
         {
-            CourseName     = courseName.Trim();
-            Credit         = credit.Trim();
-            Classification = classification.Trim();
-            ExamType       = examType.Trim();
-            Time           = time.Trim();
-            Location       = location.Trim();
-            Seat           = seat.Trim();
+            CourseName     = Convert.ToString(courseName).Trim();
+            Credit         = Convert.ToString(credit).Trim();
+            Classification = Convert.ToString(classification).Trim();
+            ExamType       = Convert.ToString(examType).Trim();
+            Time           = Convert.ToString(time).Trim();
+            Location       = Convert.ToString(location).Trim();
+            Seat           = Convert.ToString(seat).Trim();
             BeginTime      = null;
             EndTime        = null;
 

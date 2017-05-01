@@ -16,7 +16,7 @@ namespace Xiaoya.Assist.Test
             string err = await assist.Login();
             if (err != null)
                 text += err;
-            var stuInfo = await assist.FetchStudentInfo();
+            var stuInfo = await assist.GetStudentInfo();
             var details = await assist.GetStudentDetails();
 
             var examRounds = await assist.GetExamRounds();
@@ -48,6 +48,9 @@ namespace Xiaoya.Assist.Test
             {
                 text += course.Name + " (" + course.Teacher + ") - " + course.LocationTime + "\n";
             }
+
+            var selectInfo = await assist.GetSelectInfo();
+            text += selectInfo.StartTime + " - " + selectInfo.EndTime + " " + selectInfo.XqName + "\n";
 
             return text;
          }

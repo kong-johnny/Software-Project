@@ -38,16 +38,16 @@ namespace Xiaoya.Assist.Model
         /// <param name="majorId">Major Id</param>
         public GradeInfo(string grade, string major, string majorId)
         {
-            Grade   = grade.Trim();
-            Major   = major.Trim();
-            MajorId = majorId.Trim();
+            Grade   = Convert.ToString(grade).Trim();
+            Major   = Convert.ToString(major).Trim();
+            MajorId = Convert.ToString(majorId).Trim();
         }
 
         public GradeInfo(_GradeInfo info)
         {
-            Grade   = info.nj.Trim();
-            Major   = info.zymc.Trim();
-            MajorId = info.zydm.Trim();
+            Grade   = Convert.ToString(info.nj).Trim();
+            Major   = Convert.ToString(info.zymc).Trim();
+            MajorId = Convert.ToString(info.zydm).Trim();
         }
     }
 }

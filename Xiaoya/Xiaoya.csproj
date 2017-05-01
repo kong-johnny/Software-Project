@@ -101,6 +101,7 @@
     <Compile Include="Assist\Model\ExamScore.cs" />
     <Compile Include="Assist\Model\GradeInfo.cs" />
     <Compile Include="Assist\Model\Result.cs" />
+    <Compile Include="Assist\Model\SelectInfo.cs" />
     <Compile Include="Assist\Model\StudentDetails.cs" />
     <Compile Include="Assist\Model\StudentInfo.cs" />
     <Compile Include="Assist\Model\TableCourse.cs" />

@@ -31,11 +31,12 @@ namespace Xiaoya.Assist.Model
         /// <param name="message">Message</param>
         /// <param name="status">Status code</param>
         /// <param name="result">Result</param>
+        [JsonConstructor]
         RequestResult(string message, string status, string result)
         {
-            Message = message.Trim();
-            Status  = status.Trim();
-            Result  = result.Trim();
+            Message = Convert.ToString(message).Trim();
+            Status  = Convert.ToString(status).Trim();
+            Result  = Convert.ToString(result).Trim();
         }
     }
 }

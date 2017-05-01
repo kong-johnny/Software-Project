@@ -49,11 +49,11 @@ namespace Xiaoya.Assist.Model
         public TableCourse(string code, string name, string credit, string teacher,
             string locationTime, bool isFreeToListen)
         {
-            Code           = code.Trim();
-            Name           = name.Trim();
-            Credit         = credit.Trim();
-            Teacher        = teacher.Trim();
-            LocationTime   = locationTime.Trim();
+            Code           = Convert.ToString(code).Trim();
+            Name           = Convert.ToString(name).Trim();
+            Credit         = Convert.ToString(credit).Trim();
+            Teacher        = Convert.ToString(teacher).Trim();
+            LocationTime   = Convert.ToString(locationTime).Trim();
             IsFreeToListen = isFreeToListen;
 
             Name = Name.Substring(Name.IndexOf("]") + 1);

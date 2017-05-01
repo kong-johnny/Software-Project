@@ -17,6 +17,10 @@ namespace Xiaoya.Assist.Model
         /// </summary>
         public string CourseName { get; private set; }
         /// <summary>
+        /// 课程Id
+        /// </summary>
+        public string CourseId { get; private set; }
+        /// <summary>
         /// 课程学分
         /// </summary>
         public string CourseCredit { get; private set; }
@@ -61,15 +65,18 @@ namespace Xiaoya.Assist.Model
             string classification, string score1, string score2, string score,
             bool doLearnForFirstTime, bool isMajor)
         {
-            Semester            = semester.Trim();
-            CourseName          = courseName.Trim();
-            CourseCredit        = courseCredit.Trim();
-            Classification      = classification.Trim();
-            Score1              = score1.Trim();
-            Score2              = score2.Trim();
-            Score               = score.Trim();
+            Semester            = Convert.ToString(semester).Trim();
+            CourseName          = Convert.ToString(courseName).Trim();
+            CourseCredit        = Convert.ToString(courseCredit).Trim();
+            Classification      = Convert.ToString(classification).Trim();
+            Score1              = Convert.ToString(score1).Trim();
+            Score2              = Convert.ToString(score2).Trim();
+            Score               = Convert.ToString(score).Trim();
             DoLearnForFirstTime = doLearnForFirstTime;
             IsMajor             = isMajor;
+
+            CourseId = CourseName.Substring(1, CourseName.IndexOf("]"));
+            CourseName = CourseName.Substring(CourseName.IndexOf("]") + 1);
         }
     }
 }

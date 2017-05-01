@@ -59,6 +59,9 @@ namespace Xiaoya
         private const string URL_TIMETABLE      // 课程表
             = "http://zyfw.bnu.edu.cn/wsxk/xkjg.ckdgxsxdkchj_data10319.jsp?params=";
 
+        private const string URL_SELECT_INFO    // 选课信息
+            = "http://zyfw.bnu.edu.cn/jw/common/getWsxkTimeRange.action?xktype=2";
+
         /// <summary>
         /// Droplists
         /// </summary>
@@ -77,13 +80,21 @@ namespace Xiaoya
         private CXSession m_Session = CXHttp.Session();
 
         private string m_Username = "", m_Password = "";
-        public string Username { get => m_Username; set { m_Username = value; m_isLogined = false; m_StudentInfo = null; } }
-        public string Password { get => m_Password; set { m_Password = value; m_isLogined = false; m_StudentInfo = null; } }
+        public string Username { get => m_Username; set { Reset();  m_Username = value; } }
+        public string Password { get => m_Password; set { Reset();  m_Password = value; } }
 
-        private bool m_isLogined = false;
-        public bool IsLogin { get => m_isLogined; }
+        private bool m_IsLogined = false;
+        public bool IsLogin { get => m_IsLogined; }
 
         private StudentInfo m_StudentInfo;
+        private SelectInfo m_SelectInfo;
+
+        private void Reset()
+        {
+            m_IsLogined   = false;
+            m_StudentInfo = null;
+            m_SelectInfo  = null;
+        }
 
         /// <summary>
         /// Default constructor
@@ -137,14 +148,14 @@ namespace Xiaoya
         {
             if (body.Contains("统一身份认证平台"))
             {
-                m_isLogined = false;
+                m_IsLogined = false;
                 return false;
             }
             return true;
         }
 
         /// <summary>
-        /// Fetch student info
+        /// Get student info
         /// <list type="bullet">
         ///     <item>student_id: xh</item>
         ///     <item>grade: nj</item>
@@ -155,7 +166,7 @@ namespace Xiaoya
         /// </list>
         /// </summary>
         /// <returns><see cref="StudentInfo"/><returns>
-        public async Task<StudentInfo> FetchStudentInfo()
+        public async Task<StudentInfo> GetStudentInfo()
         {
             if (m_StudentInfo != null)
             {
@@ -191,7 +202,7 @@ namespace Xiaoya
             if (majorId == null || grade == null || majorId == "" || grade == "")
             {
                 // Fetch them by another way
-                GradeInfo gradeInfo = await FetchGradeInfo(studentId);
+                GradeInfo gradeInfo = await GetGradeInfo(studentId);
                 major = gradeInfo.Major;
                 majorId = gradeInfo.MajorId;
                 grade = gradeInfo.Grade;
@@ -202,11 +213,11 @@ namespace Xiaoya
         }
 
         /// <summary>
-        /// Fetch grade and major info
+        /// Get grade and major info
         /// </summary>
         /// <param name="studentId">Student Id</param>
         /// <returns><see cref="GradeInfo"/></returns>
-        public async Task<GradeInfo> FetchGradeInfo(string studentId)
+        public async Task<GradeInfo> GetGradeInfo(string studentId)
         {
             var res = await m_Session.Req
                 .Url(URL_GRADE_INFO)
@@ -283,7 +294,7 @@ namespace Xiaoya
         /// <returns>Error message. Returns <c>null</c> if succeed.</returns>
         public async Task<string> Login()
         {
-            if (m_isLogined) return null;
+            if (m_IsLogined) return null;
             // Fetch login params needed
             string[] loginParams = await FetchLoginParams();
 
@@ -320,7 +331,7 @@ namespace Xiaoya
                 return error;
             }
             // Otherwise, logined successfully.
-            m_isLogined = true;
+            m_IsLogined = true;
             return null;
         }
 
@@ -360,7 +371,7 @@ namespace Xiaoya
                 .Header(HEADER_USER_AGENT, USER_AGENT)
                 .Header(HEADER_REFERER, REFERER_EXAM_SCORE)
                 .Data("ysyx", "yscj")
-                .Data("userCode", (await FetchStudentInfo()).StudentId)
+                .Data("userCode", (await GetStudentInfo()).StudentId)
                 .Data("zfx", isOnlyMajor ? "0" : "1")
                 .Data("ysyxS", "on")
                 .Data("sjxzS", "on")
@@ -553,7 +564,7 @@ namespace Xiaoya
             // Base64 encoding content
             string content = "xn=" + semester.Year
                 + "&xq=" + semester.Semester
-                + "&xh=" + (await FetchStudentInfo()).StudentId;
+                + "&xh=" + (await GetStudentInfo()).StudentId;
 
             content = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(content));
 
@@ -594,6 +605,28 @@ namespace Xiaoya
             }
 
             return courses;
+        }
+        
+        public async Task<SelectInfo> GetSelectInfo()
+        {
+            if (m_SelectInfo != null)
+            {
+                return m_SelectInfo;
+            }
+
+            var res = await m_Session.Req
+                .Url(URL_SELECT_INFO)
+                .Header(HEADER_USER_AGENT, USER_AGENT)
+                .Header(HEADER_REFERER, REFERER_TIMETABLE)
+                .Post();
+
+            string body = await res.Content("UTF-8");
+
+            if (!UpdateLoginState(body))
+                return null;
+
+            RequestResult result = JsonConvert.DeserializeObject<RequestResult>(body);
+            return JsonConvert.DeserializeObject<SelectInfo>(result.Result);
         }
     }
 }

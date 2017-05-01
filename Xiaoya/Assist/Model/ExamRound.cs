@@ -41,8 +41,8 @@ namespace Xiaoya.Assist.Model
         [JsonConstructor]
         public ExamRound(string name, string code)
         {
-            Name = name.Trim();
-            Code = code.Trim();
+            Name = Convert.ToString(name).Trim();
+            Code = Convert.ToString(code).Trim();
 
             // calculate exam year, semester and round
             string[] codeParts = Code.Split(',');

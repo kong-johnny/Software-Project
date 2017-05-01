@@ -44,12 +44,12 @@ namespace Xiaoya.Assist.Model
         /// <param name="semester">Semester</param>
         public StudentInfo(string studentId, string grade, string major, string majorId, string schoolYear, string semester)
         {
-            StudentId  = studentId.Trim();
-            Grade      = grade.Trim();
-            Major      = major.Trim();
-            MajorId    = majorId.Trim();
-            SchoolYear = schoolYear.Trim();
-            Semester   = semester.Trim();
+            StudentId  = Convert.ToString(studentId).Trim();
+            Grade      = Convert.ToString(grade).Trim();
+            Major      = Convert.ToString(major).Trim();
+            MajorId    = Convert.ToString(majorId).Trim();
+            SchoolYear = Convert.ToString(schoolYear).Trim();
+            Semester   = Convert.ToString(semester).Trim();
         }
     }
 }

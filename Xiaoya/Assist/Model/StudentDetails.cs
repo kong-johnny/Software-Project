@@ -135,29 +135,29 @@ namespace Xiaoya.Assist.Model
             string registrationGrade, string registrationTime, string schoolSystem,
             string speciality)
         {
-            Address           = address.Trim();
-            AvatarId          = avatarId.Trim();
-            Birthday          = birthday.Trim();
-            ClassName         = className.Trim();
-            College           = college.Trim();
-            CollegeWill       = collegeWill.Trim();
-            CultureStandard   = cultureStandard.Trim();
-            EducationLevel    = educationLevel.Trim();
-            Email             = email.Trim();
-            GaokaoId          = gaokaoId.Trim();
-            Gender            = gender.Trim();
-            Id                = id.Trim();
-            IdNumber          = idNumber.Trim();
-            MiddleSchool      = middleSchool.Trim();
-            Mobile            = mobile.Trim();
-            Name              = name.Trim();
-            Nationality       = nationality.Trim();
-            Number            = number.Trim();
-            Pinyin            = pinyin.Trim();
-            RegistrationGrade = registrationGrade.Trim();
-            RegistrationTime  = registrationTime.Trim();
-            SchoolSystem      = schoolSystem.Trim();
-            Speciality        = speciality.Trim();
+            Address           = Convert.ToString(address).Trim();
+            AvatarId          = Convert.ToString(avatarId).Trim();
+            Birthday          = Convert.ToString(birthday).Trim();
+            ClassName         = Convert.ToString(className).Trim();
+            College           = Convert.ToString(college).Trim();
+            CollegeWill       = Convert.ToString(collegeWill).Trim();
+            CultureStandard   = Convert.ToString(cultureStandard).Trim();
+            EducationLevel    = Convert.ToString(educationLevel).Trim();
+            Email             = Convert.ToString(email).Trim();
+            GaokaoId          = Convert.ToString(gaokaoId).Trim();
+            Gender            = Convert.ToString(gender).Trim();
+            Id                = Convert.ToString(id).Trim();
+            IdNumber          = Convert.ToString(idNumber).Trim();
+            MiddleSchool      = Convert.ToString(middleSchool).Trim();
+            Mobile            = Convert.ToString(mobile).Trim();
+            Name              = Convert.ToString(name).Trim();
+            Nationality       = Convert.ToString(nationality).Trim();
+            Number            = Convert.ToString(number).Trim();
+            Pinyin            = Convert.ToString(pinyin).Trim();
+            RegistrationGrade = Convert.ToString(registrationGrade).Trim();
+            RegistrationTime  = Convert.ToString(registrationTime).Trim();
+            SchoolSystem      = Convert.ToString(schoolSystem).Trim();
+            Speciality        = Convert.ToString(speciality).Trim();
         }
     }
 }
