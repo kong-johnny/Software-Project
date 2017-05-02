@@ -7,6 +7,8 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -39,6 +41,19 @@ namespace Xiaoya
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(320, 200));
+
+            // Darken the window title bar using a color value to match app theme
+            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            if (titleBar != null)
+            {
+                Color titleBarColor = (Color)App.Current.Resources["SystemChromeMediumColor"];
+                titleBar.BackgroundColor = titleBarColor;
+                titleBar.ButtonBackgroundColor = titleBarColor;
+            }
+
+
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
