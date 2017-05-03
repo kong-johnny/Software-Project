@@ -34,21 +34,45 @@ namespace Xiaoya
             {
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Contact,
-                    Label = "Page 1",
+                    Symbol = Symbol.Home,
+                    Label = "主页",
+                    DestPage = typeof(HomePage)
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Symbol.Calendar,
+                    Label = "课程表",
                     DestPage = typeof(CommandBarPage)
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Symbol.CalendarDay,
+                    Label = "考试安排",
+                    DestPage = null
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Symbol.Bullets,
+                    Label = "考试成绩",
+                    DestPage = null
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Symbol.Library,
+                    Label = "图书馆",
+                    DestPage = null
                 },
                 new NavMenuItem()
                 {
                     Symbol = Symbol.Edit,
-                    Label = "Page 2",
-                    DestPage = typeof(CommandBarPage)
+                    Label = "自习室",
+                    DestPage = null
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Favorite,
-                    Label = "Page 3",
-                    DestPage = typeof(CommandBarPage)
+                    Symbol = Symbol.ThreeBars,
+                    Label = "网关",
+                    DestPage = null
                 },
             });
 
