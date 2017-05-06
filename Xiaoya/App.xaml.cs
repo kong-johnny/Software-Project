@@ -24,6 +24,7 @@ namespace Xiaoya
     /// </summary>
     sealed partial class App : Application
     {
+        public Assistant Assist { get; private set; }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -32,6 +33,7 @@ namespace Xiaoya
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            Assist = new Assistant();
         }
 
         /// <summary>

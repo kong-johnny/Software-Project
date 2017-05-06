@@ -34,43 +34,43 @@ namespace Xiaoya
             {
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Home,
+                    Symbol = (char) Symbol.Home,
                     Label = "主页",
                     DestPage = typeof(HomePage)
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Calendar,
+                    Symbol = (char) Symbol.Calendar,
                     Label = "课程表",
                     DestPage = typeof(CommandBarPage)
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.CalendarDay,
+                    Symbol = (char) 0xEADF,
                     Label = "考试安排",
-                    DestPage = null
+                    DestPage = typeof(ExamArrangementPage)
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Bullets,
+                    Symbol = (char) Symbol.Bullets,
                     Label = "考试成绩",
                     DestPage = null
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Library,
+                    Symbol = (char) Symbol.Library,
                     Label = "图书馆",
                     DestPage = null
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Edit,
+                    Symbol = (char) Symbol.Edit,
                     Label = "自习室",
                     DestPage = null
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.ThreeBars,
+                    Symbol = (char) Symbol.ThreeBars,
                     Label = "网关",
                     DestPage = null
                 },
@@ -105,6 +105,7 @@ namespace Xiaoya
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 
             NavMenuList.ItemsSource = navlist;
+            this.frame.Navigate(typeof(HomePage), null);
         }
 
         public Frame AppFrame { get { return this.frame; } }
@@ -172,8 +173,7 @@ namespace Xiaoya
 
             if (direction != FocusNavigationDirection.None)
             {
-                var control = FocusManager.FindNextFocusableElement(direction) as Control;
-                if (control != null)
+                if (FocusManager.FindNextFocusableElement(direction) is Control control)
                 {
                     control.Focus(FocusState.Keyboard);
                     e.Handled = true;

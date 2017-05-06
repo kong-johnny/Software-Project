@@ -88,18 +88,26 @@ namespace Xiaoya
 
         private StudentInfo m_StudentInfo;
         private SelectInfo m_SelectInfo;
+        private StudentDetails m_StudentDetails;
 
+        /// <summary>
+        /// Reset members
+        /// </summary>
         private void Reset()
         {
-            m_IsLogined   = false;
-            m_StudentInfo = null;
-            m_SelectInfo  = null;
+            m_IsLogined      = false;
+            m_StudentInfo    = null;
+            m_SelectInfo     = null;
+            m_StudentDetails = null;
         }
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public Assistant() { }
+        public Assistant()
+        {
+            Logout();
+        }
 
         /// <summary>
         /// Constructor with username and password
@@ -108,8 +116,17 @@ namespace Xiaoya
         /// <param name="password">Password</param>
         public Assistant(string username, string password)
         {
+            Logout();
             m_Username = username;
             m_Password = password;
+        }
+
+        public void Logout()
+        {
+            m_Username = "";
+            m_Password = "";
+            Reset();
+            m_Session.Req.ClearCookies("http://zyfw.bnu.edu.cn");
         }
 
         /// <summary>
@@ -122,7 +139,7 @@ namespace Xiaoya
 
             var res = await m_Session.Req                       // GET URL_LOGIN with specific UA
                .Url(URL_LOGIN)
-               .ClearCookie()
+               .ClearCookies()
                .Header(HEADER_USER_AGENT, USER_AGENT)
                .Get();
 
@@ -241,6 +258,10 @@ namespace Xiaoya
         /// <returns><see cref="StudentDetails"/></returns>
         public async Task<StudentDetails> GetStudentDetails()
         {
+            if (m_StudentDetails != null)
+            {
+                return m_StudentDetails;
+            }
             var res = await m_Session.Req
                 .Url(URL_STUDENT_DETAILS)
                 .Header(HEADER_USER_AGENT, USER_AGENT)
@@ -260,7 +281,7 @@ namespace Xiaoya
             {
                 return null;
             }
-            StudentDetails details = new StudentDetails(
+            m_StudentDetails = new StudentDetails(
                 address:            ParserHelper.GetFirstElementText(info.GetElementsByTagName("txdz")),
                 avatarId:           ParserHelper.GetFirstElementText(info.GetElementsByTagName("zpid")),
                 birthday:           ParserHelper.GetFirstElementText(info.GetElementsByTagName("csrq")),
@@ -285,7 +306,7 @@ namespace Xiaoya
                 schoolSystem:       ParserHelper.GetFirstElementText(info.GetElementsByTagName("xz")),
                 speciality:         ParserHelper.GetFirstElementText(info.GetElementsByTagName("lqzy"))
             );
-            return details;
+            return m_StudentDetails;
         }
 
         /// <summary>
@@ -321,8 +342,10 @@ namespace Xiaoya
             // If no "KINGOSOFT高校数字校园综合管理平台" found, then there will be errors
             if (!body.Contains("KINGOSOFT高校数字校园综合管理平台"))
             {
+                body = res.Content("UTF-8").Result;
+                doc = m_Parser.Parse(body);
                 // Get error message element: <span id="error_message_show">
-                var msg = doc.GetElementById("error_message_show");
+                var msg = doc.GetElementById("msg");
                 // Element found, then assign error message
                 if (msg != null)
                 {
@@ -428,7 +451,7 @@ namespace Xiaoya
                 if (cols.Count() < 9) continue;
 
                 scores.Add(new ExamScore(
-                        semester:                   currentTerm,
+                        semester:               currentTerm,
                         courseName:             cols[1].TextContent,
                         courseCredit:           cols[2].TextContent,
                         classification:         cols[3].TextContent,

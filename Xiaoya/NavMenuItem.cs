@@ -15,14 +15,7 @@ namespace Xiaoya
     public class NavMenuItem : INotifyPropertyChanged
     {
         public string Label { get; set; }
-        public Symbol Symbol { get; set; }
-        public char SymbolAsChar
-        {
-            get
-            {
-                return (char)this.Symbol;
-            }
-        }
+        public char Symbol { get; set; }
 
         private bool _isSelected;
         public bool IsSelected
