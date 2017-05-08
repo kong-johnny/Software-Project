@@ -5,6 +5,7 @@
     xmlns:ctl="using:Xiaoya.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:Xiaoya.Assist.Model"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -38,8 +39,13 @@
             <RowDefinition />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <CommandBar x:Name="topbar" Visibility="Collapsed" HorizontalContentAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Style="{StaticResource NoMoreButtonCommandBarStyle}">
-            <AppBarButton Label="Share">
+        <CommandBar x:Name="topbar" Visibility="Collapsed" HorizontalContentAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <AppBarButton Label="提前看" Click="PreviewAppBarButton_Clicked">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE890;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="分享">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;"/>
                 </AppBarButton.Icon>
@@ -60,11 +66,67 @@
         </ctl:PageHeader>
 
         <Grid x:Name="ContentContainer" Grid.Row="1" Margin="24,0">
-            <ComboBox x:Name="semesterComboBox" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ComboBox x:Name="SemesterComboBox" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="model:ExamRound">
+                        <TextBlock Text="{x:Bind Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="LoadingProgressBar" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+            <ListView x:Name="ExamArrangementListView" Grid.Row="2" Grid.Column="0" Margin="0, 12" ItemClick="ExamArrangementListView_ItemClick" IsItemClickEnabled="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="model:ExamArrangement" >
+                        <Grid Margin="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition MinWidth="100"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind RemainingDays}" Margin="10" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind CourseName}" Grid.Row="0" Grid.Column="1" FontSize="18" Grid.ColumnSpan="3" />
+                            <TextBlock Text="{x:Bind Time}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="1" />
+                            <TextBlock Text="{x:Bind Location}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="2" />
+                            <StackPanel Margin="4, 0" Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                                <TextBlock Text="座号：" FontSize="14"/>
+                                <TextBlock Text="{x:Bind Seat}" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Margin="4, 0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                <TextBlock Text="考核方式：" FontSize="14"/>
+                                <TextBlock Text="{x:Bind ExamType}" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Margin="4, 0" Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
+                                <TextBlock Text="学分：" FontSize="14"/>
+                                <TextBlock Text="{x:Bind Credit}" FontSize="14"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                
+            </ListView>
         </Grid>
 
-        <CommandBar x:Name="bottombar" Grid.Row="2" Visibility="Collapsed" HorizontalContentAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Style="{StaticResource NoMoreButtonCommandBarStyle}">
-            <AppBarButton Label="Share">
+        <CommandBar x:Name="bottombar" Grid.Row="2" Visibility="Collapsed" HorizontalContentAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <AppBarButton Label="提前看">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE890;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="分享">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;"/>
                 </AppBarButton.Icon>

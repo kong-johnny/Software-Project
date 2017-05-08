@@ -54,7 +54,41 @@ namespace Xiaoya.Views
 
             if (app.Assist.IsLogin)
             {
+                // logined
                 LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+            }
+            else
+            {
+                // not logined
+                string username = Convert.ToString(localSettings.Values[Constants.USERNAME_SETTINGS]);
+                string password = Convert.ToString(localSettings.Values[Constants.PASSWORD_SETTINGS]);
+
+                if (username != "" && password != "")
+                {
+                    // auto login
+                    isLogining = true;
+
+                    app.Assist.Username = username;
+                    app.Assist.Password = password;
+
+                    LoginText.Text = "登录中……";
+                    LoginProgressBar.Visibility = Visibility.Visible;
+
+                    var res = await app.Assist.Login();
+
+                    LoginProgressBar.Visibility = Visibility.Collapsed;
+
+                    if (res == null)
+                    {
+                        LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+                    }
+                    else
+                    {
+                        LoginText.Text = "登录以启用所有功能";
+                    }
+
+                    isLogining = false;
+                }
             }
         }
 
@@ -88,7 +122,6 @@ namespace Xiaoya.Views
 
                 var res = await app.Assist.Login();
 
-                LoginText.Text = "登录以启用所有功能";
                 LoginProgressBar.Visibility = Visibility.Collapsed;
 
                 if (res == null)
@@ -97,6 +130,7 @@ namespace Xiaoya.Views
                 }
                 else
                 {
+                    LoginText.Text = "登录以启用所有功能";
                     var msgDialog = new ContentDialog
                     {
                         Title = "提示",

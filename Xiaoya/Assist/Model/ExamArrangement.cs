@@ -46,6 +46,29 @@ namespace Xiaoya.Assist.Model
         /// </summary>
         public DateTime? EndTime { get; private set; }
 
+        public int? RemainingDays { get
+            {
+                if (BeginTime.HasValue && EndTime.HasValue)
+                {
+                    var today = DateTime.Now;
+                    if (today > EndTime.Value)
+                    {
+                        // Ended
+                        return (int)(EndTime.Value - today).TotalDays;
+                    }
+                    else
+                    {
+                        // Not started
+                        return (int)(BeginTime.Value - today).TotalDays;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>

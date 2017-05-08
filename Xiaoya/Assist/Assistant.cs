@@ -377,7 +377,7 @@ namespace Xiaoya
                 return null;
 
             var list = JsonConvert.DeserializeObject<List<ExamRound>>(body);
-            return list.OrderByDescending(o => o.Code).ToList();
+            return list.OrderByDescending(o => o.Name).ToList();
         }
 
         /// <summary>

@@ -105,7 +105,7 @@ namespace Xiaoya
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 
             NavMenuList.ItemsSource = navlist;
-            this.frame.Navigate(typeof(HomePage), null);
+            frame.Navigate(typeof(HomePage), null);
         }
 
         public Frame AppFrame { get { return this.frame; } }
