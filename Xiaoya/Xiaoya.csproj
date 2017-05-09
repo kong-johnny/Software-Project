@@ -116,8 +116,14 @@
     <Compile Include="Controls\NavMenuListView.cs" />
     <Compile Include="NavMenuItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\ExamScorePage.xaml.cs">
+      <DependentUpon>ExamScorePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExamArrangementPage.xaml.cs">
       <DependentUpon>ExamArrangementPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GPADialog.xaml.cs">
+      <DependentUpon>GPADialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -188,9 +194,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\ExamScorePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ExamArrangementPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GPADialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -384,10 +384,10 @@ namespace Xiaoya
         /// Get exam scores
         /// </summary>
         /// <param name="year">Specific which year to query. If 0 is given, all scores will be returned.</param>
-        /// <param name="term">Specific which term to query.</param>
-        /// <param name="isOnlyMajor">Specific whether scores of minor profession will be returned.</param>
+        /// <param name="semester">Specific which term to query.</param>
+        /// <param name="showMajor">Specific whether scores of minor profession will be returned.</param>
         /// <returns>A list of <see cref="ExamScore"/></returns>
-        public async Task<List<ExamScore>> GetExamScores(int year, int term, bool isOnlyMajor)
+        public async Task<List<ExamScore>> GetExamScores(int year, int semester, bool showMajor)
         {
             var req = m_Session.Req
                 .Url(URL_EXAM_SCORE)
@@ -395,7 +395,7 @@ namespace Xiaoya
                 .Header(HEADER_REFERER, REFERER_EXAM_SCORE)
                 .Data("ysyx", "yscj")
                 .Data("userCode", (await GetStudentInfo()).StudentId)
-                .Data("zfx", isOnlyMajor ? "0" : "1")
+                .Data("zfx", showMajor ? "0" : "1")
                 .Data("ysyxS", "on")
                 .Data("sjxzS", "on")
                 .Data("zfxS", "on");
@@ -411,7 +411,7 @@ namespace Xiaoya
                 req.Data("sjxz", "sjxz3")
                     .Data("xn", year.ToString())
                     .Data("xn1", (year + 1).ToString())
-                    .Data("xq", term.ToString());
+                    .Data("xq", semester.ToString());
             }
             var res = await req.Post();
 
@@ -463,8 +463,7 @@ namespace Xiaoya
                 ));
             }
 
-            scores.OrderByDescending(o => o.Score);
-            return scores;
+            return scores.OrderBy(o => o.Score).ToList();
         }
 
         /// <summary>

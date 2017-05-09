@@ -54,7 +54,7 @@ namespace Xiaoya
                 {
                     Symbol = (char) Symbol.Bullets,
                     Label = "考试成绩",
-                    DestPage = null
+                    DestPage = typeof(ExamScorePage)
                 },
                 new NavMenuItem()
                 {

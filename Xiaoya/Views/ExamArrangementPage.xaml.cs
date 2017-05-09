@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -29,8 +30,9 @@ namespace Xiaoya.Views
         private App app = (App) Application.Current;
 
         private List<ExamArrangement> Arrangement;
-
         private List<ExamRound> Round;
+
+        private string currentRound = null;
         
         public ExamArrangementPage()
         {
@@ -83,6 +85,10 @@ namespace Xiaoya.Views
                 SemesterComboBox.SelectedItem = Round[0];
 
                 LoadingProgressBar.Visibility = Visibility.Collapsed;
+
+                // Prepare for Sharing
+                DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
+                dataTransferManager.DataRequested += DataTransferManager_DataRequested;
             }
         }
 
@@ -90,6 +96,8 @@ namespace Xiaoya.Views
         {
             if (SemesterComboBox.SelectedItem != null)
             {
+                currentRound = ((ExamRound)SemesterComboBox.SelectedItem).Name;
+
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
                 Arrangement = await app.Assist.GetExamArrangement((ExamRound)SemesterComboBox.SelectedItem);
@@ -106,6 +114,7 @@ namespace Xiaoya.Views
             {
                 SemesterComboBox.SelectedItem = null;
 
+
                 var year = DateTime.Now.Year;
                 var month = DateTime.Now.Month;
                 var term = 0; // 秋季学期
@@ -116,6 +125,10 @@ namespace Xiaoya.Views
                     term = 1;
                     year--;
                 }
+
+                currentRound = year + "-" + (year + 1) + "学年" + 
+                    (term == 0 ? "秋季学期" : "春季学期") + 
+                    "考试" + dialog.n;
 
                 var round = new ExamRound("", year + "," + term + "," + dialog.n);
 
@@ -145,6 +158,31 @@ namespace Xiaoya.Views
             };
 
             await msgDialog.ShowAsync();
+        }
+
+        private void Share_Clicked(object sender, RoutedEventArgs e)
+        {
+            DataTransferManager.ShowShareUI();
+        }
+
+        private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            if (currentRound != null)
+            {
+                DataRequest request = args.Request;
+
+                string content = currentRound + "\n---\n\n";
+                foreach (var arrangement in Arrangement)
+                {
+                    content += arrangement.CourseName + "\n" +
+                        "时间：" + arrangement.Time + "\n" +
+                        "地点：" + arrangement.Location + "\n" +
+                        "座号：" + arrangement.Seat + "\n\n";
+                }
+
+                request.Data.SetText(content);
+                request.Data.Properties.Title = "考试安排 - " + currentRound;
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Xiaoya.Assist.Model
         /// <summary>
         /// 课程学分
         /// </summary>
-        public string CourseCredit { get; private set; }
+        public double CourseCredit { get; private set; }
         /// <summary>
         /// 课程类别
         /// </summary>
@@ -49,6 +49,100 @@ namespace Xiaoya.Assist.Model
         /// </summary>
         public bool IsMajor { get; private set; }
 
+
+        /// <summary>
+        /// 综合名称
+        /// </summary>
+        public string ComplexName { get => CourseName + (IsMajor ? "" : " 辅修") + (DoLearnForFirstTime ? "" : " 重修"); }
+        
+        /// <summary>
+        /// 是否为公共课
+        /// </summary>
+        public bool IsCommonCourse { get => Classification.Contains("公共课") || Classification.Contains("学校平台"); }
+
+        /// <summary>
+        /// 数值化最终成绩
+        /// </summary>
+        public double NumericScore
+        {
+            get
+            {
+                if (!Double.TryParse(Score, out double s))
+                {
+                    s = 85.0;
+                }
+                return s;
+            }
+        }
+
+        /// <summary>
+        /// 标准4分制GPA
+        /// </summary>
+        public double StandardFourPointsGPA
+        {
+            get
+            {
+                double s = NumericScore;
+                if (s >= 90 && s <= 100) return 4.0;
+                if (s >= 80 && s <= 89) return 3.0;
+                if (s >= 70 && s <= 79) return 2.0;
+                if (s >= 60 && s <= 69) return 1.0;
+                return 0.0;
+            }
+        }
+
+        /// <summary>
+        /// 改进(1)4分制GPA
+        /// </summary>
+        public double ImprovedFourPointsGPA1
+        {
+            get
+            {
+                double s = NumericScore;
+                if (s >= 85 && s <= 100) return 4.0;
+                if (s >= 70 && s <= 84) return 3.0;
+                if (s >= 60 && s <= 69) return 2.0;
+                return 0.0;
+            }
+        }
+
+        /// <summary>
+        /// 改进(2)4分制GPA
+        /// </summary>
+        public double ImprovedFourPointsGPA2
+        {
+            get
+            {
+                double s = NumericScore;
+                if (s >= 85 && s <= 100) return 4.0;
+                if (s >= 75 && s <= 84) return 3.0;
+                if (s >= 60 && s <= 74) return 2.0;
+                return 0.0;
+            }
+        }
+
+        /// <summary>
+        /// 北大4分制GPA
+        /// </summary>
+        public double PKUFourPointsGPA
+        {
+            get
+            {
+                double s = NumericScore;
+                if (s >= 90 && s <= 100) return 4.0;
+                if (s >= 85 && s <= 89) return 3.7;
+                if (s >= 82 && s <= 84) return 3.3;
+                if (s >= 78 && s <= 81) return 3.0;
+                if (s >= 75 && s <= 77) return 2.7;
+                if (s >= 72 && s <= 74) return 2.3;
+                if (s >= 68 && s <= 71) return 2.0;
+                if (s >= 64 && s <= 67) return 1.5;
+                if (s >= 60 && s <= 63) return 1.0;
+                return 0.0;
+            }
+        }
+
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -67,7 +161,7 @@ namespace Xiaoya.Assist.Model
         {
             Semester            = Convert.ToString(semester).Trim();
             CourseName          = Convert.ToString(courseName).Trim();
-            CourseCredit        = Convert.ToString(courseCredit).Trim();
+            CourseCredit        = Convert.ToDouble(Convert.ToString(courseCredit).Trim());
             Classification      = Convert.ToString(classification).Trim();
             Score1              = Convert.ToString(score1).Trim();
             Score2              = Convert.ToString(score2).Trim();
@@ -75,7 +169,7 @@ namespace Xiaoya.Assist.Model
             DoLearnForFirstTime = doLearnForFirstTime;
             IsMajor             = isMajor;
 
-            CourseId = CourseName.Substring(1, CourseName.IndexOf("]"));
+            CourseId = CourseName.Substring(1, CourseName.IndexOf("]") - 1);
             CourseName = CourseName.Substring(CourseName.IndexOf("]") + 1);
         }
     }
