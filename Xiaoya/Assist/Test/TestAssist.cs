@@ -44,7 +44,7 @@ namespace Xiaoya.Assist.Test
             }
 
             var courses = await assist.GetTableCourses(semesters[1]);
-            foreach (var course in courses)
+            foreach (var course in courses.Courses)
             {
                 text += course.Name + " (" + course.Teacher + ") - " + course.LocationTime + "\n";
             }

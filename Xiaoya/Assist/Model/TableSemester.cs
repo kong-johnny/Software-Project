@@ -39,8 +39,11 @@ namespace Xiaoya.Assist.Model
             Code = Convert.ToString(code).Trim();
             Name = Convert.ToString(name).Trim();
 
-            Year = Code.Substring(0, Code.IndexOf(",")).Trim();
-            Semester = Code.Substring( Code.IndexOf(",") + 1).Trim();
+            if (Code.Contains(","))
+            {
+                Year = Code.Substring(0, Code.IndexOf(",")).Trim();
+                Semester = Code.Substring(Code.IndexOf(",") + 1).Trim();
+            }
         }
     }
 }

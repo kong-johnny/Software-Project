@@ -11,7 +11,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <DataTemplate x:Key="NavMenuItemTemplate" x:DataType="local:NavMenuItem">
+        <DataTemplate x:Key="NavMenuItemTemplate" x:DataType="controls:NavMenuItem">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="48" />

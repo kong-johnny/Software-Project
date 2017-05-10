@@ -83,6 +83,11 @@
             </ComboBox>
             <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="LoadingProgressBar" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
             <ListView x:Name="ExamArrangementListView" Grid.Row="2" Grid.Column="0" Margin="0, 12" ItemClick="ExamArrangementListView_ItemClick" IsItemClickEnabled="True">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="model:ExamArrangement" >
                         <Grid Margin="4">
@@ -90,7 +95,7 @@
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition MinWidth="100"/>
                                 <ColumnDefinition/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition MaxWidth="120"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -98,25 +103,46 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{x:Bind RemainingDays}" Margin="10" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Bind CourseName}" Grid.Row="0" Grid.Column="1" FontSize="18" Grid.ColumnSpan="3" />
-                            <TextBlock Text="{x:Bind Time}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="1" />
-                            <TextBlock Text="{x:Bind Location}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="2" />
-                            <StackPanel Margin="4, 0" Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
-                                <TextBlock Text="座号：" FontSize="14"/>
-                                <TextBlock Text="{x:Bind Seat}" FontSize="14"/>
-                            </StackPanel>
-                            <StackPanel Margin="4, 0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
-                                <TextBlock Text="考核方式：" FontSize="14"/>
-                                <TextBlock Text="{x:Bind ExamType}" FontSize="14"/>
-                            </StackPanel>
-                            <StackPanel Margin="4, 0" Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
-                                <TextBlock Text="学分：" FontSize="14"/>
-                                <TextBlock Text="{x:Bind Credit}" FontSize="14"/>
-                            </StackPanel>
+                            <TextBlock Text="{x:Bind CourseName}" Grid.Row="0" Grid.Column="1" FontSize="18" Grid.ColumnSpan="3" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind Time}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind Location}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" />
+                            <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="1" Grid.Column="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MaxWidth="50"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="座号：" FontSize="14" TextWrapping="Wrap"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind Seat}" FontSize="14" TextWrapping="Wrap"/>
+                            </Grid>
+                            <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MaxWidth="80"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="考核方式：" FontSize="14" TextWrapping="Wrap"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ExamType}" FontSize="14" TextWrapping="Wrap"/>
+                            </Grid>
+                            <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MaxWidth="50"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="学分：" FontSize="14" TextWrapping="Wrap"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind Credit}" FontSize="14" TextWrapping="Wrap"/>
+                            </Grid>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                
+
             </ListView>
         </Grid>
 

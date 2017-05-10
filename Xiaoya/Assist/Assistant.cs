@@ -163,7 +163,7 @@ namespace Xiaoya
         /// <returns>A boolean value indicating login state</returns>
         private bool UpdateLoginState(string body)
         {
-            if (body.Contains("统一身份认证平台"))
+            if (body == null || body.Contains("统一身份认证平台"))
             {
                 m_IsLogined = false;
                 return false;
@@ -581,7 +581,7 @@ namespace Xiaoya
         /// </summary>
         /// <param name="semester"><see cref="TableSemester"/></param>
         /// <returns>A list of <see cref="TableCourse"/></returns>
-        public async Task<List<TableCourse>> GetTableCourses(TableSemester semester)
+        public async Task<TableCourses> GetTableCourses(TableSemester semester)
         {
             // Base64 encoding content
             string content = "xn=" + semester.Year
@@ -606,27 +606,25 @@ namespace Xiaoya
             var courses = new List<TableCourse>();
 
             var table = ParserHelper.GetFirstElement(doc.GetElementsByTagName("tbody"));
-            if (table == null)
+            if (table != null)
             {
-                return courses;
+                var rows = table.GetElementsByTagName("tr");
+                foreach (var tr in rows)
+                {
+                    var cols = tr.GetElementsByTagName("td");
+                    if (cols.Count() < 14) continue;
+                    courses.Add(new TableCourse(
+                        code: cols[13].TextContent,
+                        name: cols[0].TextContent,
+                        credit: cols[2].TextContent,
+                        teacher: cols[4].TextContent,
+                        locationTime: cols[5].TextContent,
+                        isFreeToListen: cols[8].TextContent == "是"
+                    ));
+                }
             }
 
-            var rows = table.GetElementsByTagName("tr");
-            foreach (var tr in rows)
-            {
-                var cols = tr.GetElementsByTagName("td");
-                if (cols.Count() < 14) continue;
-                courses.Add(new TableCourse(
-                    code:           cols[13].TextContent,
-                    name:           cols[0].TextContent,
-                    credit:         cols[2].TextContent,
-                    teacher:        cols[4].TextContent,
-                    locationTime:   cols[5].TextContent,
-                    isFreeToListen: cols[8].TextContent == "是"
-                ));
-            }
-
-            return courses;
+            return new TableCourses((await GetStudentDetails()).Name  + " (" + semester.Code + ")", courses);
         }
         
         public async Task<SelectInfo> GetSelectInfo()

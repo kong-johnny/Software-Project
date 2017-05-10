@@ -1,0 +1,116 @@
+﻿<Page
+    x:Class="Xiaoya.Views.TimetablePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="using:Xiaoya.Controls"
+    xmlns:model="using:Xiaoya.Assist.Model"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentContainer.Margin" Value="24,0"/>
+                        <Setter Target="HeaderTextBlock.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
+                        <Setter Target="AltHeaderTextBlock.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentContainer.Margin" Value="12,0"/>
+                        <Setter Target="HeaderTextBlock.Style" Value="{StaticResource NarrowPageTitleTextBlockStyle}"/>
+                        <Setter Target="AltHeaderTextBlock.Style" Value="{StaticResource NarrowPageTitleTextBlockStyle}"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <CommandBar x:Name="topbar" Visibility="Collapsed" HorizontalContentAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <AppBarButton Flyout="{x:Bind Menu}" Label="导入" ToolTipService.ToolTip="导入新课程表">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Icon="Delete" Label="删除" ToolTipService.ToolTip="删除当前课表" Click="Delete_Clicked"/>
+            <AppBarButton Label="分享" ToolTipService.ToolTip="分享" Click="Share_Clicked">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <CommandBar.Content>
+                <ctl:PageHeader>
+                    <ctl:PageHeader.HeaderContent>
+                        <TextBlock x:Name="HeaderTextBlock" Text="课程表" Style="{StaticResource PageTitleTextBlockStyle}"/>
+                    </ctl:PageHeader.HeaderContent>
+                </ctl:PageHeader>
+            </CommandBar.Content>
+        </CommandBar>
+
+        <ctl:PageHeader x:Name="pageTitleContainer" Visibility="Collapsed">
+            <ctl:PageHeader.HeaderContent>
+                <TextBlock x:Name="AltHeaderTextBlock" Text="课程表" Style="{StaticResource PageTitleTextBlockStyle}"/>
+            </ctl:PageHeader.HeaderContent>
+        </ctl:PageHeader>
+
+        <Grid x:Name="ContentContainer" Grid.Row="1" Margin="2,0">
+            <Pivot HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="TablePivot" ItemsSource="{x:Bind Models}">
+                <Pivot.HeaderTemplate>
+                    <DataTemplate x:DataType="model:TimeTableModel">
+                        <TextBlock Text="{x:Bind Name}" />
+                    </DataTemplate>
+                </Pivot.HeaderTemplate>
+                <Pivot.ItemTemplate>
+                    <DataTemplate x:DataType="model:TimeTableModel">
+                        <Pivot Margin="-12,0" ItemsSource="{x:Bind Weeks}">
+                            <Pivot.HeaderTemplate>
+                                <DataTemplate x:DataType="model:TimeTableWeek">
+                                    <TextBlock Text="{x:Bind Name}" />
+                                </DataTemplate>
+                            </Pivot.HeaderTemplate>
+                            <Pivot.ItemTemplate>
+                                <DataTemplate x:DataType="model:TimeTableWeek">
+                                    <ctl:TimeTable Margin="-24,0" Items="{x:Bind Items}" />
+                                </DataTemplate>
+                            </Pivot.ItemTemplate>
+                        </Pivot>
+                    </DataTemplate>
+                </Pivot.ItemTemplate>
+            </Pivot>
+        </Grid>
+
+        <CommandBar x:Name="bottombar" Grid.Row="2" Visibility="Collapsed" HorizontalContentAlignment="Stretch" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <AppBarButton Flyout="{x:Bind Menu}" Label="导入" ToolTipService.ToolTip="导入课程表">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Icon="Delete" Label="删除" ToolTipService.ToolTip="删除当前课表" Click="Delete_Clicked"/>
+            <AppBarButton Label="分享" ToolTipService.ToolTip="分享" Click="Share_Clicked">
+                <AppBarButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72D;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </CommandBar>
+
+
+
+
+
+
+
+    </Grid>
+</Page>

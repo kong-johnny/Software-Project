@@ -58,7 +58,7 @@ namespace Xiaoya.Assist.Model
         /// <summary>
         /// 是否为公共课
         /// </summary>
-        public bool IsCommonCourse { get => Classification.Contains("公共课") || Classification.Contains("学校平台"); }
+        public bool IsMajorCourse { get => Classification.Contains("专业") || Classification.Contains("院系"); }
 
         /// <summary>
         /// 数值化最终成绩
@@ -169,8 +169,11 @@ namespace Xiaoya.Assist.Model
             DoLearnForFirstTime = doLearnForFirstTime;
             IsMajor             = isMajor;
 
-            CourseId = CourseName.Substring(1, CourseName.IndexOf("]") - 1);
-            CourseName = CourseName.Substring(CourseName.IndexOf("]") + 1);
+            if (CourseName.Contains("]"))
+            {
+                CourseId = CourseName.Substring(1, CourseName.IndexOf("]") - 1);
+                CourseName = CourseName.Substring(CourseName.IndexOf("]") + 1);
+            }
         }
     }
 }

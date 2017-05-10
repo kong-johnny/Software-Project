@@ -1,19 +1,17 @@
 ﻿<ContentDialog
-    x:Class="Xiaoya.Views.GPADialog"
+    x:Class="Xiaoya.Views.CommonDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Xiaoya.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="GPA 报告"
-    PrimaryButtonText="确定"
-    SecondaryButtonText="复制"
+    Title=""
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" DefaultButton="Primary" FullSizeDesired="True">
+    DefaultButton="Primary" FullSizeDesired="True">
 
     <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <TextBlock Text="{x:Bind Report}" 
+        <TextBlock Text="{x:Bind Message}" 
                    TextWrapping="Wrap"
                    HorizontalAlignment="Stretch" 
                    VerticalAlignment="Stretch"

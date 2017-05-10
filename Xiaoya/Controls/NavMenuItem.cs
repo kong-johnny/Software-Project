@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Xiaoya
+namespace Xiaoya.Controls
 {
     /// <summary>
     /// Data to represent an item in the nav menu.

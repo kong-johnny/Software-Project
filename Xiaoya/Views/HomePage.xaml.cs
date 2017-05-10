@@ -60,8 +60,8 @@ namespace Xiaoya.Views
             else
             {
                 // not logined
-                string username = Convert.ToString(localSettings.Values[Constants.USERNAME_SETTINGS]);
-                string password = Convert.ToString(localSettings.Values[Constants.PASSWORD_SETTINGS]);
+                string username = Convert.ToString(localSettings.Values[AppConstants.USERNAME_SETTINGS]);
+                string password = Convert.ToString(localSettings.Values[AppConstants.PASSWORD_SETTINGS]);
 
                 if (username != "" && password != "")
                 {
@@ -102,7 +102,7 @@ namespace Xiaoya.Views
                 // logout
                 isLogining = true;
 
-                localSettings.Values[Constants.PASSWORD_SETTINGS] = "";
+                localSettings.Values[AppConstants.PASSWORD_SETTINGS] = "";
                 app.Assist.Logout();
                 LoginText.Text = "登录以启用所有功能";
 
@@ -131,10 +131,10 @@ namespace Xiaoya.Views
                 else
                 {
                     LoginText.Text = "登录以启用所有功能";
-                    var msgDialog = new ContentDialog
+                    var msgDialog = new CommonDialog
                     {
                         Title = "提示",
-                        Content = res,
+                        Message = res,
                         CloseButtonText = "确定"
                     };
 

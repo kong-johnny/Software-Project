@@ -105,16 +105,27 @@
     <Compile Include="Assist\Model\StudentDetails.cs" />
     <Compile Include="Assist\Model\StudentInfo.cs" />
     <Compile Include="Assist\Model\TableCourse.cs" />
+    <Compile Include="Assist\Model\TableCourses.cs" />
     <Compile Include="Assist\Model\TableSemester.cs" />
+    <Compile Include="Assist\Model\TimeTableModel.cs" />
+    <Compile Include="Assist\Model\TimeTableWeek.cs" />
     <Compile Include="Assist\Test\TestAssist.cs" />
     <Compile Include="Controls\PageHeader.xaml.cs" />
-    <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Controls\TimeTable.xaml.cs">
+      <DependentUpon>TimeTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TimeTableItem.xaml.cs">
+      <DependentUpon>TimeTableItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Assist\Model\TimeTableItemModel.cs" />
+    <Compile Include="Helpers\AppConstants.cs" />
     <Compile Include="Helpers\ParserHelper.cs" />
+    <Compile Include="Helpers\TimeTableHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\NavMenuListView.cs" />
-    <Compile Include="NavMenuItem.cs" />
+    <Compile Include="Controls\NavMenuItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\ExamScorePage.xaml.cs">
       <DependentUpon>ExamScorePage.xaml</DependentUpon>
@@ -122,14 +133,23 @@
     <Compile Include="Views\ExamArrangementPage.xaml.cs">
       <DependentUpon>ExamArrangementPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CommonDialog.xaml.cs">
+      <DependentUpon>CommonDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\GPADialog.xaml.cs">
       <DependentUpon>GPADialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CommandBarPage.xaml.cs">
-      <DependentUpon>CommandBarPage.xaml</DependentUpon>
+    <Compile Include="Views\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShareCodeDialog.xaml.cs">
+      <DependentUpon>ShareCodeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TimetablePage.xaml.cs">
+      <DependentUpon>TimetablePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginDialog.xaml.cs">
       <DependentUpon>LoginDialog.xaml</DependentUpon>
@@ -194,11 +214,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\TimeTable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TimeTableItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ExamScorePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ExamArrangementPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CommonDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -210,7 +242,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CommandBarPage.xaml">
+    <Page Include="Views\InputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShareCodeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TimetablePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

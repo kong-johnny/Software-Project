@@ -60,10 +60,10 @@ namespace Xiaoya.Views
 
             if (!app.Assist.IsLogin)
             {
-                var msgDialog = new ContentDialog
+                var msgDialog = new CommonDialog
                 {
                     Title = "提示",
-                    Content = "请先登录！",
+                    Message = "请先登录！",
                     CloseButtonText = "确定"
                 };
 
@@ -144,10 +144,10 @@ namespace Xiaoya.Views
         private async void ExamArrangementListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExamArrangement)e.ClickedItem;
-            var msgDialog = new ContentDialog
+            var msgDialog = new CommonDialog
             {
                 Title = item.CourseName,
-                Content = "学分：" + item.Credit +
+                Message = "学分：" + item.Credit +
                             "\n考核方式：" + item.ExamType +
                             "\n课程类别：" + item.Classification +
                             "\n\n倒计时：" + item.RemainingDays + "天" +

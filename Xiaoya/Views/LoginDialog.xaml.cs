@@ -32,8 +32,8 @@ namespace Xiaoya.Views
         {
             this.InitializeComponent();
 
-            UsernameTextBox.Text = Convert.ToString(localSettings.Values[Constants.USERNAME_SETTINGS]);
-            PasswordTextBox.Password = Convert.ToString(localSettings.Values[Constants.PASSWORD_SETTINGS]);
+            UsernameTextBox.Text = Convert.ToString(localSettings.Values[AppConstants.USERNAME_SETTINGS]);
+            PasswordTextBox.Password = Convert.ToString(localSettings.Values[AppConstants.PASSWORD_SETTINGS]);
             RememberCheck.IsChecked = true;
         }
 
@@ -45,14 +45,14 @@ namespace Xiaoya.Views
             if (RememberCheck.IsChecked.HasValue && RememberCheck.IsChecked.Value)
             {
                 // Save info
-                localSettings.Values[Constants.USERNAME_SETTINGS] = Username;
-                localSettings.Values[Constants.PASSWORD_SETTINGS] = Password;
+                localSettings.Values[AppConstants.USERNAME_SETTINGS] = Username;
+                localSettings.Values[AppConstants.PASSWORD_SETTINGS] = Password;
             }
             else
             {
                 // Delete saved info
-                localSettings.Values[Constants.USERNAME_SETTINGS] = "";
-                localSettings.Values[Constants.PASSWORD_SETTINGS] = "";
+                localSettings.Values[AppConstants.USERNAME_SETTINGS] = "";
+                localSettings.Values[AppConstants.PASSWORD_SETTINGS] = "";
             }
         }
 

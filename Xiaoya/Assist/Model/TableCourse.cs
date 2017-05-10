@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,30 +12,37 @@ namespace Xiaoya.Assist.Model
         /// <summary>
         /// 课程代码
         /// </summary>
+        [JsonProperty]
         public string Code { get; private set; }
         /// <summary>
         /// 课程名称
         /// </summary>
+        [JsonProperty]
         public string Name { get; private set; }
         /// <summary>
         /// 学分
         /// </summary>
+        [JsonProperty]
         public string Credit { get; private set; }
         /// <summary>
         /// 任课教师
         /// </summary>
+        [JsonProperty]
         public string Teacher { get; private set; }
         /// <summary>
         /// 任课教师Id
         /// </summary>
+        [JsonProperty]
         public string TeacherId { get; private set; }
         /// <summary>
         /// 时间地点
         /// </summary>
+        [JsonProperty]
         public string LocationTime { get; private set; }
         /// <summary>
         /// 是否免听
         /// </summary>
+        [JsonProperty]
         public bool IsFreeToListen { get; private set; }
 
         /// <summary>
@@ -46,6 +54,7 @@ namespace Xiaoya.Assist.Model
         /// <param name="teacher">Teacher for the course</param>
         /// <param name="locationTime">Location and time for the course</param>
         /// <param name="isFreeToListen">Is free to listen this course for current student</param>
+        [JsonConstructor]
         public TableCourse(string code, string name, string credit, string teacher,
             string locationTime, bool isFreeToListen)
         {
@@ -56,9 +65,16 @@ namespace Xiaoya.Assist.Model
             LocationTime   = Convert.ToString(locationTime).Trim();
             IsFreeToListen = isFreeToListen;
 
-            Name = Name.Substring(Name.IndexOf("]") + 1);
-            TeacherId = Teacher.Substring(1, Teacher.IndexOf("]"));
-            Teacher = Teacher.Substring(Teacher.IndexOf("]") + 1);
+            if (Name.Contains("]"))
+            {
+                Name = Name.Substring(Name.IndexOf("]") + 1);
+            }
+
+            if (Teacher.Contains("]"))
+            {
+                TeacherId = Teacher.Substring(1, Teacher.IndexOf("]") - 1);
+                Teacher = Teacher.Substring(Teacher.IndexOf("]") + 1);
+            }
         }
     }
 }

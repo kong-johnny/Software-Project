@@ -42,7 +42,7 @@ namespace Xiaoya
                 {
                     Symbol = (char) Symbol.Calendar,
                     Label = "课程表",
-                    DestPage = typeof(CommandBarPage)
+                    DestPage = typeof(TimetablePage)
                 },
                 new NavMenuItem()
                 {

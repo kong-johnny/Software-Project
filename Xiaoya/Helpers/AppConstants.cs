@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Xiaoya.Helpers
 {
-    public static class Constants
+    public static class AppConstants
     {
         public const string USERNAME_SETTINGS = "login.username";
         public const string PASSWORD_SETTINGS = "login.password";

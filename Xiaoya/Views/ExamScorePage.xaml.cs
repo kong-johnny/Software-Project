@@ -63,10 +63,10 @@ namespace Xiaoya.Views
 
             if (!app.Assist.IsLogin)
             {
-                var msgDialog = new ContentDialog
+                var msgDialog = new CommonDialog
                 {
                     Title = "提示",
-                    Content = "请先登录！",
+                    Message = "请先登录！",
                     CloseButtonText = "确定"
                 };
 
@@ -138,10 +138,10 @@ namespace Xiaoya.Views
         private async void ExamScoreListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExamScore)e.ClickedItem;
-            var msgDialog = new ContentDialog
+            var msgDialog = new CommonDialog
             {
                 Title = item.CourseName,
-                Content = "课程编号：" + item.CourseId +
+                Message = "课程编号：" + item.CourseId +
                             "\n学期：" + item.Semester +
                             "\n学分：" + item.CourseCredit +
                             "\n类别：" + item.Classification +
@@ -254,21 +254,21 @@ namespace Xiaoya.Views
                 var GPA = CalculateGPA(values);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n ## 除公共课外\n\n";
 
-                values = values.FindAll(x => x.IsCommonCourse == false);
+                values = values.FindAll(x => x.IsMajorCourse);
                 GPA = CalculateGPA(values);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n --- \n\n";
             }
@@ -289,21 +289,23 @@ namespace Xiaoya.Views
                 var GPA = CalculateGPA(lastTwoYearsScores);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n ## 除公共课外\n\n";
 
-                lastTwoYearsScores = lastTwoYearsScores.FindAll(x => x.IsCommonCourse == false);
+                lastTwoYearsScores = lastTwoYearsScores.FindAll(x => x.IsMajorCourse);
                 GPA = CalculateGPA(lastTwoYearsScores);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                report += "\n --- \n\n";
             }
 
             report += " # 分学年GPA \n\n";
@@ -316,21 +318,21 @@ namespace Xiaoya.Views
                 var GPA = CalculateGPA(values);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n ### 除公共课外\n\n";
 
-                values = values.FindAll(x => x.IsCommonCourse == false);
+                values = values.FindAll(x => x.IsMajorCourse);
                 GPA = CalculateGPA(values);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n --- \n\n";
             }
@@ -349,21 +351,21 @@ namespace Xiaoya.Views
                 var GPA = CalculateGPA(values);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n ### 除公共课外\n\n";
 
-                values = values.FindAll(x => x.IsCommonCourse == false);
+                values = values.FindAll(x => x.IsMajorCourse);
                 GPA = CalculateGPA(values);
 
                 report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t\t" + GPA.StandardGPAText + "  \n";
+                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
                 report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
                 report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t\t" + GPA.PKUGPAText + "  \n";
+                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
                 report += "\n --- \n\n";
             }
