@@ -273,7 +273,7 @@ namespace Xiaoya.Helpers
             TimeTableWeek week = new TimeTableWeek("第" + weekNumber + "周");
             weekCount = 0;
 
-            foreach (var course in tableCourses.Courses)
+            foreach (var course in tableCourses.Table)
             {
                 week.Items.AddRange(ParseTableCourse(course, weekNumber, ref weekCount));
             }

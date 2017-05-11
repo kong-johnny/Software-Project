@@ -12,37 +12,37 @@ namespace Xiaoya.Assist.Model
         /// <summary>
         /// 课程代码
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "code")]
         public string Code { get; private set; }
         /// <summary>
         /// 课程名称
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; private set; }
         /// <summary>
         /// 学分
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "credit")]
         public string Credit { get; private set; }
         /// <summary>
         /// 任课教师
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "teacher")]
         public string Teacher { get; private set; }
         /// <summary>
         /// 任课教师Id
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "teacherId")]
         public string TeacherId { get; private set; }
         /// <summary>
         /// 时间地点
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "locationTime")]
         public string LocationTime { get; private set; }
         /// <summary>
         /// 是否免听
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "isFreeToListen")]
         public bool IsFreeToListen { get; private set; }
 
         /// <summary>

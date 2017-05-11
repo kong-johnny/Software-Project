@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LeanCloud;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace Xiaoya
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             Assist = new Assistant();
+            AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
         }
 
         /// <summary>

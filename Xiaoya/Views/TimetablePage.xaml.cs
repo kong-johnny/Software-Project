@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LeanCloud;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -111,16 +112,51 @@ namespace Xiaoya.Views
                     var msgDialog = new CommonDialog
                     {
                         Title = "错误",
-                        Message = "分享码格式错误",
+                        Message = "分享码格式错误：\n" + err.Message,
                         CloseButtonText = "确定"
                     };
                     await msgDialog.ShowAsync();
                 }
             }
         }
-        private void FromShareCode_Click(object sender, RoutedEventArgs e)
+        private async void FromShareCode_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var dialog = new InputDialog()
+            {
+                Title = "请输入在线分享码",
+                Placeholder = "在线分享码"
+            };
+            if ((await dialog.ShowAsync()) == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    var code = dialog.Result;
+
+                    if (code.Contains("："))
+                    {
+                        code.Substring(code.IndexOf("：") + 1);
+                    }
+
+                    var content = AVObject.CreateWithoutData("TimeTable", code);
+                    await content.FetchAsync();
+
+                    var tableCourses = JsonConvert.DeserializeObject<TableCourses>(Convert.ToString(content["Content"]));
+                    Models.Add(TimeTableHelper.GenerateTimeTableModel(tableCourses));
+
+                    TimeTables.Add(tableCourses);
+                    SaveTimeTables();
+                }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = "分享码格式错误：\n" + err.Message,
+                        CloseButtonText = "确定"
+                    };
+                    await msgDialog.ShowAsync();
+                }
+            }
         }
 
         private async void SaveTimeTables()
@@ -168,9 +204,29 @@ namespace Xiaoya.Views
 
         private async void Share_Clicked(object sender, RoutedEventArgs e)
         {
-            var dialog = new ShareCodeDialog();
-            dialog.OnlineShareCode = ""; // TODO
-            dialog.OfflineShareCode = JsonConvert.SerializeObject(TimeTables[TablePivot.SelectedIndex]);
+            var shareCode = JsonConvert.SerializeObject(TimeTables[TablePivot.SelectedIndex]);
+            var onlineCode = "";
+
+            var dialog = new ShareCodeDialog()
+            {
+                OfflineShareCode = shareCode
+            };
+            var query = new AVQuery<AVObject>("TimeTable").WhereEqualTo("Content", shareCode);
+            var objs = await query.FindAsync();
+            if (objs.Count() > 0)
+            {
+                onlineCode = Convert.ToString(objs.First().ObjectId);
+            }
+            else
+            {
+                var code = new AVObject("TimeTable")
+                {
+                    ["Content"] = shareCode
+                };
+                await code.SaveAsync();
+                onlineCode = code.ObjectId;
+            }
+            dialog.OnlineShareCode = "欢迎使用北师小鸦，课程表分享码：" + onlineCode;
             await dialog.ShowAsync();
         }
 

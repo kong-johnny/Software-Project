@@ -12,13 +12,13 @@ namespace Xiaoya.Assist.Model
         /// <summary>
         /// A list of <see cref="TableCourse"/>
         /// </summary>
-        [JsonProperty]
-        public List<TableCourse> Courses { get; private set; }
+        [JsonProperty(PropertyName = "table")]
+        public List<TableCourse> Table { get; private set; }
 
         /// <summary>
         /// Name of timetable
         /// </summary>
-        [JsonProperty]
+        [JsonProperty(PropertyName = "name")]
         public string Name { get; private set; }
         
         /// <summary>
@@ -29,7 +29,7 @@ namespace Xiaoya.Assist.Model
         [JsonConstructor]
         public TableCourses(string name, List<TableCourse> courses)
         {
-            Courses = courses;
+            Table = courses;
             Name = name;
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LeanCloud;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -81,6 +82,8 @@ namespace Xiaoya.Views
                     if (res == null)
                     {
                         LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+
+                        SaveUser();
                     }
                     else
                     {
@@ -90,6 +93,47 @@ namespace Xiaoya.Views
                     isLogining = false;
                 }
             }
+        }
+
+        private async void SaveUser()
+        {
+            var studentInfo = await app.Assist.GetStudentDetails();
+
+            var user = new AVUser();
+
+            var username = app.Assist.Username;
+            var password = studentInfo.Id + studentInfo.GaokaoId; 
+
+            user.Username = username;
+            user.Password = password;
+
+            user.Email = user.Username + "@mail.bnu.edu.cn";
+
+            user["RegistrationTime"] = studentInfo.RegistrationTime;
+            user["Nationality"] = studentInfo.Nationality;
+            user["AdmitSpeciality"] = studentInfo.Speciality;
+            user["MiddleSchool"] = studentInfo.MiddleSchool;
+            user["ClassName"] = studentInfo.ClassName;
+            user["CollegeWill"] = studentInfo.CollegeWill;
+            user["SchoolSystem"] = studentInfo.SchoolSystem;
+            user["EducationLevel"] = studentInfo.EducationLevel;
+            user["Name"] = studentInfo.Name;
+            user["Number"] = studentInfo.Number;
+            user["College"] = studentInfo.College;
+            user["Gender"] = studentInfo.Gender;
+            user["Address"] = studentInfo.Address;
+            user["Pinyin"] = studentInfo.Pinyin;
+            user["mobile"] = studentInfo.Mobile;
+            user["RegistrationGrade"] = studentInfo.RegistrationGrade;
+            user["Birthday"] = studentInfo.Birthday;
+
+            await user.SignUpAsync().ContinueWith(async t =>
+            {
+                await AVUser.LogInAsync(username, password).ContinueWith(t2 =>
+                {
+                    // TODO: Analytics
+                });
+            });
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -127,6 +171,9 @@ namespace Xiaoya.Views
                 if (res == null)
                 {
                     LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+
+                    SaveUser();
+
                 }
                 else
                 {
