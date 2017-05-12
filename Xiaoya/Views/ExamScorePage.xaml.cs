@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Xiaoya.Assist.Model;
+using Xiaoya.Assist.Models;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,9 +27,7 @@ namespace Xiaoya.Views
     /// </summary>
     public sealed partial class ExamScorePage : Page
     {
-
-
-        private App app = (App) Application.Current;
+        private App app = (App)Application.Current;
 
         private List<ExamScore> Scores;
         private List<ExamRound> Round = new List<ExamRound>();
@@ -37,7 +35,7 @@ namespace Xiaoya.Views
         private ExamRound currentRound = null;
 
         bool showMajor = true;
-        
+
         public ExamScorePage()
         {
             this.InitializeComponent();
@@ -81,34 +79,51 @@ namespace Xiaoya.Views
             {
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                var studentInfo = await app.Assist.GetStudentInfo();
-
-                for (int year = DateTime.Now.Year;
-                    year >= Convert.ToInt32(studentInfo.Grade);
-                    --year)
+                try
                 {
-                    if (year == DateTime.Now.Year)
+
+                    var studentInfo = await app.Assist.GetStudentInfo();
+
+                    for (int year = DateTime.Now.Year;
+                        year >= Convert.ToInt32(studentInfo.Grade);
+                        --year)
                     {
-                        if (DateTime.Now.Month > 9)
+                        if (year == DateTime.Now.Year)
                         {
+                            if (DateTime.Now.Month > 9)
+                            {
+                                Round.Add(new ExamRound("" + year + "-" + (year + 1) + " 秋季学期", year + ",0,0"));
+                            }
+                        }
+                        else
+                        {
+                            Round.Add(new ExamRound("" + year + "-" + (year + 1) + " 春季学期", year + ",1,0"));
                             Round.Add(new ExamRound("" + year + "-" + (year + 1) + " 秋季学期", year + ",0,0"));
                         }
                     }
-                    else
-                    {
-                        Round.Add(new ExamRound("" + year + "-" + (year + 1) + " 春季学期", year + ",1,0"));
-                        Round.Add(new ExamRound("" + year + "-" + (year + 1) + " 秋季学期", year + ",0,0"));
-                    }
+
+                    Round.Add(new ExamRound("全部学期", "0,0,0"));
+
+                    SemesterComboBox.ItemsSource = Round;
+                    SemesterComboBox.SelectionChanged += SemesterComboBox_SelectionChanged;
+
+                    SemesterComboBox.SelectedItem = Round[0];
                 }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = err.Message,
+                        CloseButtonText = "确定"
+                    };
 
-                Round.Add(new ExamRound("全部学期", "0,0,0"));
-
-                SemesterComboBox.ItemsSource = Round;
-                SemesterComboBox.SelectionChanged += SemesterComboBox_SelectionChanged;
-
-                SemesterComboBox.SelectedItem = Round[0];
-
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
+                    await msgDialog.ShowAsync();
+                }
+                finally
+                {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+                }
 
                 // Prepare for Sharing
                 DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
@@ -168,16 +183,33 @@ namespace Xiaoya.Views
             {
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                currentRound = (ExamRound)SemesterComboBox.SelectedItem;
+                try
+                {
 
-                Scores = await app.Assist.GetExamScores(
-                    Convert.ToInt32(currentRound.Year), 
-                    Convert.ToInt32(currentRound.Semester), 
-                    showMajor
-                );
-                ExamScoreListView.ItemsSource = Scores;
+                    currentRound = (ExamRound)SemesterComboBox.SelectedItem;
 
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
+                    Scores = await app.Assist.GetExamScores(
+                        Convert.ToInt32(currentRound.Year),
+                        Convert.ToInt32(currentRound.Semester),
+                        showMajor
+                    );
+                    ExamScoreListView.ItemsSource = Scores;
+                }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = err.Message,
+                        CloseButtonText = "确定"
+                    };
+
+                    await msgDialog.ShowAsync();
+                }
+                finally
+                {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+                }
 
                 SaveScores();
             }
@@ -211,14 +243,31 @@ namespace Xiaoya.Views
             {
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                Scores = await app.Assist.GetExamScores(
-                    Convert.ToInt32(currentRound.Year), 
-                    Convert.ToInt32(currentRound.Semester), 
-                    showMajor
-                );
-                ExamScoreListView.ItemsSource = Scores;
+                try
+                {
 
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
+                    Scores = await app.Assist.GetExamScores(
+                        Convert.ToInt32(currentRound.Year),
+                        Convert.ToInt32(currentRound.Semester),
+                        showMajor
+                    );
+                    ExamScoreListView.ItemsSource = Scores;
+                }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = err.Message,
+                        CloseButtonText = "确定"
+                    };
+
+                    await msgDialog.ShowAsync();
+                }
+                finally
+                {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -291,136 +340,150 @@ namespace Xiaoya.Views
 
         private async void GPAReport_Clicked(object sender, RoutedEventArgs e)
         {
-            // Scores
-            var scores = await app.Assist.GetExamScores(true);
-            // Content of GPA Report
-            string report = "";
-
-            // Overall GPA
-            report += " # 总GPA \n\n";
+            try
             {
-                var values = scores;
-                var GPA = CalculateGPA(values);
+                // Scores
+                var scores = await app.Assist.GetExamScores(true);
+                // Content of GPA Report
+                string report = "";
 
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+                // Overall GPA
+                report += " # 总GPA \n\n";
+                {
+                    var values = scores;
+                    var GPA = CalculateGPA(values);
 
-                report += "\n ## 除公共课外\n\n";
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
-                values = values.FindAll(x => x.IsMajorCourse);
-                GPA = CalculateGPA(values);
+                    report += "\n ## 除公共课外\n\n";
 
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+                    values = values.FindAll(x => x.IsMajorCourse);
+                    GPA = CalculateGPA(values);
 
-                report += "\n --- \n\n";
-            }
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
 
-            // GPA for each years
-            var scoreByYear = scores.GroupBy(o => o.Semester.Substring(0, 11));
-            scoreByYear = scoreByYear.OrderByDescending(x => x.Key);
+                    report += "\n --- \n\n";
+                }
 
-            report += " # 最后两学年GPA \n\n";
-            {
-                List<ExamScore> lastTwoYearsScores = new List<ExamScore>();
-                int yearIndex = 0;
+                // GPA for each years
+                var scoreByYear = scores.GroupBy(o => o.Semester.Substring(0, 11));
+                scoreByYear = scoreByYear.OrderByDescending(x => x.Key);
+
+                report += " # 最后两学年GPA \n\n";
+                {
+                    List<ExamScore> lastTwoYearsScores = new List<ExamScore>();
+                    int yearIndex = 0;
+                    foreach (var year in scoreByYear)
+                    {
+                        if (yearIndex++ == 2) break;
+                        lastTwoYearsScores.AddRange(year);
+                    }
+                    var GPA = CalculateGPA(lastTwoYearsScores);
+
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                    report += "\n ## 除公共课外\n\n";
+
+                    lastTwoYearsScores = lastTwoYearsScores.FindAll(x => x.IsMajorCourse);
+                    GPA = CalculateGPA(lastTwoYearsScores);
+
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                    report += "\n --- \n\n";
+                }
+
+                report += " # 分学年GPA \n\n";
                 foreach (var year in scoreByYear)
                 {
-                    if (yearIndex++ == 2) break;
-                    lastTwoYearsScores.AddRange(year);
+                    report += " ## " + year.Key + "\n\n";
+
+                    var values = year.Select(x => x).ToList();
+
+                    var GPA = CalculateGPA(values);
+
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                    report += "\n ### 除公共课外\n\n";
+
+                    values = values.FindAll(x => x.IsMajorCourse);
+                    GPA = CalculateGPA(values);
+
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                    report += "\n --- \n\n";
                 }
-                var GPA = CalculateGPA(lastTwoYearsScores);
 
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+                // GPA for each semesters
+                report += " # 分学期GPA \n\n";
+                var scoreBySemester = scores.GroupBy(o => o.Semester);
+                scoreBySemester = scoreBySemester.OrderByDescending(x => x.Key);
 
-                report += "\n ## 除公共课外\n\n";
+                foreach (var semester in scoreBySemester)
+                {
+                    report += " ## " + semester.Key + "\n\n";
 
-                lastTwoYearsScores = lastTwoYearsScores.FindAll(x => x.IsMajorCourse);
-                GPA = CalculateGPA(lastTwoYearsScores);
+                    var values = semester.Select(x => x).ToList();
 
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+                    var GPA = CalculateGPA(values);
 
-                report += "\n --- \n\n";
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                    report += "\n ### 除公共课外\n\n";
+
+                    values = values.FindAll(x => x.IsMajorCourse);
+                    GPA = CalculateGPA(values);
+
+                    report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
+                    report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
+                    report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
+                    report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
+                    report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
+
+                    report += "\n --- \n\n";
+                }
+
+                GPADialog dialog = new GPADialog(report);
+                await dialog.ShowAsync();
             }
-
-            report += " # 分学年GPA \n\n";
-            foreach (var year in scoreByYear)
+            catch (Exception err)
             {
-                report += " ## " + year.Key + "\n\n";
+                var msgDialog = new CommonDialog
+                {
+                    Title = "错误",
+                    Message = err.Message,
+                    CloseButtonText = "确定"
+                };
 
-                var values = year.Select(x => x).ToList();
-
-                var GPA = CalculateGPA(values);
-
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
-
-                report += "\n ### 除公共课外\n\n";
-
-                values = values.FindAll(x => x.IsMajorCourse);
-                GPA = CalculateGPA(values);
-
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
-
-                report += "\n --- \n\n";
+                await msgDialog.ShowAsync();
             }
-
-            // GPA for each semesters
-            report += " # 分学期GPA \n\n";
-            var scoreBySemester = scores.GroupBy(o => o.Semester);
-            scoreBySemester = scoreBySemester.OrderByDescending(x => x.Key);
-
-            foreach (var semester in scoreBySemester)
-            {
-                report += " ## " + semester.Key + "\n\n";
-
-                var values = semester.Select(x => x).ToList();
-
-                var GPA = CalculateGPA(values);
-
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
-
-                report += "\n ### 除公共课外\n\n";
-
-                values = values.FindAll(x => x.IsMajorCourse);
-                GPA = CalculateGPA(values);
-
-                report += "标准加权算法：\t\t" + GPA.AverageGPAText + "  \n";
-                report += "标准四分制算法：\t" + GPA.StandardGPAText + "  \n";
-                report += "改良(1)四分制算法：\t" + GPA.ImprovedGPAText1 + "  \n";
-                report += "改良(2)四分制算法：\t" + GPA.ImprovedGPAText2 + "  \n";
-                report += "北大四分制算法：\t" + GPA.PKUGPAText + "  \n";
-
-                report += "\n --- \n\n";
-            }
-
-            GPADialog dialog = new GPADialog(report);
-            await dialog.ShowAsync();
         }
 
         private void Share_Clicked(object sender, RoutedEventArgs e)
@@ -436,7 +499,7 @@ namespace Xiaoya.Views
                 string content = currentRound.Name + "\n---\n\n";
                 foreach (var score in Scores)
                 {
-                    content += score.CourseName + 
+                    content += score.CourseName +
                         "\n最终成绩：" + score.Score +
                         "\n平时：" + score.Score1 + "\t期末：" + score.Score2 + "\n\n";
                 }

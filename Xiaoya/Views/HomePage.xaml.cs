@@ -1,6 +1,8 @@
 ﻿using LeanCloud;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -14,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Xiaoya.Assist.Models;
 using Xiaoya.Helpers;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -25,11 +28,14 @@ namespace Xiaoya.Views
     /// </summary>
     public sealed partial class HomePage : Page
     {
-        private App app = (App) Application.Current;
+        private App app = (App)Application.Current;
         private bool isLogining = false;
 
-        private Windows.Storage.ApplicationDataContainer localSettings = 
+        private Windows.Storage.ApplicationDataContainer localSettings =
             Windows.Storage.ApplicationData.Current.LocalSettings;
+
+        public ObservableCollection<OneDayTimeTableModel> Models 
+            = new ObservableCollection<OneDayTimeTableModel>();
 
         public HomePage()
         {
@@ -53,6 +59,8 @@ namespace Xiaoya.Views
                 pageTitleContainer.Visibility = Visibility.Collapsed;
             }
 
+            LoadTimeTables();
+
             if (app.Assist.IsLogin)
             {
                 // logined
@@ -61,37 +69,72 @@ namespace Xiaoya.Views
             else
             {
                 // not logined
-                string username = Convert.ToString(localSettings.Values[AppConstants.USERNAME_SETTINGS]);
-                string password = Convert.ToString(localSettings.Values[AppConstants.PASSWORD_SETTINGS]);
-
-                if (username != "" && password != "")
+                try
                 {
-                    // auto login
-                    isLogining = true;
+                    string username = Convert.ToString(localSettings.Values[AppConstants.USERNAME_SETTINGS]);
+                    string password = Convert.ToString(localSettings.Values[AppConstants.PASSWORD_SETTINGS]);
 
-                    app.Assist.Username = username;
-                    app.Assist.Password = password;
-
-                    LoginText.Text = "登录中……";
-                    LoginProgressBar.Visibility = Visibility.Visible;
-
-                    var res = await app.Assist.Login();
-
-                    LoginProgressBar.Visibility = Visibility.Collapsed;
-
-                    if (res == null)
+                    if (username != "" && password != "")
                     {
-                        LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+                        // auto login
+                        isLogining = true;
 
-                        SaveUser();
-                    }
-                    else
-                    {
-                        LoginText.Text = "登录以启用所有功能";
-                    }
+                        app.Assist.Username = username;
+                        app.Assist.Password = password;
 
+                        LoginText.Text = "登录中……";
+                        LoginProgressBar.Visibility = Visibility.Visible;
+
+                        var res = await app.Assist.Login();
+
+                        LoginProgressBar.Visibility = Visibility.Collapsed;
+
+                        if (res == null)
+                        {
+                            LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+
+                            SaveUser();
+                        }
+                        else
+                        {
+                            LoginText.Text = "登录以启用所有功能";
+                        }
+
+                        isLogining = false;
+                    }
+                }
+                catch
+                {
+                    LoginText.Text = "登录以启用所有功能";
+                }
+                finally
+                {
                     isLogining = false;
                 }
+            }
+        }
+
+        private async void LoadTimeTables()
+        {
+            try
+            {
+                TimeTableProgressBar.Visibility = Visibility.Visible;
+
+                Windows.Storage.StorageFolder storageFolder =
+                    Windows.Storage.ApplicationData.Current.LocalFolder;
+                Windows.Storage.StorageFile file =
+                    await storageFolder.GetFileAsync("timetable.txt");
+                string text = await Windows.Storage.FileIO.ReadTextAsync(file);
+                var timeTables = JsonConvert.DeserializeObject<List<TableCourses>>(text);
+
+                foreach (var table in timeTables)
+                {
+                    Models.Add(await TimeTableHelper.GenerateOneDayTimeTableModel(table));
+                }
+            }
+            finally
+            {
+                TimeTableProgressBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -102,7 +145,7 @@ namespace Xiaoya.Views
             var user = new AVUser();
 
             var username = app.Assist.Username;
-            var password = studentInfo.Id + studentInfo.GaokaoId; 
+            var password = studentInfo.Id + studentInfo.GaokaoId;
 
             user.Username = username;
             user.Password = password;
@@ -131,62 +174,80 @@ namespace Xiaoya.Views
             {
                 await AVUser.LogInAsync(username, password).ContinueWith(t2 =>
                 {
-                    // TODO: Analytics
                 });
             });
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            if (isLogining)
-                return;
-
-            if (app.Assist.IsLogin)
+            try
             {
-                // logout
-                isLogining = true;
+                if (isLogining)
+                    return;
 
-                localSettings.Values[AppConstants.PASSWORD_SETTINGS] = "";
-                app.Assist.Logout();
-                LoginText.Text = "登录以启用所有功能";
-
-                isLogining = false;
-            }
-
-            // login
-            LoginDialog loginDialog = new LoginDialog();
-            if (await loginDialog.ShowAsync() == ContentDialogResult.Primary)
-            {
-                isLogining = true;
-                app.Assist.Username = loginDialog.Username;
-                app.Assist.Password = loginDialog.Password;
-
-                LoginText.Text = "登录中……";
-                LoginProgressBar.Visibility = Visibility.Visible;
-
-                var res = await app.Assist.Login();
-
-                LoginProgressBar.Visibility = Visibility.Collapsed;
-
-                if (res == null)
+                if (app.Assist.IsLogin)
                 {
-                    LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+                    // logout
+                    isLogining = true;
 
-                    SaveUser();
-
-                }
-                else
-                {
+                    localSettings.Values[AppConstants.PASSWORD_SETTINGS] = "";
+                    app.Assist.Logout();
                     LoginText.Text = "登录以启用所有功能";
-                    var msgDialog = new CommonDialog
-                    {
-                        Title = "提示",
-                        Message = res,
-                        CloseButtonText = "确定"
-                    };
 
-                    await msgDialog.ShowAsync();
+                    isLogining = false;
                 }
+
+                // login
+                LoginDialog loginDialog = new LoginDialog();
+                if (await loginDialog.ShowAsync() == ContentDialogResult.Primary)
+                {
+                    isLogining = true;
+                    app.Assist.Username = loginDialog.Username;
+                    app.Assist.Password = loginDialog.Password;
+
+                    LoginText.Text = "登录中……";
+                    LoginProgressBar.Visibility = Visibility.Visible;
+
+                    var res = await app.Assist.Login();
+
+                    LoginProgressBar.Visibility = Visibility.Collapsed;
+
+                    if (res == null)
+                    {
+                        LoginText.Text = "欢迎" + (await app.Assist.GetStudentDetails()).Name + "，点此注销";
+
+                        SaveUser();
+
+                    }
+                    else
+                    {
+                        LoginText.Text = "登录以启用所有功能";
+                        var msgDialog = new CommonDialog
+                        {
+                            Title = "提示",
+                            Message = res,
+                            CloseButtonText = "确定"
+                        };
+
+                        await msgDialog.ShowAsync();
+                    }
+                    isLogining = false;
+                }
+            }
+            catch (Exception err)
+            {
+                LoginText.Text = "登录以启用所有功能";
+                var msgDialog = new CommonDialog
+                {
+                    Title = "错误",
+                    Message = err.Message,
+                    CloseButtonText = "确定"
+                };
+
+                await msgDialog.ShowAsync();
+            }
+            finally
+            {
                 isLogining = false;
             }
         }

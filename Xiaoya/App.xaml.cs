@@ -6,9 +6,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.ExchangeActiveSyncProvisioning;
+using Windows.System.Profile;
 using Windows.UI;
+using Windows.UI.StartScreen;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,6 +21,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Xiaoya.Helpers;
 
 namespace Xiaoya
 {
@@ -25,6 +30,9 @@ namespace Xiaoya
     /// </summary>
     sealed partial class App : Application
     {
+        private Windows.Storage.ApplicationDataContainer localSettings =
+            Windows.Storage.ApplicationData.Current.LocalSettings;
+
         public Assistant Assist { get; private set; }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -36,6 +44,66 @@ namespace Xiaoya
             this.Suspending += OnSuspending;
             Assist = new Assistant();
             AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
+            SavePC();
+        }
+
+        /// <summary>
+        /// Analytics
+        /// </summary>
+        private async void SavePC()
+        {
+            if (localSettings.Values.ContainsKey(AppConstants.ANALYTICS_SAVED)) return;
+
+            var pc = new AVObject("DotNet");
+
+            // get the system family information
+            var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
+
+            // get the system version number
+            var deviceFamilyVersion = AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
+            var version = ulong.Parse(deviceFamilyVersion);
+            var majorVersion = (version & 0xFFFF000000000000L) >> 48;
+            var minorVersion = (version & 0x0000FFFF00000000L) >> 32;
+            var buildVersion = (version & 0x00000000FFFF0000L) >> 16;
+            var revisionVersion = (version & 0x000000000000FFFFL);
+            var systemVersion = $"{majorVersion}.{minorVersion}.{buildVersion}.{revisionVersion}";
+
+            pc["SystemVer"] = systemVersion;
+
+            // get the device manufacturer, model name, OS details etc.
+            var clientDeviceInformation = new EasClientDeviceInformation();
+
+            pc["SystemManufacturer"] = clientDeviceInformation.SystemManufacturer;
+            pc["DeviceModel"] = clientDeviceInformation.SystemProductName;
+            pc["OperatingSystem"] = clientDeviceInformation.OperatingSystem;
+            pc["SystemHardwareVersion"] = clientDeviceInformation.SystemHardwareVersion;
+            pc["systemFirmwareVersion"] = clientDeviceInformation.SystemFirmwareVersion;
+
+            await pc.SaveAsync();
+            localSettings.Values[AppConstants.ANALYTICS_SAVED] = true;
+        }
+
+        /// <summary>
+        /// Init jump list
+        /// </summary>
+        private async void InitJumpList()
+        {
+            JumpList jumpList = await JumpList.LoadCurrentAsync();
+            jumpList.SystemGroupKind = JumpListSystemGroupKind.None;
+            jumpList.Items.Clear();
+
+            var loginItem = JumpListItem.CreateWithArguments("/Login", "登录网关");
+            loginItem.Description = "登录北京师范大学上网认证网关";
+            var logoutItem = JumpListItem.CreateWithArguments("/Logout", "注销网关");
+            logoutItem.Description = "注销北京师范大学上网认证网关";
+            var forceItem = JumpListItem.CreateWithArguments("/ForceLogout", "强制离线网关");
+            forceItem.Description = "强制离线北京师范大学上网认证网关";
+
+            jumpList.Items.Add(loginItem);
+            jumpList.Items.Add(logoutItem);
+            jumpList.Items.Add(forceItem);
+
+            await jumpList.SaveAsync();
         }
 
         /// <summary>
@@ -45,6 +113,17 @@ namespace Xiaoya
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+
+            // TODO: Start Menu JumpList Task
+            switch (e.Arguments)
+            {
+                case "/Login":
+                    break;
+                case "/Logout":
+                    break;
+                case "/ForceLogout":
+                    break;
+            }
 
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(320, 200));
 
@@ -57,6 +136,7 @@ namespace Xiaoya
                 titleBar.ButtonBackgroundColor = titleBarColor;
             }
 
+            InitJumpList();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -90,6 +170,7 @@ namespace Xiaoya
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
         }
 
         /// <summary>
@@ -115,5 +196,6 @@ namespace Xiaoya
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
+
     }
 }

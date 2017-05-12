@@ -5,6 +5,7 @@
     xmlns:ctl="using:Xiaoya.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:Xiaoya.Assist.Models"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -72,6 +73,59 @@
                         <ProgressBar x:Name="LoginProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
                     </StackPanel>
                 </HyperlinkButton>
+                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                    <ProgressBar x:Name="TimeTableProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+                    <Pivot ItemsSource="{x:Bind Models}">
+                        <Pivot.HeaderTemplate>
+                            <DataTemplate x:DataType="model:OneDayTimeTableModel">
+                                <TextBlock Text="{x:Bind Name}" />
+                            </DataTemplate>
+                        </Pivot.HeaderTemplate>
+                        <Pivot.ItemTemplate>
+                            <DataTemplate x:DataType="model:OneDayTimeTableModel">
+                                <ListView HorizontalAlignment="Stretch" ItemsSource="{x:Bind Courses}">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="model:TimeTableItemModel">
+                                            <Grid Margin="8" HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition MaxWidth="80"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+
+                                                <TextBlock FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind Name}" TextWrapping="Wrap"/>
+                                                <Grid Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Start}" TextWrapping="Wrap"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="-"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{x:Bind End}" TextWrapping="Wrap"/>
+                                                </Grid>
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{x:Bind Description}" TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </DataTemplate>
+                        </Pivot.ItemTemplate>
+                    </Pivot>
+                </Grid>
             </Grid>
         </ScrollViewer>
 

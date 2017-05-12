@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xiaoya.Assist.Model
+namespace Xiaoya.Assist.Models
 {
     public class TableCourses
     {

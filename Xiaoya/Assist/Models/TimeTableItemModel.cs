@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xiaoya.Assist.Model
+namespace Xiaoya.Assist.Models
 {
     public class TimeTableItemModel
     {
@@ -34,8 +34,8 @@ namespace Xiaoya.Assist.Model
         public TimeTableItemModel(string name, string description, int day,
             int start, int end, TableCourse course)
         {
-            Name = name;
-            Description = description;
+            Name = name.Trim();
+            Description = description.Trim();
             Day = day;
             Start = start;
             End = end;

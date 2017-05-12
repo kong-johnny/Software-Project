@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Xiaoya.Controls;
 
-namespace Xiaoya.Assist.Model
+namespace Xiaoya.Assist.Models
 {
     public class TimeTableModel
     {
         public string Name { get; set; }
         public List<TimeTableWeek> Weeks { get; set; }
+        public int CurrentWeek { get; set; }
 
         public TimeTableModel(string name)
         {

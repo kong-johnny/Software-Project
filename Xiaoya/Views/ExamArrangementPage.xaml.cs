@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Xiaoya.Assist.Model;
+using Xiaoya.Assist.Models;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,14 +26,13 @@ namespace Xiaoya.Views
     /// </summary>
     public sealed partial class ExamArrangementPage : Page
     {
-
-        private App app = (App) Application.Current;
+        private App app = (App)Application.Current;
 
         private List<ExamArrangement> Arrangement;
         private List<ExamRound> Round;
 
         private string currentRound = null;
-        
+
         public ExamArrangementPage()
         {
             this.InitializeComponent();
@@ -77,14 +76,29 @@ namespace Xiaoya.Views
             {
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                Round = await app.Assist.GetExamRounds();
+                try
+                {
+                    Round = await app.Assist.GetExamRounds();
 
-                SemesterComboBox.ItemsSource = Round;
-                SemesterComboBox.SelectionChanged += SemesterComboBox_SelectionChanged;
+                    SemesterComboBox.ItemsSource = Round;
+                    SemesterComboBox.SelectionChanged += SemesterComboBox_SelectionChanged;
 
-                SemesterComboBox.SelectedItem = Round[0];
-
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
+                    SemesterComboBox.SelectedItem = Round[0];
+                }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = err.Message,
+                        CloseButtonText = "确定"
+                    };
+                    await msgDialog.ShowAsync();
+                }
+                finally
+                {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+                }
 
                 // Prepare for Sharing
                 DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
@@ -100,10 +114,26 @@ namespace Xiaoya.Views
 
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                Arrangement = await app.Assist.GetExamArrangement((ExamRound)SemesterComboBox.SelectedItem);
-                ExamArrangementListView.ItemsSource = Arrangement;
+                try
+                {
+                    Arrangement = await app.Assist.GetExamArrangement((ExamRound)SemesterComboBox.SelectedItem);
+                    ExamArrangementListView.ItemsSource = Arrangement;
+                }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = err.Message,
+                        CloseButtonText = "确定"
+                    };
 
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
+                    await msgDialog.ShowAsync();
+                }
+                finally
+                {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -113,7 +143,6 @@ namespace Xiaoya.Views
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 SemesterComboBox.SelectedItem = null;
-
 
                 var year = DateTime.Now.Year;
                 var month = DateTime.Now.Month;
@@ -126,16 +155,34 @@ namespace Xiaoya.Views
                     year--;
                 }
 
-                currentRound = year + "-" + (year + 1) + "学年" + 
-                    (term == 0 ? "秋季学期" : "春季学期") + 
+                currentRound = year + "-" + (year + 1) + "学年" +
+                    (term == 0 ? "秋季学期" : "春季学期") +
                     "考试" + dialog.n;
 
                 var round = new ExamRound("", year + "," + term + "," + dialog.n);
 
                 LoadingProgressBar.Visibility = Visibility.Visible;
 
-                Arrangement = await app.Assist.GetExamArrangement(round);
-                ExamArrangementListView.ItemsSource = Arrangement;
+                try
+                {
+                    Arrangement = await app.Assist.GetExamArrangement(round);
+                    ExamArrangementListView.ItemsSource = Arrangement;
+                }
+                catch (Exception err)
+                {
+                    var msgDialog = new CommonDialog
+                    {
+                        Title = "错误",
+                        Message = err.Message,
+                        CloseButtonText = "确定"
+                    };
+
+                    await msgDialog.ShowAsync();
+                }
+                finally
+                {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+                }
 
                 LoadingProgressBar.Visibility = Visibility.Collapsed;
             }

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Title=""
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    DefaultButton="Primary" FullSizeDesired="True">
+    DefaultButton="Primary">
 
     <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <TextBlock Text="{x:Bind Message}" 

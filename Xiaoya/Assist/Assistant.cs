@@ -9,7 +9,7 @@ using CXHttpNS;
 using AngleSharp.Parser.Html;
 using AngleSharp.Parser.Xml;
 using Xiaoya.Helpers;
-using Xiaoya.Assist.Model;
+using Xiaoya.Assist.Models;
 using Newtonsoft.Json;
 using System.Diagnostics;
 

@@ -5,7 +5,7 @@
     xmlns:ctl="using:Xiaoya.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:model="using:Xiaoya.Assist.Model"
+    xmlns:model="using:Xiaoya.Assist.Models"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

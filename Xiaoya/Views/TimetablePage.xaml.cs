@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Xiaoya.Assist.Model;
+using Xiaoya.Assist.Models;
 using Xiaoya.Helpers;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -29,8 +29,10 @@ namespace Xiaoya.Views
     /// </summary>
     public sealed partial class TimetablePage : Page
     {
-
         private App app = (App)Application.Current;
+
+        private Windows.Storage.ApplicationDataContainer localSettings =
+            Windows.Storage.ApplicationData.Current.LocalSettings;
 
         public ObservableCollection<TimeTableModel> Models = new ObservableCollection<TimeTableModel>();
 
@@ -63,31 +65,66 @@ namespace Xiaoya.Views
             }
 
             LoadTimeTables();
+            try
+            {
 
-            // Init Import
-            Semesters = await app.Assist.GetTableSemesters();
-            foreach (var semester in Semesters)
-            {
-                MenuFlyoutItem item = new MenuFlyoutItem()
+                // Init Import
+                if (app.Assist.IsLogin)
                 {
-                    Text = semester.Name
+                    Semesters = await app.Assist.GetTableSemesters();
+                    foreach (var semester in Semesters)
+                    {
+                        MenuFlyoutItem item = new MenuFlyoutItem()
+                        {
+                            Text = semester.Name
+                        };
+                        item.Click += ImportItem_Click;
+                        Menu.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    MenuFlyoutItem loginFirst = new MenuFlyoutItem()
+                    {
+                        Text = "请先登录"
+                    };
+                    loginFirst.Click += LoginFirst_Click;
+                    Menu.Items.Add(loginFirst);
+
+                }
+                Menu.Items.Add(new MenuFlyoutSeparator());
+                MenuFlyoutItem fromShareCode = new MenuFlyoutItem()
+                {
+                    Text = "自在线/安卓分享码导入"
                 };
-                item.Click += ImportItem_Click;
-                Menu.Items.Add(item);
+                fromShareCode.Click += FromShareCode_Click;
+                Menu.Items.Add(fromShareCode);
+                MenuFlyoutItem fromOfflineShareCode = new MenuFlyoutItem()
+                {
+                    Text = "自离线分享码导入"
+                };
+                fromOfflineShareCode.Click += FromOfflineShareCode_Click;
+                Menu.Items.Add(fromOfflineShareCode);
             }
-            Menu.Items.Add(new MenuFlyoutSeparator());
-            MenuFlyoutItem fromShareCode = new MenuFlyoutItem()
+            catch (Exception err)
             {
-                Text = "自在线/安卓分享码导入"
-            };
-            fromShareCode.Click += FromShareCode_Click;
-            Menu.Items.Add(fromShareCode);
-            MenuFlyoutItem fromOfflineShareCode = new MenuFlyoutItem()
+                var msgDialog = new CommonDialog
+                {
+                    Title = "错误",
+                    Message = err.Message,
+                    CloseButtonText = "确定"
+                };
+
+                await msgDialog.ShowAsync();
+            }
+        }
+
+        private void LoginFirst_Click(object sender, RoutedEventArgs e)
+        {
+            if (Frame.CanGoBack)
             {
-                Text = "自离线分享码导入"
-            };
-            fromOfflineShareCode.Click += FromOfflineShareCode_Click;
-            Menu.Items.Add(fromOfflineShareCode);
+                Frame.GoBack();
+            }
         }
 
         private async void FromOfflineShareCode_Click(object sender, RoutedEventArgs e)
@@ -102,7 +139,7 @@ namespace Xiaoya.Views
                 try
                 {
                     var tableCourses = JsonConvert.DeserializeObject<TableCourses>(dialog.Result);
-                    Models.Add(TimeTableHelper.GenerateTimeTableModel(tableCourses));
+                    Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
                     TimeTables.Add(tableCourses);
                     SaveTimeTables();
@@ -141,7 +178,7 @@ namespace Xiaoya.Views
                     await content.FetchAsync();
 
                     var tableCourses = JsonConvert.DeserializeObject<TableCourses>(Convert.ToString(content["Content"]));
-                    Models.Add(TimeTableHelper.GenerateTimeTableModel(tableCourses));
+                    Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
                     TimeTables.Add(tableCourses);
                     SaveTimeTables();
@@ -160,7 +197,7 @@ namespace Xiaoya.Views
         }
 
         private async void SaveTimeTables()
-        { 
+        {
             Windows.Storage.StorageFolder storageFolder =
                 Windows.Storage.ApplicationData.Current.LocalFolder;
             Windows.Storage.StorageFile file =
@@ -172,6 +209,8 @@ namespace Xiaoya.Views
         {
             try
             {
+                TimeTableProgressBar.Visibility = Visibility.Visible;
+
                 Windows.Storage.StorageFolder storageFolder =
                     Windows.Storage.ApplicationData.Current.LocalFolder;
                 Windows.Storage.StorageFile file =
@@ -181,53 +220,85 @@ namespace Xiaoya.Views
 
                 foreach (var table in TimeTables)
                 {
-                    Models.Add(TimeTableHelper.GenerateTimeTableModel(table));
+                    Models.Add(await TimeTableHelper.GenerateTimeTableModel(table));
                 }
             }
             catch (FileNotFoundException)
             {
                 SaveTimeTables();
             }
+            finally
+            {
+                TimeTableProgressBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private async void ImportItem_Click(object sender, RoutedEventArgs e)
         {
-            var item = (MenuFlyoutItem)e.OriginalSource;
-            var semester = Semesters.Find(o => o.Name == item.Text);
-            var tableCourses = await app.Assist.GetTableCourses(semester);
+            try
+            {
+                var item = (MenuFlyoutItem)e.OriginalSource;
+                var semester = Semesters.Find(o => o.Name == item.Text);
+                var tableCourses = await app.Assist.GetTableCourses(semester);
 
-            Models.Add(TimeTableHelper.GenerateTimeTableModel(tableCourses));
+                Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
-            TimeTables.Add(tableCourses);
-            SaveTimeTables();
+                TimeTables.Add(tableCourses);
+                SaveTimeTables();
+            }
+            catch (Exception err)
+            {
+                var msgDialog = new CommonDialog
+                {
+                    Title = "错误",
+                    Message = err.Message,
+                    CloseButtonText = "确定"
+                };
+
+                await msgDialog.ShowAsync();
+            }
         }
 
         private async void Share_Clicked(object sender, RoutedEventArgs e)
         {
-            var shareCode = JsonConvert.SerializeObject(TimeTables[TablePivot.SelectedIndex]);
-            var onlineCode = "";
+            try
+            {
+                var shareCode = JsonConvert.SerializeObject(TimeTables[TablePivot.SelectedIndex]);
+                var onlineCode = "";
 
-            var dialog = new ShareCodeDialog()
-            {
-                OfflineShareCode = shareCode
-            };
-            var query = new AVQuery<AVObject>("TimeTable").WhereEqualTo("Content", shareCode);
-            var objs = await query.FindAsync();
-            if (objs.Count() > 0)
-            {
-                onlineCode = Convert.ToString(objs.First().ObjectId);
-            }
-            else
-            {
-                var code = new AVObject("TimeTable")
+                var dialog = new ShareCodeDialog()
                 {
-                    ["Content"] = shareCode
+                    OfflineShareCode = shareCode
                 };
-                await code.SaveAsync();
-                onlineCode = code.ObjectId;
+                var query = new AVQuery<AVObject>("TimeTable").WhereEqualTo("Content", shareCode);
+                var objs = await query.FindAsync();
+                if (objs.Count() > 0)
+                {
+                    onlineCode = Convert.ToString(objs.First().ObjectId);
+                }
+                else
+                {
+                    var code = new AVObject("TimeTable")
+                    {
+                        ["Content"] = shareCode
+                    };
+                    await code.SaveAsync();
+                    onlineCode = code.ObjectId;
+                }
+                dialog.OnlineShareCode = "欢迎使用北师小鸦，课程表分享码：" + onlineCode;
+                await dialog.ShowAsync();
             }
-            dialog.OnlineShareCode = "欢迎使用北师小鸦，课程表分享码：" + onlineCode;
-            await dialog.ShowAsync();
+            catch (Exception err)
+            {
+                var msgDialog = new CommonDialog
+                {
+                    Title = "错误",
+                    Message = err.Message,
+                    CloseButtonText = "确定"
+                };
+
+                await msgDialog.ShowAsync();
+            }
         }
 
 
@@ -236,6 +307,13 @@ namespace Xiaoya.Views
             Models.RemoveAt(TablePivot.SelectedIndex);
             TimeTables.RemoveAt(TablePivot.SelectedIndex);
             SaveTimeTables();
+        }
+
+        private async void DefaultTile_Clicked(object sender, RoutedEventArgs e)
+        {
+            var tableCourses = TimeTables[TablePivot.SelectedIndex];
+            localSettings.Values[AppConstants.TILE_TIMETABLE] = JsonConvert.SerializeObject(tableCourses);
+            TileHelper.UpdateTile(await TileHelper.GetDefaultTileTimeTable());
         }
     }
 }

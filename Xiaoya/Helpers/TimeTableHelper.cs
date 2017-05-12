@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xiaoya.Assist.Model;
+using Xiaoya.Assist.Models;
 
 namespace Xiaoya.Helpers
 {
@@ -13,6 +13,20 @@ namespace Xiaoya.Helpers
     {
 
         private const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+
+        private static readonly DayOfWeek[] WEEKS =
+        {
+            DayOfWeek.Monday,
+            DayOfWeek.Tuesday,
+            DayOfWeek.Wednesday,
+            DayOfWeek.Thursday,
+            DayOfWeek.Friday,
+            DayOfWeek.Saturday,
+            DayOfWeek.Sunday
+        };
+
+        private static int m_Week = -1;
+        private static DateTime m_Today = DateTime.Now;
 
         private class Semester
         {
@@ -28,30 +42,44 @@ namespace Xiaoya.Helpers
         /// <returns></returns>
         public static async Task<int> GetCurrentWeek(string year = null, string semester = null)
         {
-            if (year == null)
+            try
             {
-                var res = await CXHttp.Connect("http://zyfw.prsc.bnu.edu.cn/jw/common/showYearTerm.action")
+                if (m_Week != -1 && m_Today.Date != DateTime.Now.Date)
+                {
+                    return m_Week;
+                }
+
+                m_Today = DateTime.Now;
+
+                if (year == null)
+                {
+                    var res = await CXHttp.Connect("http://zyfw.prsc.bnu.edu.cn/jw/common/showYearTerm.action")
+                        .Header("User-Agent", USER_AGENT)
+                        .Get();
+                    var body = await res.Content();
+
+                    Semester s = JsonConvert.DeserializeObject<Semester>(body);
+
+                    year = s.Xn;
+                    semester = s.XqM;
+                }
+
+                var res2 = await CXHttp.Connect("http://zyfw.prsc.bnu.edu.cn/public/getTeachingWeekByDate.action")
                     .Header("User-Agent", USER_AGENT)
-                    .Get();
-                var body = await res.Content();
+                    .Data("xn", year)
+                    .Data("xq_m", semester)
+                    .Data("hidOption", "getWeek")
+                    .Data("hdrq", DateTime.Now.ToString("yyyy-MM-dd"))
+                    .Post();
+                var body2 = await res2.Content();
 
-                Semester s = JsonConvert.DeserializeObject<Semester>(body);
-
-                year = s.Xn;
-                semester = s.XqM;
+                string[] weeks = body2.Split('@');
+                return m_Week = Convert.ToInt32(weeks[0]);
+            } 
+            catch
+            {
+                return 1;
             }
-
-            var res2 = await CXHttp.Connect("http://zyfw.prsc.bnu.edu.cn/public/getTeachingWeekByDate.action")
-                .Header("User-Agent", USER_AGENT)
-                .Data("xn", year)
-                .Data("xq_m", semester)
-                .Data("hidOption", "getWeek")
-                .Data("hdrq", DateTime.Now.ToString("yyyy-MM-dd"))
-                .Post();
-            var body2 = await res2.Content();
-
-            string[] weeks = body2.Split('@');
-            return Convert.ToInt32(weeks[0]);
         }
 
         /// <summary>
@@ -280,16 +308,31 @@ namespace Xiaoya.Helpers
             return week;
         }
 
-        public static TimeTableModel GenerateTimeTableModel(TableCourses tableCourses)
+        public async static Task<TimeTableModel> GenerateTimeTableModel(TableCourses tableCourses)
         {
             TimeTableModel model = new TimeTableModel(tableCourses.Name);
-            int weekCount = 0;
-            var week1 = ParseTableCourses(tableCourses, 1, out weekCount);
+            var week1 = ParseTableCourses(tableCourses, 1, out int weekCount);
             model.Weeks.Add(week1);
             for (int i = 2; i <= weekCount; ++i)
             {
                 model.Weeks.Add(ParseTableCourses(tableCourses, i, out weekCount));
             }
+            model.CurrentWeek = (await GetCurrentWeek()) - 1;
+            return model;
+        }
+
+        public async static Task<OneDayTimeTableModel> GenerateOneDayTimeTableModel(TableCourses tableCourses)
+        {
+            OneDayTimeTableModel model = new OneDayTimeTableModel(tableCourses.Name);
+            var week = ParseTableCourses(tableCourses, (await GetCurrentWeek()), out int weekCount);
+            foreach (var item in week.Items)
+            {
+                if (WEEKS[item.Day - 1] == DateTime.Now.DayOfWeek)
+                {
+                    model.Courses.Add(item);
+                }
+            }
+            model.Courses.Sort((a, b) => a.Start - b.Start);
             return model;
         }
     }

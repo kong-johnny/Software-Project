@@ -8,7 +8,11 @@ namespace Xiaoya.Helpers
 {
     public static class AppConstants
     {
+        public const string ANALYTICS_SAVED = "app.analytics_saved";
+
         public const string USERNAME_SETTINGS = "login.username";
         public const string PASSWORD_SETTINGS = "login.password";
+
+        public const string TILE_TIMETABLE = "tile.timetable";
     }
 }

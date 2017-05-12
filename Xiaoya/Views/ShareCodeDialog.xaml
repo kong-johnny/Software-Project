@@ -15,17 +15,17 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="在线分享码"/>
+        <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Text="在线分享码"/>
         <TextBox Grid.Row="1" Grid.Column="0" Text="{x:Bind OnlineShareCode}" TextWrapping="Wrap"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="离线分享码"/>
+        <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Text="离线分享码"/>
         <TextBox Grid.Row="3" Grid.Column="0" Text="{x:Bind OfflineShareCode}" TextWrapping="Wrap"/>
     </Grid>
 </ContentDialog>
