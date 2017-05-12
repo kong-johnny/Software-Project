@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -310,6 +311,7 @@ namespace Xiaoya.Helpers
 
         public async static Task<TimeTableModel> GenerateTimeTableModel(TableCourses tableCourses)
         {
+            Debug.WriteLine("Started: Generate TimeTableModel");
             TimeTableModel model = new TimeTableModel(tableCourses.Name);
             var week1 = ParseTableCourses(tableCourses, 1, out int weekCount);
             model.Weeks.Add(week1);
@@ -318,6 +320,7 @@ namespace Xiaoya.Helpers
                 model.Weeks.Add(ParseTableCourses(tableCourses, i, out weekCount));
             }
             model.CurrentWeek = (await GetCurrentWeek()) - 1;
+            Debug.WriteLine("Finished: Generate TimeTableModel");
             return model;
         }
 
@@ -325,6 +328,7 @@ namespace Xiaoya.Helpers
         {
             OneDayTimeTableModel model = new OneDayTimeTableModel(tableCourses.Name);
             var week = ParseTableCourses(tableCourses, (await GetCurrentWeek()), out int weekCount);
+            Debug.WriteLine("Started: Generate One Day TimeTableModel");
             foreach (var item in week.Items)
             {
                 if (WEEKS[item.Day - 1] == DateTime.Now.DayOfWeek)
@@ -333,6 +337,7 @@ namespace Xiaoya.Helpers
                 }
             }
             model.Courses.Sort((a, b) => a.Start - b.Start);
+            Debug.WriteLine("Finished: Generate One Day TimeTableModel");
             return model;
         }
     }

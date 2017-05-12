@@ -61,7 +61,7 @@
 
         <ctl:PageHeader x:Name="pageTitleContainer" Visibility="Collapsed">
             <ctl:PageHeader.HeaderContent>
-                <TextBlock x:Name="AltHeaderTextBlock" Text="Commandbar Page" Style="{StaticResource PageTitleTextBlockStyle}"/>
+                <TextBlock x:Name="AltHeaderTextBlock" Text="考试安排" Style="{StaticResource PageTitleTextBlockStyle}"/>
             </ctl:PageHeader.HeaderContent>
         </ctl:PageHeader>
 

@@ -259,3 +259,16 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/XiaoyaUnitTest
+/XiaoyaUnitTest
+/XiaoyaUnitTest/XiaoyaUnitTest.csproj
+/XiaoyaUnitTest/UnitTestApp.xaml.cs
+/XiaoyaUnitTest/UnitTestApp.xaml
+/XiaoyaUnitTest/Properties/UnitTestApp.rd.xml
+/XiaoyaUnitTest/Properties/AssemblyInfo.cs
+/XiaoyaUnitTest/Properties
+/XiaoyaUnitTest/Package.appxmanifest
+/XiaoyaUnitTest/LibrarySeatUnitTest.cs
+/XiaoyaUnitTest/Assets
+/XiaoyaUnitTest
+/XiaoyaUnitTest/Properties/AssemblyInfo.cs

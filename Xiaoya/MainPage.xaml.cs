@@ -66,7 +66,7 @@ namespace Xiaoya
                 {
                     Symbol = (char) Symbol.Edit,
                     Label = "自习室",
-                    DestPage = null
+                    DestPage = typeof(ClassroomPage)
                 },
                 new NavMenuItem()
                 {

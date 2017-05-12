@@ -107,10 +107,13 @@ namespace Xiaoya.Views
                     SemesterComboBox.ItemsSource = Round;
                     SemesterComboBox.SelectionChanged += SemesterComboBox_SelectionChanged;
 
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+
                     SemesterComboBox.SelectedItem = Round[0];
                 }
                 catch (Exception err)
                 {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
                     var msgDialog = new CommonDialog
                     {
                         Title = "错误",
@@ -119,10 +122,6 @@ namespace Xiaoya.Views
                     };
 
                     await msgDialog.ShowAsync();
-                }
-                finally
-                {
-                    LoadingProgressBar.Visibility = Visibility.Collapsed;
                 }
 
                 // Prepare for Sharing
@@ -342,6 +341,8 @@ namespace Xiaoya.Views
         {
             try
             {
+                LoadingProgressBar.Visibility = Visibility.Visible;
+
                 // Scores
                 var scores = await app.Assist.GetExamScores(true);
                 // Content of GPA Report
@@ -469,12 +470,14 @@ namespace Xiaoya.Views
 
                     report += "\n --- \n\n";
                 }
+                LoadingProgressBar.Visibility = Visibility.Collapsed;
 
                 GPADialog dialog = new GPADialog(report);
                 await dialog.ShowAsync();
             }
             catch (Exception err)
             {
+                LoadingProgressBar.Visibility = Visibility.Collapsed;
                 var msgDialog = new CommonDialog
                 {
                     Title = "错误",

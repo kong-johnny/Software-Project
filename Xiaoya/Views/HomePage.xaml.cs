@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -114,23 +115,50 @@ namespace Xiaoya.Views
             }
         }
 
+        private async void SaveTimeTables()
+        {
+            Windows.Storage.StorageFolder storageFolder =
+                Windows.Storage.ApplicationData.Current.LocalFolder;
+            Windows.Storage.StorageFile file =
+                await storageFolder.CreateFileAsync("timetable.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(app.TimeTables));
+        }
+
         private async void LoadTimeTables()
         {
             try
             {
                 TimeTableProgressBar.Visibility = Visibility.Visible;
 
-                Windows.Storage.StorageFolder storageFolder =
-                    Windows.Storage.ApplicationData.Current.LocalFolder;
-                Windows.Storage.StorageFile file =
-                    await storageFolder.GetFileAsync("timetable.txt");
-                string text = await Windows.Storage.FileIO.ReadTextAsync(file);
-                var timeTables = JsonConvert.DeserializeObject<List<TableCourses>>(text);
-
-                foreach (var table in timeTables)
+                if (app.TimeTables == null)
                 {
-                    Models.Add(await TimeTableHelper.GenerateOneDayTimeTableModel(table));
+                    Debug.WriteLine("Started: Load Timetable");
+                    Windows.Storage.StorageFolder storageFolder =
+                        Windows.Storage.ApplicationData.Current.LocalFolder;
+                    Windows.Storage.StorageFile file =
+                        await storageFolder.GetFileAsync("timetable.txt");
+                    string text = await Windows.Storage.FileIO.ReadTextAsync(file);
+                    app.TimeTables = JsonConvert.DeserializeObject<List<TableCourses>>(text);
+                    Debug.WriteLine("Finished: Load Timetable");
                 }
+
+                if (app.HomePage_Models == null)
+                {
+                    foreach (var table in app.TimeTables)
+                    {
+                        Models.Add(await TimeTableHelper.GenerateOneDayTimeTableModel(table));
+                    }
+                    app.HomePage_Models = Models.ToList();
+                }
+                else
+                {
+                    foreach (var item in app.HomePage_Models) Models.Add(item);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                app.TimeTables = new List<TableCourses>();
+                SaveTimeTables();
             }
             finally
             {

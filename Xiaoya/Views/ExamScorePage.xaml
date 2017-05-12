@@ -66,7 +66,7 @@
 
         <ctl:PageHeader x:Name="pageTitleContainer" Visibility="Collapsed">
             <ctl:PageHeader.HeaderContent>
-                <TextBlock x:Name="AltHeaderTextBlock" Text="Commandbar Page" Style="{StaticResource PageTitleTextBlockStyle}"/>
+                <TextBlock x:Name="AltHeaderTextBlock" Text="考试成绩" Style="{StaticResource PageTitleTextBlockStyle}"/>
             </ctl:PageHeader.HeaderContent>
         </ctl:PageHeader>
 
@@ -88,6 +88,11 @@
             </ComboBox>
             <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="LoadingProgressBar" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
             <ListView x:Name="ExamScoreListView" Grid.Row="2" Grid.Column="0" Margin="0, 12" ItemClick="ExamScoreListView_ItemClick" IsItemClickEnabled="True">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="model:ExamScore" >
                         <Grid Margin="4">

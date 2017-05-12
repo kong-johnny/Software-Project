@@ -1,6 +1,7 @@
 ﻿using LeanCloud;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -21,6 +22,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Xiaoya.Assist.Models;
 using Xiaoya.Helpers;
 
 namespace Xiaoya
@@ -34,6 +36,9 @@ namespace Xiaoya
             Windows.Storage.ApplicationData.Current.LocalSettings;
 
         public Assistant Assist { get; private set; }
+        public List<TableCourses> TimeTables = null;
+        public List<TimeTableModel> TimeTablePage_Models = null;
+        public List<OneDayTimeTableModel> HomePage_Models = null;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

@@ -83,10 +83,14 @@ namespace Xiaoya.Views
                     SemesterComboBox.ItemsSource = Round;
                     SemesterComboBox.SelectionChanged += SemesterComboBox_SelectionChanged;
 
-                    SemesterComboBox.SelectedItem = Round[0];
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
+
+                    if (Round.Count() > 0)
+                        SemesterComboBox.SelectedItem = Round[0];
                 }
                 catch (Exception err)
                 {
+                    LoadingProgressBar.Visibility = Visibility.Collapsed;
                     var msgDialog = new CommonDialog
                     {
                         Title = "错误",
@@ -94,10 +98,6 @@ namespace Xiaoya.Views
                         CloseButtonText = "确定"
                     };
                     await msgDialog.ShowAsync();
-                }
-                finally
-                {
-                    LoadingProgressBar.Visibility = Visibility.Collapsed;
                 }
 
                 // Prepare for Sharing

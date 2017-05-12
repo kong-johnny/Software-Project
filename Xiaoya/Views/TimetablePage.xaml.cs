@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -38,7 +39,6 @@ namespace Xiaoya.Views
 
         private MenuFlyout Menu = new MenuFlyout();
         private List<TableSemester> Semesters;
-        private List<TableCourses> TimeTables = new List<TableCourses>();
 
         public TimetablePage()
         {
@@ -67,7 +67,6 @@ namespace Xiaoya.Views
             LoadTimeTables();
             try
             {
-
                 // Init Import
                 if (app.Assist.IsLogin)
                 {
@@ -141,7 +140,7 @@ namespace Xiaoya.Views
                     var tableCourses = JsonConvert.DeserializeObject<TableCourses>(dialog.Result);
                     Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
-                    TimeTables.Add(tableCourses);
+                    app.TimeTables.Add(tableCourses);
                     SaveTimeTables();
                 }
                 catch (Exception err)
@@ -180,7 +179,7 @@ namespace Xiaoya.Views
                     var tableCourses = JsonConvert.DeserializeObject<TableCourses>(Convert.ToString(content["Content"]));
                     Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
-                    TimeTables.Add(tableCourses);
+                    app.TimeTables.Add(tableCourses);
                     SaveTimeTables();
                 }
                 catch (Exception err)
@@ -202,7 +201,7 @@ namespace Xiaoya.Views
                 Windows.Storage.ApplicationData.Current.LocalFolder;
             Windows.Storage.StorageFile file =
                 await storageFolder.CreateFileAsync("timetable.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-            await Windows.Storage.FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(TimeTables));
+            await Windows.Storage.FileIO.WriteTextAsync(file, JsonConvert.SerializeObject(app.TimeTables));
         }
 
         private async void LoadTimeTables()
@@ -211,20 +210,34 @@ namespace Xiaoya.Views
             {
                 TimeTableProgressBar.Visibility = Visibility.Visible;
 
-                Windows.Storage.StorageFolder storageFolder =
-                    Windows.Storage.ApplicationData.Current.LocalFolder;
-                Windows.Storage.StorageFile file =
-                    await storageFolder.GetFileAsync("timetable.txt");
-                string text = await Windows.Storage.FileIO.ReadTextAsync(file);
-                TimeTables = JsonConvert.DeserializeObject<List<TableCourses>>(text);
-
-                foreach (var table in TimeTables)
+                if (app.TimeTables == null)
                 {
-                    Models.Add(await TimeTableHelper.GenerateTimeTableModel(table));
+                    Debug.WriteLine("Started: Load Timetable");
+                    Windows.Storage.StorageFolder storageFolder =
+                        Windows.Storage.ApplicationData.Current.LocalFolder;
+                    Windows.Storage.StorageFile file =
+                        await storageFolder.GetFileAsync("timetable.txt");
+                    string text = await Windows.Storage.FileIO.ReadTextAsync(file);
+                    app.TimeTables = JsonConvert.DeserializeObject<List<TableCourses>>(text);
+                    Debug.WriteLine("Finished: Load Timetable");
+                }
+
+                if (app.TimeTablePage_Models == null)
+                {
+                    foreach (var table in app.TimeTables)
+                    {
+                        Models.Add(await TimeTableHelper.GenerateTimeTableModel(table));
+                    }
+                    app.TimeTablePage_Models = Models.ToList();
+                }
+                else
+                {
+                    foreach (var item in app.TimeTablePage_Models) Models.Add(item);
                 }
             }
             catch (FileNotFoundException)
             {
+                app.TimeTables = new List<TableCourses>();
                 SaveTimeTables();
             }
             finally
@@ -243,7 +256,7 @@ namespace Xiaoya.Views
 
                 Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
-                TimeTables.Add(tableCourses);
+                app.TimeTables.Add(tableCourses);
                 SaveTimeTables();
             }
             catch (Exception err)
@@ -263,7 +276,9 @@ namespace Xiaoya.Views
         {
             try
             {
-                var shareCode = JsonConvert.SerializeObject(TimeTables[TablePivot.SelectedIndex]);
+                TimeTableProgressBar.Visibility = Visibility.Visible;
+
+                var shareCode = JsonConvert.SerializeObject(app.TimeTables[TablePivot.SelectedIndex]);
                 var onlineCode = "";
 
                 var dialog = new ShareCodeDialog()
@@ -286,10 +301,14 @@ namespace Xiaoya.Views
                     onlineCode = code.ObjectId;
                 }
                 dialog.OnlineShareCode = "欢迎使用北师小鸦，课程表分享码：" + onlineCode;
+
+                TimeTableProgressBar.Visibility = Visibility.Collapsed;
+
                 await dialog.ShowAsync();
             }
             catch (Exception err)
             {
+                TimeTableProgressBar.Visibility = Visibility.Collapsed;
                 var msgDialog = new CommonDialog
                 {
                     Title = "错误",
@@ -305,15 +324,25 @@ namespace Xiaoya.Views
         private void Delete_Clicked(object sender, RoutedEventArgs e)
         {
             Models.RemoveAt(TablePivot.SelectedIndex);
-            TimeTables.RemoveAt(TablePivot.SelectedIndex);
+            app.TimeTables.RemoveAt(TablePivot.SelectedIndex);
             SaveTimeTables();
         }
 
         private async void DefaultTile_Clicked(object sender, RoutedEventArgs e)
         {
-            var tableCourses = TimeTables[TablePivot.SelectedIndex];
+            var tableCourses = app.TimeTables[TablePivot.SelectedIndex];
             localSettings.Values[AppConstants.TILE_TIMETABLE] = JsonConvert.SerializeObject(tableCourses);
             TileHelper.UpdateTile(await TileHelper.GetDefaultTileTimeTable());
+
+            var msgDialog = new CommonDialog
+            {
+                Title = "提示",
+                Message = "设置成功！",
+                CloseButtonText = "确定"
+            };
+
+            await msgDialog.ShowAsync();
         }
+
     }
 }

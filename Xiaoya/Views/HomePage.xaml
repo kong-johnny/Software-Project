@@ -108,6 +108,7 @@
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
+                                                        <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition/>
@@ -116,6 +117,7 @@
                                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Start}" TextWrapping="Wrap"/>
                                                     <TextBlock Grid.Row="0" Grid.Column="1" Text="-"/>
                                                     <TextBlock Grid.Row="0" Grid.Column="2" Text="{x:Bind End}" TextWrapping="Wrap"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="节"/>
                                                 </Grid>
                                                 <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{x:Bind Description}" TextWrapping="Wrap"/>
                                             </Grid>
