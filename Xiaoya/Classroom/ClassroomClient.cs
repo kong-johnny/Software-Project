@@ -31,7 +31,7 @@ namespace Xiaoya.Classroom
             return buildings;
         }
 
-        public static async Task<List<Room>> GetRoom(string buildingId)
+        public static async Task<List<Room>> GetRooms(string buildingId)
         {
             var room = new List<Room>();
 

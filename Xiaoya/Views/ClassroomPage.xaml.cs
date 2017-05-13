@@ -98,7 +98,7 @@ namespace Xiaoya.Views
                 RoomModels.Clear();
                 var item = (Building)BuildingComboBox.SelectedItem;
                 await Task.Delay(500);
-                var rooms = await ClassroomClient.GetRoom(item.Id);
+                var rooms = await ClassroomClient.GetRooms(item.Id);
                 foreach (var room in rooms) RoomModels.Add(room);
                 LoadingProgressBar.Visibility = Visibility.Collapsed;
             }

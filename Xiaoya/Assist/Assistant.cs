@@ -348,7 +348,7 @@ namespace Xiaoya
             {
                 await Task.Run(new Action(() =>
                 {
-                     while (IsLogining || !IsLogin) ;
+                    while (IsLogining || !IsLogin) ;
                 }));
             }
             if (IsLogin) return null;
@@ -429,7 +429,7 @@ namespace Xiaoya
                 var list = JsonConvert.DeserializeObject<List<ExamRound>>(body);
                 return list.OrderByDescending(o => o.Name).ToList();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new List<ExamRound>
                 {
@@ -524,7 +524,7 @@ namespace Xiaoya
                 }
 
                 return scores.OrderBy(o => o.Score).ToList();
-            } 
+            }
             catch (Exception e)
             {
                 return new List<ExamScore>
@@ -537,11 +537,11 @@ namespace Xiaoya
         /// <summary>
         /// Get exam scores of all semesters
         /// </summary>
-        /// <param name="isOnlyMajor">Specific whether scores of minor profession will be returned.</param>
+        /// <param name="showMajor">Specific whether scores of minor profession will be returned.</param>
         /// <returns>A list of <see cref="ExamScore"/></returns>
-        public async Task<List<ExamScore>> GetExamScores(bool isOnlyMajor)
+        public async Task<List<ExamScore>> GetExamScores(bool showMajor)
         {
-            return await GetExamScores(0, 0, isOnlyMajor);
+            return await GetExamScores(0, 0, showMajor);
         }
 
         /// <summary>
@@ -718,7 +718,7 @@ namespace Xiaoya
 
                 return new TableCourses((await GetStudentDetails()).Name + " (" + semester.Code + ")", courses);
             }
-            catch 
+            catch
             {
                 return null;
             }

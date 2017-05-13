@@ -11,8 +11,8 @@ namespace Xiaoya.Library.Seat
 {
     public class SeatClient
     {
-        public string Username { get; private set; }
-        public string Password { get; private set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
 
         private CXSession m_Session = new CXSession();
 
@@ -30,6 +30,8 @@ namespace Xiaoya.Library.Seat
         private const string URL_END_TIME = "http://219.224.23.151/rest/v2/endTimesForSeat/{0}/{1}/{2}?token={3}";
         private const string URL_ORDER = "http://219.224.23.151/rest/v2/freeBook";
         
+        public SeatClient() { }
+
         public SeatClient(string username, string password)
         {
             Username = username;
