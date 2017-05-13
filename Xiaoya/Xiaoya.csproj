@@ -126,10 +126,20 @@
     <Compile Include="Helpers\PC.cs" />
     <Compile Include="Helpers\TileHelper.cs" />
     <Compile Include="Helpers\TimeTableHelper.cs" />
-    <Compile Include="Library\Seat\Models\Reservations.cs" />
-    <Compile Include="Library\Seat\Models\LoginToken.cs" />
+    <Compile Include="Library\Seat\BuildingInfoConverter.cs" />
+    <Compile Include="Library\Seat\Models\BuildingRoomInfo.cs" />
+    <Compile Include="Library\Seat\Models\Building.cs" />
     <Compile Include="Library\Seat\Models\Reservation.cs" />
+    <Compile Include="Library\Seat\Models\ReservationHistories.cs" />
+    <Compile Include="Library\Seat\Models\LoginToken.cs" />
+    <Compile Include="Library\Seat\Models\ReservationHistory.cs" />
     <Compile Include="Library\Seat\Models\Result.cs" />
+    <Compile Include="Library\Seat\Models\Room.cs" />
+    <Compile Include="Library\Seat\Models\SeatLayout.cs" />
+    <Compile Include="Library\Seat\Models\SeatLayoutItem.cs" />
+    <Compile Include="Library\Seat\Models\EndTimes.cs" />
+    <Compile Include="Library\Seat\Models\StartTimes.cs" />
+    <Compile Include="Library\Seat\Models\Time.cs" />
     <Compile Include="Library\Seat\SeatClient.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

@@ -10,28 +10,53 @@ namespace Xiaoya.Library.Seat.Models
     public class Reservation
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; private set; }
-        [JsonProperty(PropertyName = "date")]
-        public string Date { get; private set; }
+        public int Id { get; private set; }
+
+        [JsonProperty(PropertyName = "receipt")]
+        public string Receipt { get; private set; }
+
+        [JsonProperty(PropertyName = "onDate")]
+        public string OnDate { get; private set; }
+
+        [JsonProperty(PropertyName = "seatId")]
+        public int? SeatId { get; private set; }
+
+        [JsonProperty(PropertyName = "status")]
+        public string Status { get; private set; }
+
+        [JsonProperty(PropertyName = "location")]
+        public string Location { get; private set; }
+
         [JsonProperty(PropertyName = "begin")]
         public string Begin { get; private set; }
+
         [JsonProperty(PropertyName = "end")]
         public string End { get; private set; }
-        [JsonProperty(PropertyName = "loc")]
-        public string Location { get; private set; }
-        [JsonProperty(PropertyName = "stat")]
-        public string State { get; private set; }
 
-        [JsonConstructor]
-        public Reservation(string id, string date, string begin, string end, 
-            string location, string state)
+        [JsonProperty(PropertyName = "userEnded")]
+        public bool? UserEnded { get; private set; }
+
+        [JsonProperty(PropertyName = "message")]
+        public string Message { get; private set; }
+
+        [JsonProperty(PropertyName = "checkedIn")]
+        public string CheckedIn { get; private set; }
+
+        public Reservation(int id, string receipt, string onDate, int? seatId,
+            string status, string location ,string begin, string end, bool? userEnded,
+            string message, string checkedIn)
         {
             Id = id;
-            Date = date;
+            Receipt = receipt;
+            OnDate = onDate;
+            SeatId = seatId;
+            Status = status;
+            Location = location;
             Begin = begin;
             End = end;
-            Location = location;
-            State = state;
+            UserEnded = userEnded;
+            Message = message;
+            CheckedIn = checkedIn;
         }
     }
 }

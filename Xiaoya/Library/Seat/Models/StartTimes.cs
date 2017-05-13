@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Xiaoya.Library.Seat.Models
 {
-    public class Reservations
+    public class StartTimes
     {
-        [JsonProperty(PropertyName = "reservations")]
-        public List<Reservation> Items { get; private set; }
+        [JsonProperty(PropertyName = "startTimes")]
+        public List<Time> Items { get; private set; }
 
         [JsonConstructor]
-        public Reservations(List<Reservation> items)
+        public StartTimes(List<Time> items)
         {
             Items = items;
         }
