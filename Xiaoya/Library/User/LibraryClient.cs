@@ -36,6 +36,7 @@ namespace Xiaoya.Library.User
 
         public async Task<string> Login()
         {
+            m_Key = "";
             var res = await m_Session.Req
                 .Url(URL_LOGIN_GET)
                 .ClearCookies()

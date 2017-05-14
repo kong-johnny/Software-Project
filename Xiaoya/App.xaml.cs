@@ -24,6 +24,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Xiaoya.Assist.Models;
 using Xiaoya.Helpers;
+using Xiaoya.Library.Seat;
+using Xiaoya.Library.User;
 
 namespace Xiaoya
 {
@@ -36,6 +38,8 @@ namespace Xiaoya
             Windows.Storage.ApplicationData.Current.LocalSettings;
 
         public Assistant Assist { get; private set; }
+        public LibraryClient LibraryClient { get; private set; }
+        public SeatClient SeatClient { get; private set; }
         public List<TableCourses> TimeTables = null;
         public List<TimeTableModel> TimeTablePage_Models = null;
         public List<OneDayTimeTableModel> HomePage_Models = null;
@@ -48,6 +52,8 @@ namespace Xiaoya
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             Assist = new Assistant();
+            LibraryClient = new LibraryClient();
+            SeatClient = new SeatClient();
             AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
             SavePC();
         }

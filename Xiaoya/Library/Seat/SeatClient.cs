@@ -29,6 +29,9 @@ namespace Xiaoya.Library.Seat
         private const string URL_START_TIME = "http://219.224.23.151/rest/v2/startTimesForSeat/{0}/{1}?token={2}";
         private const string URL_END_TIME = "http://219.224.23.151/rest/v2/endTimesForSeat/{0}/{1}/{2}?token={3}";
         private const string URL_ORDER = "http://219.224.23.151/rest/v2/freeBook";
+        private const string URL_CHECKIN = "http://219.224.23.151/rest/v2/checkIn?token={0}";
+        private const string URL_LEAVE = "http://219.224.23.151/rest/v2/leave?token={0}";
+        private const string URL_STOP = "http://219.224.23.151/rest/v2/stop?token={0}";
         
         public SeatClient() { }
 
@@ -42,6 +45,8 @@ namespace Xiaoya.Library.Seat
         {
             var res = await m_Session.Req
                 .Url(String.Format(URL_LOGIN, Username, Password))
+                .ClearCookies()
+                .CacheReadBehavior(Windows.Web.Http.Filters.HttpCacheReadBehavior.NoCache)
                 .Get();
 
             var body = await res.Content();
@@ -96,6 +101,8 @@ namespace Xiaoya.Library.Seat
         {
             var res = await m_Session.Req
                 .Url(String.Format(URL_CURRENT_RESERVATION, m_Token))
+                .CacheWriteBehavior(Windows.Web.Http.Filters.HttpCacheWriteBehavior.NoCache)
+                .CacheReadBehavior(Windows.Web.Http.Filters.HttpCacheReadBehavior.NoCache)
                 .Get();
 
             var body = await res.Content();
@@ -184,6 +191,45 @@ namespace Xiaoya.Library.Seat
             var body = await res.Content();
 
             var result = JsonConvert.DeserializeObject<Result<Reservation>>(body);
+
+            return result;
+        }
+
+        public async Task<Result<string>> CheckIn()
+        {
+            var res = await m_Session.Req
+                .Url(String.Format(URL_LEAVE, m_Token))
+                .Get();
+
+            var body = await res.Content();
+
+            var result = JsonConvert.DeserializeObject<Result<string>>(body);
+
+            return result;
+        }
+
+        public async Task<Result<string>> Leave()
+        {
+            var res = await m_Session.Req
+                .Url(String.Format(URL_CHECKIN, m_Token))
+                .Get();
+
+            var body = await res.Content();
+
+            var result = JsonConvert.DeserializeObject<Result<string>>(body);
+
+            return result;
+        }
+
+        public async Task<Result<string>> Stop()
+        {
+            var res = await m_Session.Req
+                .Url(String.Format(URL_STOP, m_Token))
+                .Get();
+
+            var body = await res.Content();
+
+            var result = JsonConvert.DeserializeObject<Result<string>>(body);
 
             return result;
         }

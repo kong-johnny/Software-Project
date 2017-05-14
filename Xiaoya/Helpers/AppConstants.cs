@@ -14,5 +14,8 @@ namespace Xiaoya.Helpers
         public const string PASSWORD_SETTINGS = "login.password";
 
         public const string TILE_TIMETABLE = "tile.timetable";
+
+        public const string LIBRARY_USERNAME_SETTINGS = "library.username";
+        public const string LIBRARY_PASSWORD_SETTINGS = "library.password";
     }
 }

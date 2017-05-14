@@ -88,6 +88,16 @@
             </ComboBox>
             <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="LoadingProgressBar" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
             <ListView x:Name="ExamScoreListView" Grid.Row="2" Grid.Column="0" Margin="0, 12" ItemClick="ExamScoreListView_ItemClick" IsItemClickEnabled="True">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                 FromVerticalOffset="0" 
+                                 FromHorizontalOffset="200"/>
+                        <AddDeleteThemeTransition/>
+                        <NavigationThemeTransition/>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -111,7 +121,7 @@
                             <TextBlock Text="{x:Bind ComplexName}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="18" TextWrapping="Wrap" />
                             <Grid Margin="4, 0" Grid.Row="1" Grid.Column="1">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -122,7 +132,7 @@
                             </Grid>
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="1" Grid.Column="2">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -133,7 +143,7 @@
                             </Grid>
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="1">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="50"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -144,7 +154,7 @@
                             </Grid>
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="2">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="50"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -156,7 +166,7 @@
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                
+
             </ListView>
         </Grid>
 

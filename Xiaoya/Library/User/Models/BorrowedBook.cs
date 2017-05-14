@@ -26,6 +26,26 @@ namespace Xiaoya.Library.User.Models
             Building = building;
             Position = position;
             Description = description;
+
+            if(Position.Length > 0)
+            {
+                if (Position[0] <= 'H')
+                {
+                    Position += " 借阅四层";
+                }
+                else
+                {
+                    Position += " 借阅五层";
+                }
+                if (Position[0] <= 'I')
+                {
+                    Position += " 阅览六层";
+                }
+                else
+                {
+                    Position += " 阅览七层";
+                }
+            }
         }
     }
 }

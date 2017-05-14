@@ -20,6 +20,26 @@ namespace Xiaoya.Library.Seat.Models
 
         [JsonProperty(PropertyName = "status")]
         public string Status { get; private set; }
+
+        public string ShowStatus
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case "AWAY":
+                        return "暂离";
+                    case "IN_USE":
+                        return "使用中";
+                    case "FREE":
+                        return "空闲";
+                    case "BOOKED":
+                        return "已预订";
+                    default:
+                        return Status;
+                }
+            }
+        }
         
         [JsonProperty(PropertyName = "window")]
         public bool? Window { get; private set; }

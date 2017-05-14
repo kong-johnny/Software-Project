@@ -60,7 +60,7 @@ namespace Xiaoya
                 {
                     Symbol = (char) Symbol.Library,
                     Label = "图书馆",
-                    DestPage = null
+                    DestPage = typeof(LibraryPage)
                 },
                 new NavMenuItem()
                 {

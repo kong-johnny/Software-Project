@@ -149,6 +149,12 @@
     <Compile Include="Controls\NavMenuItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\TimeTableBackgroundTask.cs" />
+    <Compile Include="Views\ChooseSeatTimeDialog.xaml.cs">
+      <DependentUpon>ChooseSeatTimeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LibraryPage.xaml.cs">
+      <DependentUpon>LibraryPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ClassroomPage.xaml.cs">
       <DependentUpon>ClassroomPage.xaml</DependentUpon>
     </Compile>
@@ -169,6 +175,9 @@
     </Compile>
     <Compile Include="Views\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoginLibraryDialog.xaml.cs">
+      <DependentUpon>LoginLibraryDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShareCodeDialog.xaml.cs">
       <DependentUpon>ShareCodeDialog.xaml</DependentUpon>
@@ -255,6 +264,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ChooseSeatTimeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LibraryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ClassroomPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -282,6 +299,10 @@
     <Page Include="Views\InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LoginLibraryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ShareCodeDialog.xaml">
       <SubType>Designer</SubType>

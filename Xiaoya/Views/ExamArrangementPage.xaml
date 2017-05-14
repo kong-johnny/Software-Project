@@ -83,6 +83,16 @@
             </ComboBox>
             <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="LoadingProgressBar" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
             <ListView x:Name="ExamArrangementListView" Grid.Row="2" Grid.Column="0" Margin="0, 12" ItemClick="ExamArrangementListView_ItemClick" IsItemClickEnabled="True">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                 FromVerticalOffset="0" 
+                                 FromHorizontalOffset="200"/>
+                        <AddDeleteThemeTransition/>
+                        <NavigationThemeTransition/>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -108,7 +118,7 @@
                             <TextBlock Text="{x:Bind Location}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" />
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="1" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="50"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -119,7 +129,7 @@
                             </Grid>
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -130,7 +140,7 @@
                             </Grid>
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MaxWidth="50"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
