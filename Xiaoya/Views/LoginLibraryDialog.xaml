@@ -10,7 +10,7 @@
     PrimaryButtonText="登录"
     SecondaryButtonText="取消"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" DefaultButton="Primary">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
     <StackPanel>
         <TextBox x:Name="UsernameTextBox" PlaceholderText="用户名（默认为学号）" InputScope="Number" Header="用户名"/>

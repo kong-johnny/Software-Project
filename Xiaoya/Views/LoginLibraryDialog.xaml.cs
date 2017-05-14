@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -35,6 +36,11 @@ namespace Xiaoya.Views
             UsernameTextBox.Text = Convert.ToString(localSettings.Values[AppConstants.LIBRARY_USERNAME_SETTINGS]);
             PasswordTextBox.Password = Convert.ToString(localSettings.Values[AppConstants.LIBRARY_PASSWORD_SETTINGS]);
             RememberCheck.IsChecked = true;
+
+            if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "DefaultButton"))
+            {
+                this.DefaultButton = ContentDialogButton.Primary;
+            }
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

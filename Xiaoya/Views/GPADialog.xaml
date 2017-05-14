@@ -10,7 +10,7 @@
     PrimaryButtonText="确定"
     SecondaryButtonText="复制"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" DefaultButton="Primary" FullSizeDesired="True">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" FullSizeDesired="True">
 
     <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <TextBlock Text="{x:Bind Report}" 

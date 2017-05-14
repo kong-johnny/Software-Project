@@ -10,7 +10,7 @@
     PrimaryButtonText="确定"
     SecondaryButtonText="取消"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" DefaultButton="Primary">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
     <StackPanel>
         <TextBlock Margin="8" Text="请输入查看的考试类别，取值介于1-4。&#x0a;一般对应为随堂考试、期末考试和毕业清考等。&#x0a;（未必一一对应）" MaxLines="0" TextWrapping="Wrap"/>

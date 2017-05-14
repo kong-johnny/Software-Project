@@ -9,9 +9,8 @@
     Title="分享课程表"
     PrimaryButtonText="复制在线分享码"
     SecondaryButtonText="复制离线分享码"
-    CloseButtonText="关闭"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" DefaultButton="Primary">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" >
 
     <Grid>
         <Grid.RowDefinitions>

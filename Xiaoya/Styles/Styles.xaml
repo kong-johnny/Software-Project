@@ -1254,7 +1254,7 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Grid x:Name="ContentRoot" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}" Margin="{TemplateBinding Padding}" MinHeight="{ThemeResource AppBarThemeCompactHeight}" VerticalAlignment="Top" XYFocusKeyboardNavigation="Enabled">
+                        <Grid x:Name="ContentRoot" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}" Margin="{TemplateBinding Padding}" MinHeight="{ThemeResource AppBarThemeCompactHeight}" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -1276,7 +1276,7 @@
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                             </Grid>
-                            <Button x:Name="MoreButton" Visibility="Collapsed" Grid.Column="1" Foreground="{TemplateBinding Foreground}" Control.IsTemplateKeyTipTarget="True" MinHeight="{ThemeResource AppBarThemeCompactHeight}" Padding="14,23,14,0" Style="{StaticResource EllipsisButton}" VerticalAlignment="Top">
+                            <Button x:Name="MoreButton" Visibility="Collapsed" Grid.Column="1" Foreground="{TemplateBinding Foreground}" MinHeight="{ThemeResource AppBarThemeCompactHeight}" Padding="14,23,14,0" Style="{StaticResource EllipsisButton}" VerticalAlignment="Top">
                                 <FontIcon x:Name="EllipsisIcon" FontSize="20" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE10C;" Height="{ThemeResource AppBarExpandButtonCircleDiameter}" VerticalAlignment="Center"/>
                             </Button>
                             <Popup x:Name="OverflowPopup">

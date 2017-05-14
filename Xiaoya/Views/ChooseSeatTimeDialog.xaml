@@ -11,7 +11,7 @@
     PrimaryButtonText="确定"
     SecondaryButtonText="取消"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" DefaultButton="Primary">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" >
 
     <Grid>
         <Grid.RowDefinitions>
