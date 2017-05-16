@@ -17,7 +17,11 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <PackageCertificateKeyFile>Xiaoya_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Xiaoya_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>168A4D1CE4408CD00EB002C09D1B800A7C363FAE</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,24 +99,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Assist\Assistant.cs" />
-    <Compile Include="Assist\Models\ExamArrangement.cs" />
-    <Compile Include="Assist\Models\ExamRound.cs" />
-    <Compile Include="Assist\Models\ExamScore.cs" />
-    <Compile Include="Assist\Models\GradeInfo.cs" />
-    <Compile Include="Assist\Models\OneDayTimeTableModel.cs" />
-    <Compile Include="Assist\Models\Result.cs" />
-    <Compile Include="Assist\Models\SelectInfo.cs" />
-    <Compile Include="Assist\Models\StudentDetails.cs" />
-    <Compile Include="Assist\Models\StudentInfo.cs" />
-    <Compile Include="Assist\Models\TableCourse.cs" />
-    <Compile Include="Assist\Models\TableCourses.cs" />
-    <Compile Include="Assist\Models\TableSemester.cs" />
-    <Compile Include="Assist\Models\TimeTableModel.cs" />
-    <Compile Include="Assist\Models\TimeTableWeek.cs" />
-    <Compile Include="Classroom\ClassroomClient.cs" />
-    <Compile Include="Classroom\Models\Building.cs" />
-    <Compile Include="Classroom\Models\Room.cs" />
     <Compile Include="Controls\PageHeader.xaml.cs" />
     <Compile Include="Controls\TimeTable.xaml.cs">
       <DependentUpon>TimeTable.xaml</DependentUpon>
@@ -120,37 +106,17 @@
     <Compile Include="Controls\TimeTableItem.xaml.cs">
       <DependentUpon>TimeTableItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Assist\Models\TimeTableItemModel.cs" />
-    <Compile Include="Helpers\AppConstants.cs" />
-    <Compile Include="Helpers\ParserHelper.cs" />
-    <Compile Include="Helpers\TileHelper.cs" />
-    <Compile Include="Helpers\TimeTableHelper.cs" />
-    <Compile Include="Library\Seat\BuildingInfoConverter.cs" />
-    <Compile Include="Library\Seat\Models\BuildingRoomInfo.cs" />
-    <Compile Include="Library\Seat\Models\Building.cs" />
-    <Compile Include="Library\Seat\Models\Reservation.cs" />
-    <Compile Include="Library\Seat\Models\ReservationHistories.cs" />
-    <Compile Include="Library\Seat\Models\LoginToken.cs" />
-    <Compile Include="Library\Seat\Models\ReservationHistory.cs" />
-    <Compile Include="Library\Seat\Models\Result.cs" />
-    <Compile Include="Library\Seat\Models\Room.cs" />
-    <Compile Include="Library\Seat\Models\SeatLayout.cs" />
-    <Compile Include="Library\Seat\Models\SeatLayoutItem.cs" />
-    <Compile Include="Library\Seat\Models\EndTimes.cs" />
-    <Compile Include="Library\Seat\Models\StartTimes.cs" />
-    <Compile Include="Library\Seat\Models\Time.cs" />
-    <Compile Include="Library\Seat\SeatClient.cs" />
-    <Compile Include="Library\User\Models\BorrowedBook.cs" />
-    <Compile Include="Library\User\LibraryClient.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\NavMenuListView.cs" />
     <Compile Include="Controls\NavMenuItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\TimeTableBackgroundTask.cs" />
     <Compile Include="Views\ChooseSeatTimeDialog.xaml.cs">
       <DependentUpon>ChooseSeatTimeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GatewayPage.xaml.cs">
+      <DependentUpon>GatewayPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LibraryPage.xaml.cs">
       <DependentUpon>LibraryPage.xaml</DependentUpon>
@@ -176,6 +142,9 @@
     <Compile Include="Views\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GatewayInputDialog.xaml.cs">
+      <DependentUpon>GatewayInputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginLibraryDialog.xaml.cs">
       <DependentUpon>LoginLibraryDialog.xaml</DependentUpon>
     </Compile>
@@ -196,6 +165,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="Xiaoya_StoreKey.pfx" />
     <None Include="Xiaoya_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -244,6 +214,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
@@ -267,6 +238,10 @@
     <Page Include="Views\ChooseSeatTimeDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GatewayPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LibraryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -299,6 +274,10 @@
     <Page Include="Views\InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GatewayInputDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LoginLibraryDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -334,24 +313,22 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AngleSharp">
-      <Version>0.9.9</Version>
-    </PackageReference>
-    <PackageReference Include="CXHttp">
-      <Version>1.1.3</Version>
-    </PackageReference>
     <PackageReference Include="LeanCloud">
       <Version>2017.5.9.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>5.2.3</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>1.4.1</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>10.0.2</Version>
-    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Assist\Assist.csproj">
+      <Project>{49d142f5-b1cf-4c5a-bbc6-1d405a9d02ac}</Project>
+      <Name>Assist</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tasks\Tasks.csproj">
+      <Project>{fe9b00d6-2d89-477a-8b08-4b7e4cb14f8a}</Project>
+      <Name>Tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

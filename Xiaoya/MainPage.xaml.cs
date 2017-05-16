@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
@@ -72,7 +73,7 @@ namespace Xiaoya
                 {
                     Symbol = (char) Symbol.ThreeBars,
                     Label = "网关",
-                    DestPage = null
+                    DestPage = typeof(GatewayPage)
                 },
             });
 
@@ -91,6 +92,11 @@ namespace Xiaoya
                 var titleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
                 titleBar.IsVisibleChanged += TitleBar_IsVisibleChanged;
             };
+
+            if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.SplitView", "LightDismissOverlayMode"))
+            {
+                this.RootSplitView.LightDismissOverlayMode = LightDismissOverlayMode.On;
+            }
 
             this.RootSplitView.RegisterPropertyChangedCallback(
                 SplitView.DisplayModeProperty,
@@ -417,6 +423,6 @@ namespace Xiaoya
         }
 
         private const string taskName = "TimeTableBackgroundTask";
-        private const string taskEntryPoint = "Xiaoya.Tasks.TimeTableBackgroundTask";
+        private const string taskEntryPoint = "Tasks.TimeTableBackgroundTask";
     }
 }

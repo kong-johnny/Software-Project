@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +6,9 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
-using Xiaoya.Assist.Models;
 using Xiaoya.Helpers;
 
-namespace Xiaoya.Tasks
+namespace Tasks
 {
     public sealed class TimeTableBackgroundTask : IBackgroundTask
     {

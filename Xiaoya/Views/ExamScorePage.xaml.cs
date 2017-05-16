@@ -132,48 +132,55 @@ namespace Xiaoya.Views
 
         private async void SaveScores()
         {
-            var studentId = (await app.Assist.GetStudentInfo()).StudentId;
-
-            var query = new AVQuery<AVObject>("CourseScore").WhereEqualTo("stuKey", studentId);
-
-            var objs = await query.FindAsync();
-            List<AVObject> saving = new List<AVObject>();
-
-            foreach (var score in Scores)
+            try
             {
-                bool has = false;
-                var fullName = "[" + score.CourseId + "]" + score.CourseName;
-                foreach (var obj in objs)
+                var studentId = (await app.Assist.GetStudentInfo()).StudentId;
+
+                var query = new AVQuery<AVObject>("CourseScore").WhereEqualTo("stuKey", studentId);
+
+                var objs = await query.FindAsync();
+                List<AVObject> saving = new List<AVObject>();
+
+                foreach (var score in Scores)
                 {
-                    if (Convert.ToString(obj["courseName"]) == fullName)
+                    bool has = false;
+                    var fullName = "[" + score.CourseId + "]" + score.CourseName;
+                    foreach (var obj in objs)
                     {
-                        has = true;
-                        break;
+                        if (Convert.ToString(obj["courseName"]) == fullName)
+                        {
+                            has = true;
+                            break;
+                        }
+                    }
+
+                    if (has)
+                    {
+                        continue;
+                    }
+
+
+                    if (Double.TryParse(score.Score1, out double dScore1) &&
+                        Double.TryParse(score.Score2, out double dScore2))
+                    {
+                        var o = new AVObject("CourseScore")
+                        {
+                            ["stuKey"] = studentId,
+                            ["courseName"] = fullName,
+                            ["term"] = score.Semester,
+                            ["score1"] = dScore1,
+                            ["score2"] = dScore2,
+                            ["score"] = score.Score
+                        };
+                        saving.Add(o);
                     }
                 }
-
-                if (has)
-                {
-                    continue;
-                }
-
-
-                if (Double.TryParse(score.Score1, out double dScore1) &&
-                    Double.TryParse(score.Score2, out double dScore2))
-                {
-                    var o = new AVObject("CourseScore")
-                    {
-                        ["stuKey"] = studentId,
-                        ["courseName"] = fullName,
-                        ["term"] = score.Semester,
-                        ["score1"] = dScore1,
-                        ["score2"] = dScore2,
-                        ["score"] = score.Score
-                    };
-                    saving.Add(o);
-                }
+                await AVObject.SaveAllAsync(saving);
             }
-            await AVObject.SaveAllAsync(saving);
+            catch
+            {
+
+            }
         }
 
         private async void SemesterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

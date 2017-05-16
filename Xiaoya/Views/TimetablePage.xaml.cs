@@ -256,7 +256,9 @@ namespace Xiaoya.Views
 
                 Models.Add(await TimeTableHelper.GenerateTimeTableModel(tableCourses));
 
+                app.TimeTablePage_Models = Models.ToList();
                 app.TimeTables.Add(tableCourses);
+                app.HomePage_Models = null;
                 SaveTimeTables();
             }
             catch (Exception err)
@@ -323,8 +325,11 @@ namespace Xiaoya.Views
 
         private void Delete_Clicked(object sender, RoutedEventArgs e)
         {
+            if (Models.Count == 0) return;
             Models.RemoveAt(TablePivot.SelectedIndex);
             app.TimeTables.RemoveAt(TablePivot.SelectedIndex);
+            app.TimeTablePage_Models = Models.ToList();
+            app.HomePage_Models = null;
             SaveTimeTables();
         }
 

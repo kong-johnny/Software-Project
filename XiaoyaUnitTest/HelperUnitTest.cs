@@ -15,39 +15,39 @@ namespace XiaoyaUnitTest
     {
         Assistant assist = new Assistant();
 
-        void LoginAssist()
+        async Task LoginAssist()
         {
             var info = File.ReadLines("Assist.txt").ToList();
             assist.Username = info[0];
             assist.Password = info[1];
-            var loginRes = assist.Login().Result;
+            var loginRes = await assist.Login();
             Assert.IsNull(loginRes);
         }
 
         [TestMethod]
-        public void TestGetCurrentWeek()
+        public async Task TestGetCurrentWeek()
         {
-            var week = TimeTableHelper.GetCurrentWeek().Result;
+            var week = await TimeTableHelper.GetCurrentWeek();
             Assert.IsTrue(week >= 1);
         }
 
         [TestMethod]
-        public void TestGenerateTimeTableModel()
+        public async Task TestGenerateTimeTableModel()
         {
-            LoginAssist();
-            var table = assist.GetTableCourses(assist.GetTableSemesters().Result[0]).Result;
-            var model = TimeTableHelper.GenerateTimeTableModel(table).Result;
+            await LoginAssist();
+            var table = await assist.GetTableCourses(assist.GetTableSemesters().Result[0]);
+            var model = await TimeTableHelper.GenerateTimeTableModel(table);
             Assert.IsTrue(model.Weeks.Count > 15);
             Assert.IsTrue(model.Weeks[0].Items.Count > 0);
             Assert.IsTrue(model.Weeks[0].Items[0].Name.Length > 0);
         }
 
         [TestMethod]
-        public void TestGenerateOneDayTimeTableModel()
+        public async Task TestGenerateOneDayTimeTableModel()
         {
-            LoginAssist();
-            var table = assist.GetTableCourses(assist.GetTableSemesters().Result[0]).Result;
-            var model = TimeTableHelper.GenerateOneDayTimeTableModel(table).Result;
+            await LoginAssist();
+            var table = await assist.GetTableCourses(assist.GetTableSemesters().Result[0]);
+            var model = await TimeTableHelper.GenerateOneDayTimeTableModel(table);
             Assert.IsTrue(model.Courses.Count >= 0);
             if (model.Courses.Count > 0)
                 Assert.IsTrue(model.Courses[0].Name.Length > 0);

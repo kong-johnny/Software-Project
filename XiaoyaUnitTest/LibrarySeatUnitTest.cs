@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Xiaoya.Library.Seat;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace XiaoyaUnitTest
 {
@@ -12,33 +13,33 @@ namespace XiaoyaUnitTest
     {
         SeatClient client = new SeatClient();
 
-        void Login()
+        async Task Login()
         {
             var info = File.ReadLines("Library.txt").ToList();
             client.Username = info[0];
             client.Password = info[1];
 
-            var res = client.Login().Result;
-
+            var res = await client.Login();
             Assert.IsNotNull(res);
             Assert.IsNotNull(res.Data);
             Assert.IsNotNull(res.Data.Token);
             Assert.IsTrue(res.Data.Token.Length > 0);
 
             Console.WriteLine(res.Data.Token);
+
         }
 
         [TestMethod]
-        public void TestLogin()
+        public async Task TestLogin()
         {
-            Login();
+            await Login();
         }
 
         [TestMethod]
-        public void TestGetHistory()
+        public async Task TestGetHistory()
         {
-            Login();
-            var res = client.GetReservationHistory(1, 30).Result;
+            await Login();
+            var res = await client.GetReservationHistory(1, 30);
             Assert.IsNotNull(res);
             Assert.IsNotNull(res.Data);
             Assert.IsNotNull(res.Data.Items);
@@ -48,10 +49,10 @@ namespace XiaoyaUnitTest
         }
 
         [TestMethod]
-        public void TestGetBuilding()
+        public async Task TestGetBuilding()
         {
-            Login();
-            var res = client.GetBuildings().Result;
+            await Login();
+            var res = await client.GetBuildings();
             Assert.IsNotNull(res);
             Assert.IsNotNull(res.Data);
             Assert.IsNotNull(res.Data.Buildings);
@@ -61,11 +62,11 @@ namespace XiaoyaUnitTest
         }
 
         [TestMethod]
-        public void TestGetRoom()
+        public async Task TestGetRoom()
         {
-            Login();
-            var res = client.GetBuildings().Result;
-            var rooms = client.GetRooms(res.Data.Buildings[0].Id).Result;
+            await Login();
+            var res = await client.GetBuildings();
+            var rooms = await client.GetRooms(res.Data.Buildings[0].Id);
             Assert.IsNotNull(rooms.Data);
             Assert.IsTrue(rooms.Data.Count > 0);
             Assert.IsNotNull(rooms.Data[0].Name);
@@ -73,11 +74,10 @@ namespace XiaoyaUnitTest
         }
 
         [TestMethod]
-        public void TestGetCurrentReservation()
+        public async Task TestGetCurrentReservation()
         {
-            Login();
-            var res = client.GetCurrentReservation().Result;
-
+            await Login();
+            var res = await client.GetCurrentReservation();
             if (res.Data != null)
             {
                 Assert.IsNotNull(res.Data.Count > 0);
@@ -87,64 +87,38 @@ namespace XiaoyaUnitTest
         }
 
         [TestMethod]
-        public void TestGetReservation()
+        public async Task TestGetReservation()
         {
-            Login();
-            var res = client.GetReservation(911777).Result;
-
+            await Login();
+            var res = await client.GetReservation(911777);
             Assert.IsNotNull(res.Id);
             Assert.AreEqual(res.Id, 911777);
         }
 
         [TestMethod]
-        public void TestCancelReservation()
+        public async Task TestCancelReservation()
         {
-            Login();
-            var res = client.CancelReservation(911777).Result;
+            await Login();
+            var res = await client.CancelReservation(911777);
             Assert.IsNull(res.Data);
             Assert.IsTrue(res.Code == "0" || res.Code == "1");
         }
 
         [TestMethod]
-        public void TestGetSeatLayout()
+        public async Task TestGetSeatLayout()
         {
-            Login();
-            var res = client.GetSeatLayout(
+            await Login();
+            var res = await client.GetSeatLayout(
                 client.GetRooms(
                     client.GetBuildings().Result.Data.Buildings[0].Id
                 ).Result.Data[0].RoomId,
                 "2017-5-1"
-            ).Result;
+            );
             Assert.IsNotNull(res.Data.Layout);
             Assert.IsTrue(res.Data.Layout.Count > 0);
             Assert.IsNotNull(res.Data.Layout["0"]);
             Assert.IsNotNull(res.Data.Layout["0"].Type);
             Assert.IsTrue(res.Data.Layout["0"].Type.Length > 0);
-        }
-
-        [TestMethod]
-        public void TestGetStartEndTimes()
-        {
-            Login();
-            var res = client.GetStartTimes(48954, "2017-5-13").Result;
-
-            Assert.IsNotNull(res.Data);
-            Assert.IsNotNull(res.Data.Items);
-            if (res.Data.Items.Count > 0)
-            {
-                Assert.IsNotNull(res.Data.Items[0].Id);
-                Assert.IsTrue(res.Data.Items[0].Id.Length > 0);
-            }
-
-            var res2 = client.GetEndTimes(48954, "2017-5-13", "660").Result;
-
-            Assert.IsNotNull(res2.Data);
-            Assert.IsNotNull(res2.Data.Items);
-            if (res2.Data.Items.Count > 0)
-            {
-                Assert.IsNotNull(res2.Data.Items[0].Id);
-                Assert.IsTrue(res2.Data.Items[0].Id.Length > 0);
-            }
         }
     }
 }

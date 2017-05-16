@@ -35,6 +35,9 @@ namespace Xiaoya.Helpers
             public string XqM { get; set; }
         }
 
+        private static Windows.Storage.ApplicationDataContainer localSettings =
+            Windows.Storage.ApplicationData.Current.LocalSettings;
+
         /// <summary>
         /// Get week number of today for specific semester
         /// </summary>
@@ -75,10 +78,32 @@ namespace Xiaoya.Helpers
                 var body2 = await res2.Content();
 
                 string[] weeks = body2.Split('@');
-                return m_Week = Convert.ToInt32(weeks[0]);
-            } 
+                m_Week = Convert.ToInt32(weeks[0]);
+                localSettings.Values[AppConstants.TIMETABLE_WEEK] = m_Week;
+                localSettings.Values[AppConstants.TIMETABLE_DATE] = DateTime.Now.ToBinary();
+                return m_Week;
+            }
             catch
             {
+                if (localSettings.Values.ContainsKey(AppConstants.TIMETABLE_WEEK) &&
+                    localSettings.Values.ContainsKey(AppConstants.TIMETABLE_DATE))
+                {
+                    m_Week = (int)localSettings.Values[AppConstants.TIMETABLE_WEEK];
+                    var then = DateTime.FromBinary((long)localSettings.Values[AppConstants.TIMETABLE_DATE]);
+                    int diffDay = (DateTime.Now - then).Days;
+                    for (int i = 0; i < 7; ++i)
+                    {
+                        if (then.DayOfWeek == WEEKS[i])
+                        {
+                            diffDay -= i;
+                        }
+                    }
+                    int diffWeek = diffDay / 7;
+                    m_Week += diffWeek;
+                    localSettings.Values[AppConstants.TIMETABLE_WEEK] = m_Week;
+                    localSettings.Values[AppConstants.TIMETABLE_DATE] = DateTime.Now.ToBinary();
+                    return m_Week;
+                }
                 return 1;
             }
         }
@@ -134,9 +159,9 @@ namespace Xiaoya.Helpers
                     else
                     {
                         // 找到范围
-                        int startWeek 
+                        int startWeek
                             = Convert.ToInt32(part.Substring(0, rangeSignIndex).Trim());
-                        int endWeek 
+                        int endWeek
                             = Convert.ToInt32(part.Substring(rangeSignIndex + 1).Trim());
                         if (endWeek > weekCount)
                         {
@@ -160,7 +185,7 @@ namespace Xiaoya.Helpers
 
                     // 更新起始检索位置
                     start = index + 1;
-                    
+
                     // 下一个字符是 (，即标记单双周
                     if (s.Substring(start, 1) == "(")
                     {
@@ -169,7 +194,7 @@ namespace Xiaoya.Helpers
                         // 奇偶
                         string parity = s.Substring(start + 1, 1);
 
-                        if ((parity == "单" && weekNumber % 2 == 1) || 
+                        if ((parity == "单" && weekNumber % 2 == 1) ||
                             (parity == "双" && weekNumber % 2 == 0))
                         {
                             isIn = true;

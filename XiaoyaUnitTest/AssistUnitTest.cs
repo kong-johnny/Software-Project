@@ -14,64 +14,64 @@ namespace XiaoyaUnitTest
     {
         Assistant assist = new Assistant();
 
-        void Login()
+        async Task Login()
         {
             var info = File.ReadLines("Assist.txt").ToList();
             assist.Username = info[0];
             assist.Password = info[1];
-            var loginRes = assist.Login().Result;
+            var loginRes = await assist.Login();
             Assert.IsNull(loginRes);
         }
 
         [TestMethod]
-        public void TestLogin()
+        public async Task TestLogin()
         {
-            Login();
+            await Login();
         }
 
         [TestMethod]
-        public void TestGetStudentInfo()
+        public async Task TestGetStudentInfo()
         {
-            Login();
-            var res = assist.GetStudentInfo().Result;
+            await Login();
+            var res = await assist.GetStudentInfo();
             Assert.AreEqual(res.Grade, assist.Username.Substring(0, 4));
         }
 
         [TestMethod]
-        public void TestGetStudentDetails()
+        public async Task TestGetStudentDetails()
         {
-            Login();
-            var res = assist.GetStudentDetails().Result;
+            await Login();
+            var res = await assist.GetStudentDetails();
             Assert.IsTrue(res.College.Length > 0);
         }
 
         [TestMethod]
-        public void TestGetExamScores()
+        public async Task TestGetExamScores()
         {
-            Login();
-            var res = assist.GetExamScores(true).Result;
+            await Login();
+            var res = await assist.GetExamScores(true);
             Assert.IsTrue(res.Count > 0);
             Assert.IsTrue(res[0].CourseName.Length > 0);
         }
 
         [TestMethod]
-        public void TestGetExamArragement()
+        public async Task TestGetExamArragement()
         {
-            Login();
-            var rounds = assist.GetExamRounds().Result;
+            await Login();
+            var rounds = await assist.GetExamRounds();
             Assert.IsTrue(rounds.Count > 0);
-            var arrangement = assist.GetExamArrangement(rounds[0]).Result;
+            var arrangement = await assist.GetExamArrangement(rounds[0]);
             Assert.IsTrue(arrangement.Count > 0);
             Assert.IsTrue(arrangement[0].CourseName.Length > 0);
         }
 
         [TestMethod]
-        public void TestGetTableCourses()
+        public async Task TestGetTableCourses()
         {
-            Login();
-            var semesters = assist.GetTableSemesters().Result;
+            await Login();
+            var semesters = await assist.GetTableSemesters();
             Assert.IsTrue(semesters.Count > 0);
-            var table = assist.GetTableCourses(semesters[0]).Result;
+            var table = await assist.GetTableCourses(semesters[0]);
             Assert.IsTrue(table.Table.Count > 0);
             Assert.IsTrue(table.Table[0].Name.Length > 0);
         }

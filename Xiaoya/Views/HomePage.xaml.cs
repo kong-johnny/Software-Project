@@ -18,7 +18,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Xiaoya.Assist.Models;
+using Xiaoya.Gateway;
 using Xiaoya.Helpers;
+using Xiaoya.News;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,8 +37,15 @@ namespace Xiaoya.Views
         private Windows.Storage.ApplicationDataContainer localSettings =
             Windows.Storage.ApplicationData.Current.LocalSettings;
 
-        public ObservableCollection<OneDayTimeTableModel> Models 
+        public ObservableCollection<OneDayTimeTableModel> TimetableModels
             = new ObservableCollection<OneDayTimeTableModel>();
+
+        public ObservableCollection<News.News> JWCNewsModel
+            = new ObservableCollection<News.News>();
+        public ObservableCollection<News.News> OIECNewsModel
+            = new ObservableCollection<News.News>();
+        public ObservableCollection<News.News> LIBNewsModel
+            = new ObservableCollection<News.News>();
 
         public HomePage()
         {
@@ -61,6 +70,7 @@ namespace Xiaoya.Views
             }
 
             LoadTimeTables();
+            LoadNews();
 
             if (app.Assist.IsLogin)
             {
@@ -115,6 +125,25 @@ namespace Xiaoya.Views
             }
         }
 
+        private async void LoadNews()
+        {
+            try
+            {
+                NewsProgressBar.Visibility = Visibility.Visible;
+
+                JWCNewsModel.Clear();
+                foreach (var item in await NewsClient.GetJWCNews()) JWCNewsModel.Add(item);
+                OIECNewsModel.Clear();
+                foreach (var item in await NewsClient.GetOIECNews()) OIECNewsModel.Add(item);
+                LIBNewsModel.Clear();
+                foreach (var item in await NewsClient.GetLIBNews()) LIBNewsModel.Add(item);
+            }
+            finally
+            {
+                NewsProgressBar.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private async void SaveTimeTables()
         {
             Windows.Storage.StorageFolder storageFolder =
@@ -146,13 +175,13 @@ namespace Xiaoya.Views
                 {
                     foreach (var table in app.TimeTables)
                     {
-                        Models.Add(await TimeTableHelper.GenerateOneDayTimeTableModel(table));
+                        TimetableModels.Add(await TimeTableHelper.GenerateOneDayTimeTableModel(table));
                     }
-                    app.HomePage_Models = Models.ToList();
+                    app.HomePage_Models = TimetableModels.ToList();
                 }
                 else
                 {
-                    foreach (var item in app.HomePage_Models) Models.Add(item);
+                    foreach (var item in app.HomePage_Models) TimetableModels.Add(item);
                 }
             }
             catch (FileNotFoundException)
@@ -277,6 +306,87 @@ namespace Xiaoya.Views
             finally
             {
                 isLogining = false;
+            }
+        }
+
+        private async void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var item = (News.News)e.ClickedItem;
+            if (item != null)
+            {
+                await Windows.System.Launcher.LaunchUriAsync(item.Url);
+            }
+        }
+
+        private async void GatewayLogin_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (GatewayClient.GetDefaultUser() != null)
+            {
+                GatewayProgressBar.Visibility = Visibility.Visible;
+                try
+                {
+                    app.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                    app.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                    var res = await app.GatewayClient.Login();
+                    ResultText.Text = res;
+                }
+                finally
+                {
+                    GatewayProgressBar.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                ResultText.Text = "请先设置默认网关账号";
+            }
+        }
+
+        private async void GatewayLogout_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (GatewayClient.GetDefaultUser() != null)
+            {
+                GatewayProgressBar.Visibility = Visibility.Visible;
+                try
+                {
+                    app.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                    app.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                    var res = await app.GatewayClient.Logout();
+                    ResultText.Text = res;
+                }
+                finally
+                {
+                    GatewayProgressBar.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                ResultText.Text = "请先设置默认网关账号";
+            }
+        }
+
+        private async void GatewayForce_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (GatewayClient.GetDefaultUser() != null)
+            {
+                GatewayProgressBar.Visibility = Visibility.Visible;
+                try
+                {
+                    app.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                    app.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                    var res = await app.GatewayClient.Force();
+                    ResultText.Text = res;
+                }
+                finally
+                {
+                    GatewayProgressBar.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                ResultText.Text = "请先设置默认网关账号";
             }
         }
     }

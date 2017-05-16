@@ -23,9 +23,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Xiaoya.Assist.Models;
+using Xiaoya.Gateway;
 using Xiaoya.Helpers;
 using Xiaoya.Library.Seat;
 using Xiaoya.Library.User;
+using Xiaoya.Views;
 
 namespace Xiaoya
 {
@@ -40,6 +42,7 @@ namespace Xiaoya
         public Assistant Assist { get; private set; }
         public LibraryClient LibraryClient { get; private set; }
         public SeatClient SeatClient { get; private set; }
+        public GatewayClient GatewayClient { get; private set; }
         public List<TableCourses> TimeTables = null;
         public List<TimeTableModel> TimeTablePage_Models = null;
         public List<OneDayTimeTableModel> HomePage_Models = null;
@@ -54,6 +57,7 @@ namespace Xiaoya
             Assist = new Assistant();
             LibraryClient = new LibraryClient();
             SeatClient = new SeatClient();
+            GatewayClient = new GatewayClient();
             AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
             SavePC();
         }
@@ -67,31 +71,35 @@ namespace Xiaoya
 
             var pc = new AVObject("DotNet");
 
-            // get the system family information
-            var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
+            try
+            {
+                // get the system family information
+                var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
 
-            // get the system version number
-            var deviceFamilyVersion = AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
-            var version = ulong.Parse(deviceFamilyVersion);
-            var majorVersion = (version & 0xFFFF000000000000L) >> 48;
-            var minorVersion = (version & 0x0000FFFF00000000L) >> 32;
-            var buildVersion = (version & 0x00000000FFFF0000L) >> 16;
-            var revisionVersion = (version & 0x000000000000FFFFL);
-            var systemVersion = $"{majorVersion}.{minorVersion}.{buildVersion}.{revisionVersion}";
+                // get the system version number
+                var deviceFamilyVersion = AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
+                var version = ulong.Parse(deviceFamilyVersion);
+                var majorVersion = (version & 0xFFFF000000000000L) >> 48;
+                var minorVersion = (version & 0x0000FFFF00000000L) >> 32;
+                var buildVersion = (version & 0x00000000FFFF0000L) >> 16;
+                var revisionVersion = (version & 0x000000000000FFFFL);
+                var systemVersion = $"{majorVersion}.{minorVersion}.{buildVersion}.{revisionVersion}";
 
-            pc["SystemVer"] = systemVersion;
+                // get the device manufacturer, model name, OS details etc.
+                var clientDeviceInformation = new EasClientDeviceInformation();
 
-            // get the device manufacturer, model name, OS details etc.
-            var clientDeviceInformation = new EasClientDeviceInformation();
-
-            pc["SystemManufacturer"] = clientDeviceInformation.SystemManufacturer;
-            pc["DeviceModel"] = clientDeviceInformation.SystemProductName;
-            pc["OperatingSystem"] = clientDeviceInformation.OperatingSystem;
-            pc["SystemHardwareVersion"] = clientDeviceInformation.SystemHardwareVersion;
-            pc["systemFirmwareVersion"] = clientDeviceInformation.SystemFirmwareVersion;
-
-            await pc.SaveAsync();
-            localSettings.Values[AppConstants.ANALYTICS_SAVED] = true;
+                pc["SystemVer"] = systemVersion;
+                pc["SystemManufacturer"] = clientDeviceInformation.SystemManufacturer;
+                pc["DeviceModel"] = clientDeviceInformation.SystemProductName;
+                pc["OperatingSystem"] = clientDeviceInformation.OperatingSystem;
+                pc["SystemHardwareVersion"] = clientDeviceInformation.SystemHardwareVersion;
+                pc["systemFirmwareVersion"] = clientDeviceInformation.SystemFirmwareVersion;
+                await pc.SaveAsync();
+                localSettings.Values[AppConstants.ANALYTICS_SAVED] = true;
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -117,6 +125,60 @@ namespace Xiaoya
             await jumpList.SaveAsync();
         }
 
+        private async void GatewayLogin()
+        {
+            if (GatewayClient.GetDefaultUser() != null)
+            {
+                this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                var res = await this.GatewayClient.Login();
+                var dialog = new CommonDialog()
+                {
+                    Title = "提示",
+                    Message = res,
+                    CloseButtonText = "关闭"
+                };
+                await dialog.ShowAsync();
+            }
+        }
+
+        private async void GatewayLogout()
+        {
+            if (GatewayClient.GetDefaultUser() != null)
+            {
+                this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                var res = await this.GatewayClient.Logout();
+                var dialog = new CommonDialog()
+                {
+                    Title = "提示",
+                    Message = res,
+                    CloseButtonText = "关闭"
+                };
+                await dialog.ShowAsync();
+            }
+        }
+
+        private async void GatewayForce()
+        {
+            if (GatewayClient.GetDefaultUser() != null)
+            {
+                this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                var res = await this.GatewayClient.Force();
+                var dialog = new CommonDialog()
+                {
+                    Title = "提示",
+                    Message = res,
+                    CloseButtonText = "关闭"
+                };
+                await dialog.ShowAsync();
+            }
+        }
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -124,15 +186,17 @@ namespace Xiaoya
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-
             // TODO: Start Menu JumpList Task
             switch (e.Arguments)
             {
                 case "/Login":
+                    GatewayLogin();
                     break;
                 case "/Logout":
+                    GatewayLogout();
                     break;
                 case "/ForceLogout":
+                    GatewayForce();
                     break;
             }
 

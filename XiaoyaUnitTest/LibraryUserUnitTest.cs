@@ -14,34 +14,34 @@ namespace XiaoyaUnitTest
     {
         LibraryClient client = new LibraryClient();
 
-        void Login()
+        async Task Login()
         {
             var info = File.ReadLines("Library.txt").ToList();
             client.Username = info[0];
             client.Password = info[1];
-            var res = client.Login().Result;
+            var res = await client.Login();
             Assert.IsNull(res);
         }
 
         [TestMethod]
-        public void TestLogin()
+        public async Task TestLogin()
         {
-            Login();
+            await Login();
         }
 
         [TestMethod]
-        public void TestGetBorrowedBooks()
+        public async Task TestGetBorrowedBooks()
         {
-            Login();
-            var list = client.GetBorrowedBooks().Result;
+            await Login();
+            var list = await client.GetBorrowedBooks();
             Assert.IsNotNull(list);
         }
 
         [TestMethod]
-        public void TestRenewAll()
+        public async Task TestRenewAll()
         {
-            Login();
-            var renewRes = client.RenewAll().Result;
+            await Login();
+            var renewRes = await client.RenewAll();
             Assert.IsTrue(renewRes.Contains("续借"));
         }
     }

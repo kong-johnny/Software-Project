@@ -6,11 +6,25 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:Xiaoya.Assist.Models"
+    xmlns:newsmodel="using:Xiaoya.News"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ContentContainer.Margin" Value="24,0"/>
+                        <Setter Target="HeaderTextBlock.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
+                        <Setter Target="AltHeaderTextBlock.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
+                        <Setter Target="NewsGrid.Grid.Row" Value="0"/>
+                        <Setter Target="NewsGrid.Grid.Column" Value="1"/>
+                        <Setter Target="RightCol.Width" Value="*"/>
+                    </VisualState.Setters>
+                </VisualState>
                 <VisualState>
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
@@ -19,6 +33,9 @@
                         <Setter Target="ContentContainer.Margin" Value="24,0"/>
                         <Setter Target="HeaderTextBlock.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
                         <Setter Target="AltHeaderTextBlock.Style" Value="{StaticResource PageTitleTextBlockStyle}"/>
+                        <Setter Target="NewsGrid.Grid.Row" Value="1"/>
+                        <Setter Target="NewsGrid.Grid.Column" Value="0"/>
+                        <Setter Target="RightCol.Width" Value="0"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState>
@@ -29,6 +46,10 @@
                         <Setter Target="ContentContainer.Margin" Value="12,0"/>
                         <Setter Target="HeaderTextBlock.Style" Value="{StaticResource NarrowPageTitleTextBlockStyle}"/>
                         <Setter Target="AltHeaderTextBlock.Style" Value="{StaticResource NarrowPageTitleTextBlockStyle}"/>
+                        <Setter Target="NewsGrid.Grid.Row" Value="2"/>
+                        <Setter Target="NewsGrid.Grid.RowSpan" Value="1"/>
+                        <Setter Target="NewsGrid.Grid.Column" Value="0"/>
+                        <Setter Target="RightCol.Width" Value="0"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -55,81 +76,220 @@
             </ctl:PageHeader.HeaderContent>
         </ctl:PageHeader>
 
-        <ScrollViewer x:Name="ContentContainer" Grid.Row="1" Margin="24,0">
-            <Grid MinHeight="400">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <HyperlinkButton x:Name="LoginButton" Grid.ColumnSpan="3" Grid.Row="0" Grid.Column="0" Margin="10" Click="LoginButton_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <StackPanel Height="50">
-                        <TextBlock x:Name="LoginText" Text="登录以启用所有功能" Height="30" HorizontalAlignment="Center" Style="{StaticResource TileTextBlockStyle}" TextWrapping="Wrap" MaxLines="0" TextAlignment="Center" />
-                        <ProgressBar x:Name="LoginProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
-                    </StackPanel>
-                </HyperlinkButton>
-                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-                    <ProgressBar x:Name="TimeTableProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
-                    <Pivot ItemsSource="{x:Bind Models}">
-                        <Pivot.HeaderTemplate>
-                            <DataTemplate x:DataType="model:OneDayTimeTableModel">
-                                <TextBlock Text="{x:Bind Name}" />
-                            </DataTemplate>
-                        </Pivot.HeaderTemplate>
-                        <Pivot.ItemTemplate>
-                            <DataTemplate x:DataType="model:OneDayTimeTableModel">
-                                <ListView HorizontalAlignment="Stretch" ItemsSource="{x:Bind Courses}">
+        <Grid x:Name="ContentContainer" Grid.Row="1" Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <HyperlinkButton x:Name="LoginButton" Grid.Row="0" Grid.Column="0" Margin="10" Click="LoginButton_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <StackPanel Height="50">
+                    <TextBlock x:Name="LoginText" Text="登录以启用所有功能" Height="30" HorizontalAlignment="Center" Style="{StaticResource TileTextBlockStyle}" TextWrapping="Wrap" MaxLines="0" TextAlignment="Center" />
+                    <ProgressBar x:Name="LoginProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+                </StackPanel>
+            </HyperlinkButton>
+            <ScrollViewer Grid.Row="1" Grid.Column="0">
+                <Grid Margin="24, 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition x:Name="RightCol" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <ProgressBar x:Name="TimeTableProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+                            <Pivot HorizontalAlignment="Stretch" ItemsSource="{x:Bind TimetableModels}">
+                                <Pivot.HeaderTemplate>
+                                    <DataTemplate x:DataType="model:OneDayTimeTableModel">
+                                        <TextBlock Text="{x:Bind Name}" />
+                                    </DataTemplate>
+                                </Pivot.HeaderTemplate>
+                                <Pivot.ItemTemplate>
+                                    <DataTemplate x:DataType="model:OneDayTimeTableModel">
+                                        <ListView HorizontalAlignment="Stretch" ItemsSource="{x:Bind Courses}">
+                                            <ListView.ItemContainerStyle>
+                                                <Style TargetType="ListViewItem">
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                </Style>
+                                            </ListView.ItemContainerStyle>
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="model:TimeTableItemModel">
+                                                    <Grid Margin="8" HorizontalAlignment="Stretch">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition/>
+                                                            <RowDefinition/>
+                                                        </Grid.RowDefinitions>
+
+                                                        <TextBlock FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind Name}" TextWrapping="Wrap"/>
+                                                        <Grid Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition/>
+                                                            </Grid.RowDefinitions>
+
+                                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Start}" TextWrapping="Wrap"/>
+                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="-"/>
+                                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{x:Bind End}" TextWrapping="Wrap"/>
+                                                            <TextBlock Grid.Row="0" Grid.Column="3" Text="节"/>
+                                                        </Grid>
+                                                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{x:Bind Description}" TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                    </DataTemplate>
+                                </Pivot.ItemTemplate>
+                            </Pivot>
+                        </Grid>
+                        <Grid Margin="8" Grid.Row="1" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <ProgressBar Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="GatewayProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+                            <!-- 网关快捷按钮 -->
+                            <Button Margin="8" Grid.Row="0" Grid.Column="0" Content="登录网关" Click="GatewayLogin_Clicked"/>
+                            <Button Margin="8" Grid.Row="0" Grid.Column="1" Content="注销网关" Click="GatewayLogout_Clicked"/>
+                            <Button Margin="8" Grid.Row="0" Grid.Column="2" Content="强制离线" Click="GatewayForce_Clicked"/>
+                            <TextBlock Margin="8" x:Name="ResultText" Text="" Grid.Row="1" HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="3"/>
+                        </Grid>
+                    </Grid>
+                    <Grid x:Name="NewsGrid">
+                        <ProgressBar x:Name="NewsProgressBar" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+                        <Pivot HorizontalAlignment="Stretch">
+                            <Pivot.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                    <Setter Property="Margin" Value="4"/>
+                                </Style>
+                            </Pivot.Resources>
+                            <PivotItem Header="教务处动态">
+                                <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind JWCNewsModel}" ItemClick="ListView_ItemClick">
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                                 FromVerticalOffset="0" 
+                                                 FromHorizontalOffset="200"/>
+                                            <AddDeleteThemeTransition/>
+                                            <NavigationThemeTransition/>
+                                            <ContentThemeTransition/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
                                     <ListView.ItemContainerStyle>
                                         <Style TargetType="ListViewItem">
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                         </Style>
                                     </ListView.ItemContainerStyle>
                                     <ListView.ItemTemplate>
-                                        <DataTemplate x:DataType="model:TimeTableItemModel">
-                                            <Grid Margin="8" HorizontalAlignment="Stretch">
+                                        <DataTemplate x:DataType="newsmodel:News">
+                                            <Grid Margin="8">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition/>
-                                                    <RowDefinition/>
                                                 </Grid.RowDefinitions>
-
-                                                <TextBlock FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind Name}" TextWrapping="Wrap"/>
-                                                <Grid Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="1">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition/>
-                                                    </Grid.RowDefinitions>
-
-                                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Start}" TextWrapping="Wrap"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="-"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{x:Bind End}" TextWrapping="Wrap"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="节"/>
-                                                </Grid>
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="{x:Bind Description}" TextWrapping="Wrap"/>
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Title}" FontSize="20" TextWrapping="Wrap"/>
+                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind Date}" FontSize="16" TextWrapping="Wrap"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
                                 </ListView>
-                            </DataTemplate>
-                        </Pivot.ItemTemplate>
-                    </Pivot>
+                            </PivotItem>
+                            <PivotItem Header="国际交流处动态">
+                                <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind OIECNewsModel}" ItemClick="ListView_ItemClick">
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                                 FromVerticalOffset="0" 
+                                                 FromHorizontalOffset="200"/>
+                                            <AddDeleteThemeTransition/>
+                                            <NavigationThemeTransition/>
+                                            <ContentThemeTransition/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="newsmodel:News">
+                                            <Grid Margin="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Title}" FontSize="20" TextWrapping="Wrap"/>
+                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind Date}" FontSize="16" TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </PivotItem>
+                            <PivotItem Header="图书馆动态">
+                                <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind LIBNewsModel}" ItemClick="ListView_ItemClick">
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                                 FromVerticalOffset="0" 
+                                                 FromHorizontalOffset="200"/>
+                                            <AddDeleteThemeTransition/>
+                                            <NavigationThemeTransition/>
+                                            <ContentThemeTransition/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="newsmodel:News">
+                                            <Grid Margin="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Title}" FontSize="20" TextWrapping="Wrap"/>
+                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind Date}" FontSize="16" TextWrapping="Wrap"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </PivotItem>
+                        </Pivot>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </ScrollViewer>
-
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Page>

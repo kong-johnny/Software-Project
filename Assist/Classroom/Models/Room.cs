@@ -14,10 +14,10 @@ namespace Xiaoya.Classroom.Models
         private List<bool> _hasLecture = new List<bool>(12);
         public List<bool> HasLecture { get => _hasLecture; }
 
-        private readonly Color RED = Color.FromArgb(255, 255, 100, 100);
+        private readonly Color RED = Color.FromArgb(255, 255, 180, 180);
         private readonly Color RED2 = Color.FromArgb(255, 255, 200, 200);
 
-        private readonly Color GREEN = Color.FromArgb(255, 100, 255, 100);
+        private readonly Color GREEN = Color.FromArgb(255, 180, 255, 180);
         private readonly Color GREEN2 = Color.FromArgb(255, 200, 255, 200);
 
         private List<Brush> _colors = new List<Brush>();

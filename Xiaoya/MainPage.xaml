@@ -94,7 +94,6 @@
                    OpenPaneLength="320"
                    PaneBackground="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                    PaneClosed="RootSplitView_PaneClosed"
-                   LightDismissOverlayMode="On"
                    IsTabStop="False">
 
             <SplitView.Pane>
