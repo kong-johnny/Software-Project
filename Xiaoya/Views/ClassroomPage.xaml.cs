@@ -82,7 +82,7 @@ namespace Xiaoya.Views
                     Message = err.Message,
                     CloseButtonText = "确定"
                 };
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
             }
 
             // Prepare for Sharing
@@ -106,7 +106,12 @@ namespace Xiaoya.Views
 
         private void Share_Clicked(object sender, RoutedEventArgs e)
         {
-            DataTransferManager.ShowShareUI();
+            try
+            {
+                DataTransferManager.ShowShareUI();
+            }
+            catch
+            { }
         }
 
         private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)

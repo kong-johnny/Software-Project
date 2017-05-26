@@ -11,6 +11,9 @@ namespace Xiaoya.Library.Seat
 {
     public class SeatClient
     {
+
+        private const string TEST_USERNAME = "200000000000";
+
         public string Username { get; set; }
         public string Password { get; set; }
 
@@ -32,7 +35,7 @@ namespace Xiaoya.Library.Seat
         private const string URL_CHECKIN = "http://219.224.23.151/rest/v2/checkIn?token={0}";
         private const string URL_LEAVE = "http://219.224.23.151/rest/v2/leave?token={0}";
         private const string URL_STOP = "http://219.224.23.151/rest/v2/stop?token={0}";
-        
+
         public SeatClient() { }
 
         public SeatClient(string username, string password)
@@ -43,6 +46,15 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<LoginToken>> Login()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<LoginToken>("success", new LoginToken("1"), "0", "");
+            }
+
+            // TEST
+
             try
             {
                 var res = await m_Session.Req
@@ -67,6 +79,17 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<ReservationHistories>> GetReservationHistory(int start, int end)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<ReservationHistories>("success", new ReservationHistories(new List<ReservationHistory>()
+                {
+                    new ReservationHistory("0", "2016-12-30", "19:00", "20:00", "三层自习区", "CANCEL")
+                }), "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -87,6 +110,25 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<BuildingInfo>> GetBuildings()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<BuildingInfo>("success", new BuildingInfo()
+                {
+                    Buildings = new List<Building>()
+                    {
+                        new Building()
+                        {
+                            Id = 0,
+                            Name = "主馆",
+                            Floor = 3
+                        }
+                    }
+                }, "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -107,6 +149,17 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<List<Room>>> GetRooms(int buildingId)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<List<Room>>("success", new List<Room>()
+                {
+                    new Room(0, "三层自习区", "3", "10", "3", "1", "20", "6")
+                }, "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -118,7 +171,7 @@ namespace Xiaoya.Library.Seat
                 var result = JsonConvert.DeserializeObject<Result<List<Room>>>(body);
 
                 return result;
-            } 
+            }
             catch
             {
                 return new Result<List<Room>>("failed", null, "", "网络错误");
@@ -127,6 +180,17 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<List<Reservation>>> GetCurrentReservation()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<List<Reservation>>("success", new List<Reservation>()
+                {
+                    new Reservation(0, "1122-332", "2017-3-12", 0, "RESERVE", "主馆三层自习区112", "19:00", "20:00", false, "", "")
+                }, "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -169,6 +233,14 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<string>> CancelReservation(int reservationId)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<string>("success", "请在图书馆内WIFI完成操作", "0", "请在图书馆内WIFI完成操作");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -189,6 +261,20 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<SeatLayout>> GetSeatLayout(int roomId, string date)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<SeatLayout>("success", new SeatLayout(0, "三层自习区", 2, 2, new Dictionary<string, SeatLayoutItem>()
+                {
+                    {"0000",  new SeatLayoutItem(1, "1", "seat", "FREE", false, false, false, false) },
+                    {"0001",  new SeatLayoutItem(2, "2", "seat", "FREE", false, false, false, false) },
+                    {"1000",  new SeatLayoutItem(3, "3", "seat", "FREE", false, false, false, false) },
+                    {"1001",  new SeatLayoutItem(4, "4", "seat", "FREE", false, false, false, false) },
+                }), "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -209,6 +295,17 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<StartTimes>> GetStartTimes(int seatId, string date)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<StartTimes>("success", new StartTimes(new List<Time>()
+                {
+                    new Time("0", "6:00")
+                }), "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -229,6 +326,17 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<EndTimes>> GetEndTimes(int seatId, string date, string startTimeId)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<EndTimes>("success", new EndTimes(new List<Time>()
+                {
+                    new Time("0", "10:00")
+                }), "0", "");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -249,6 +357,14 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<Reservation>> OrderSeat(int seatId, string date, string startTimeId, string endTimeId)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<Reservation>("failed", null, "", "请在校园网内操作");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -274,26 +390,14 @@ namespace Xiaoya.Library.Seat
 
         public async Task<Result<string>> CheckIn()
         {
-            try
+            // TEST
+
+            if (Username == TEST_USERNAME)
             {
-                var res = await m_Session.Req
-                    .Url(String.Format(URL_LEAVE, m_Token))
-                    .Get();
-
-                var body = await res.Content();
-
-                var result = JsonConvert.DeserializeObject<Result<string>>(body);
-
-                return result;
+                return new Result<string>("success", "请在图书馆内WIFI完成操作", "0", "请在图书馆内WIFI完成操作");
             }
-            catch
-            {
-                return new Result<string>("failed", null, "", "网络错误");
-            }
-        }
 
-        public async Task<Result<string>> Leave()
-        {
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -312,8 +416,44 @@ namespace Xiaoya.Library.Seat
             }
         }
 
+        public async Task<Result<string>> Leave()
+        {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<string>("success", "请在图书馆内WIFI完成操作", "0", "请在图书馆内WIFI完成操作");
+            }
+
+            // TEST
+            try
+            {
+                var res = await m_Session.Req
+                    .Url(String.Format(URL_LEAVE, m_Token))
+                    .Get();
+
+                var body = await res.Content();
+
+                var result = JsonConvert.DeserializeObject<Result<string>>(body);
+
+                return result;
+            }
+            catch
+            {
+                return new Result<string>("failed", null, "", "网络错误");
+            }
+        }
+
         public async Task<Result<string>> Stop()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new Result<string>("success", "请在图书馆内WIFI完成操作", "0", "请在图书馆内WIFI完成操作");
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req

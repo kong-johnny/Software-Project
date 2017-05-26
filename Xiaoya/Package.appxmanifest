@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="28364HongxuXu.-" Publisher="CN=539DED7C-3BB8-4B33-9658-FCE9874B9358" Version="1.1.3.0" />
+  <Identity Name="28364HongxuXu.-" Publisher="CN=539DED7C-3BB8-4B33-9658-FCE9874B9358" Version="1.1.7.0" />
   <mp:PhoneIdentity PhoneProductId="e090d22f-f8f5-45f3-9cca-d6a84cc73c00" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>北师小鸦 - 北师大教务助手</DisplayName>

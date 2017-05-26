@@ -78,7 +78,7 @@ namespace Xiaoya.Controls
                 CloseButtonText = "确定"
             };
 
-            await msgDialog.ShowAsync();
+            await msgDialog.ShowAsyncQueue();
         }
     }
 }

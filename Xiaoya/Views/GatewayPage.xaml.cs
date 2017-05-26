@@ -80,7 +80,7 @@ namespace Xiaoya.Views
         private async void Add_Clicked(object sender, RoutedEventArgs e)
         {
             var dialog = new GatewayInputDialog();
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            if (await dialog.ShowAsyncQueue() == ContentDialogResult.Primary)
             {
                 if (!GatewayClient.SaveUser(dialog.Username, dialog.Password))
                 {
@@ -90,7 +90,7 @@ namespace Xiaoya.Views
                         Message = "用户已存在",
                         CloseButtonText = "确定"
                     };
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
             }
             LoadUsers();

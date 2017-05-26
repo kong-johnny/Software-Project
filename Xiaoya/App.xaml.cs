@@ -139,7 +139,7 @@ namespace Xiaoya
                     Message = res,
                     CloseButtonText = "关闭"
                 };
-                await dialog.ShowAsync();
+                await dialog.ShowAsyncQueue();
             }
         }
 
@@ -157,7 +157,7 @@ namespace Xiaoya
                     Message = res,
                     CloseButtonText = "关闭"
                 };
-                await dialog.ShowAsync();
+                await dialog.ShowAsyncQueue();
             }
         }
 
@@ -175,7 +175,7 @@ namespace Xiaoya
                     Message = res,
                     CloseButtonText = "关闭"
                 };
-                await dialog.ShowAsync();
+                await dialog.ShowAsyncQueue();
             }
         }
 

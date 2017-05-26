@@ -10,6 +10,6 @@ namespace Xiaoya.Library.Seat.Models
     public class BuildingInfo
     {
         [JsonProperty(PropertyName = "buildings", ItemConverterType = typeof(BuildingInfoConverter))]
-        public List<Building> Buildings { get; private set; }
-    }
+        public List<Building> Buildings { get; set; }
+  }
 }

@@ -12,6 +12,8 @@ namespace Xiaoya.Library.User
 {
     public class LibraryClient
     {
+        private const string TEST_USERNAME = "200000000000";
+
         public string Username { get; set; }
         public string Password { get; set; }
 
@@ -36,6 +38,14 @@ namespace Xiaoya.Library.User
 
         public async Task<string> Login()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return null;
+            }
+
+            // TEST
             m_Key = "";
             try
             {
@@ -84,6 +94,17 @@ namespace Xiaoya.Library.User
 
         public async Task<List<BorrowedBook>> GetBorrowedBooks()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new List<BorrowedBook>()
+                {
+                    new BorrowedBook("西游记", "吴承恩", "2017-7-12", "", "主馆", "I120-2", "")
+                };
+            }
+
+            // TEST
             var books = new List<BorrowedBook>();
             try
             {
@@ -136,6 +157,14 @@ namespace Xiaoya.Library.User
 
         public async Task<string> RenewAll()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return "已续约过，续约失败";
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req

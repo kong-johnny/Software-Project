@@ -176,8 +176,7 @@
                                         <RowDefinition/>
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Text="{x:Bind ReservationModel.Location, Mode=OneWay}" Grid.Row="0" Grid.Column="0" FontSize="18" TextWrapping="Wrap" />
-                                    <TextBlock Text="{x:Bind ReservationModel.OnDate, Mode=OneWay}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" FontSize="18" TextWrapping="Wrap" />
+                                    <TextBlock Text="{x:Bind ReservationModel.Location, Mode=OneWay}" Margin="12, 0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="18" TextWrapping="Wrap" />
                                     <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="1" Grid.Column="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
@@ -208,8 +207,8 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="是否签到：" FontSize="14" TextWrapping="Wrap"/>
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ReservationModel.CheckedIn, Mode=OneWay}" FontSize="14" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="日期：" FontSize="14" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ReservationModel.OnDate, Mode=OneWay}" FontSize="14" TextWrapping="Wrap"/>
                                     </Grid>
                                     <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
                                         <Grid.ColumnDefinitions>
@@ -221,27 +220,37 @@
                                     </Grid>
                                 </Grid>
                                 <Grid HorizontalAlignment="Center" Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
                                     <Grid.Resources>
                                         <Style TargetType="Button">
                                             <Setter Property="Margin" Value="4"/>
                                         </Style>
                                     </Grid.Resources>
-                                    <Button Grid.Column="0" Content="刷新" Click="Refresh_Click"/>
-                                    <Button Grid.Column="1" Content="取消预约" Click="CancelReservation_Click"/>
-                                    <Button Grid.Column="2" Content="签到" Click="CheckIn_Clicked"/>
-                                    <Button Grid.Column="3" Content="暂离" Click="Leave_Clicked"/>
-                                    <Button Grid.Column="4" Content="结束使用" Click="Stop_Clicked"/>
+                                    <Grid HorizontalAlignment="Center" Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Content="刷新" Click="Refresh_Click"/>
+                                        <Button Grid.Column="1" Content="取消预约" Click="CancelReservation_Click"/>
+                                    </Grid>
+                                    <Grid HorizontalAlignment="Center" Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" Content="签到" Click="CheckIn_Clicked"/>
+                                        <Button Grid.Column="1" Content="暂离" Click="Leave_Clicked"/>
+                                        <Button Grid.Column="2" Content="结束使用" Click="Stop_Clicked"/>
+                                    </Grid>
                                 </Grid>
                                 <TextBlock Grid.Row="2" Margin="8" FontSize="22" HorizontalAlignment="Center" Text="历史记录"/>
                                 <ProgressBar Grid.Row="3" x:Name="LoadingProgressBar2" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
-                                <ListView Grid.Row="3" x:Name="ReservationListView" ItemsSource="{x:Bind ReservationHistoryModel}" Margin="0, 12" IsItemClickEnabled="True">
+                                <ListView Grid.Row="3" x:Name="ReservationListView" ItemsSource="{x:Bind ReservationHistoryModel}" Margin="0, 12" IsItemClickEnabled="True" ItemClick="ReservationListView_ItemClick">
                                     <ListView.ItemContainerTransitions>
                                         <TransitionCollection>
                                             <EntranceThemeTransition IsStaggeringEnabled="True" 
@@ -265,7 +274,6 @@
                                                     <ColumnDefinition/>
                                                 </Grid.ColumnDefinitions>
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition/>
                                                     <RowDefinition/>
                                                     <RowDefinition/>
                                                     <RowDefinition/>

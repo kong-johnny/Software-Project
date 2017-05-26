@@ -66,7 +66,7 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
                 if (Frame.CanGoBack)
                 {
                     Frame.GoBack();
@@ -97,7 +97,7 @@ namespace Xiaoya.Views
                         Message = err.Message,
                         CloseButtonText = "确定"
                     };
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
 
                 // Prepare for Sharing
@@ -128,7 +128,7 @@ namespace Xiaoya.Views
                         CloseButtonText = "确定"
                     };
 
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
                 finally
                 {
@@ -140,7 +140,7 @@ namespace Xiaoya.Views
         private async void PreviewAppBarButton_Clicked(object sender, RoutedEventArgs e)
         {
             var dialog = new PreviewExamArragementDialog();
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            if (await dialog.ShowAsyncQueue() == ContentDialogResult.Primary)
             {
                 SemesterComboBox.SelectedItem = null;
 
@@ -177,7 +177,7 @@ namespace Xiaoya.Views
                         CloseButtonText = "确定"
                     };
 
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
                 finally
                 {
@@ -204,12 +204,17 @@ namespace Xiaoya.Views
                 CloseButtonText = "确定"
             };
 
-            await msgDialog.ShowAsync();
+            await msgDialog.ShowAsyncQueue();
         }
 
         private void Share_Clicked(object sender, RoutedEventArgs e)
         {
-            DataTransferManager.ShowShareUI();
+            try
+            {
+                DataTransferManager.ShowShareUI();
+            }
+            catch
+            { }
         }
 
         private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)

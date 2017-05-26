@@ -69,7 +69,7 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
                 if (Frame.CanGoBack)
                 {
                     Frame.GoBack();
@@ -121,7 +121,7 @@ namespace Xiaoya.Views
                         CloseButtonText = "确定"
                     };
 
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
 
                 // Prepare for Sharing
@@ -210,7 +210,7 @@ namespace Xiaoya.Views
                         CloseButtonText = "确定"
                     };
 
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
                 finally
                 {
@@ -240,7 +240,7 @@ namespace Xiaoya.Views
                 CloseButtonText = "确定"
             };
 
-            await msgDialog.ShowAsync();
+            await msgDialog.ShowAsyncQueue();
         }
 
         private async void Refresh()
@@ -268,7 +268,7 @@ namespace Xiaoya.Views
                         CloseButtonText = "确定"
                     };
 
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
                 finally
                 {
@@ -480,7 +480,7 @@ namespace Xiaoya.Views
                 LoadingProgressBar.Visibility = Visibility.Collapsed;
 
                 GPADialog dialog = new GPADialog(report);
-                await dialog.ShowAsync();
+                await dialog.ShowAsyncQueue();
             }
             catch (Exception err)
             {
@@ -492,13 +492,18 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
             }
         }
 
         private void Share_Clicked(object sender, RoutedEventArgs e)
         {
-            DataTransferManager.ShowShareUI();
+            try
+            {
+                DataTransferManager.ShowShareUI();
+            }
+            catch
+            { }
         }
 
         private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)

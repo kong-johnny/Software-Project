@@ -114,7 +114,7 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
             }
         }
 
@@ -133,7 +133,7 @@ namespace Xiaoya.Views
                 Title = "请输入离线分享码",
                 Placeholder = "离线分享码"
             };
-            if ((await dialog.ShowAsync()) == ContentDialogResult.Primary)
+            if ((await dialog.ShowAsyncQueue()) == ContentDialogResult.Primary)
             {
                 try
                 {
@@ -151,7 +151,7 @@ namespace Xiaoya.Views
                         Message = "分享码格式错误：\n" + err.Message,
                         CloseButtonText = "确定"
                     };
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace Xiaoya.Views
                 Title = "请输入在线分享码",
                 Placeholder = "在线分享码"
             };
-            if ((await dialog.ShowAsync()) == ContentDialogResult.Primary)
+            if ((await dialog.ShowAsyncQueue()) == ContentDialogResult.Primary)
             {
                 try
                 {
@@ -190,7 +190,7 @@ namespace Xiaoya.Views
                         Message = "分享码格式错误：\n" + err.Message,
                         CloseButtonText = "确定"
                     };
-                    await msgDialog.ShowAsync();
+                    await msgDialog.ShowAsyncQueue();
                 }
             }
         }
@@ -270,7 +270,7 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
             }
         }
 
@@ -306,7 +306,7 @@ namespace Xiaoya.Views
 
                 TimeTableProgressBar.Visibility = Visibility.Collapsed;
 
-                await dialog.ShowAsync();
+                await dialog.ShowAsyncQueue();
             }
             catch (Exception err)
             {
@@ -318,7 +318,7 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
             }
         }
 
@@ -335,6 +335,18 @@ namespace Xiaoya.Views
 
         private async void DefaultTile_Clicked(object sender, RoutedEventArgs e)
         {
+            if (app.TimeTables.Count == 0)
+            {
+                var dialog = new CommonDialog
+                {
+                    Title = "提示",
+                    Message = "请先导入课程表",
+                    CloseButtonText = "确定"
+                };
+
+                await dialog.ShowAsyncQueue();
+                return;
+            }
             var tableCourses = app.TimeTables[TablePivot.SelectedIndex];
             localSettings.Values[AppConstants.TILE_TIMETABLE] = JsonConvert.SerializeObject(tableCourses);
             TileHelper.UpdateTile(await TileHelper.GetDefaultTileTimeTable());
@@ -346,7 +358,7 @@ namespace Xiaoya.Views
                 CloseButtonText = "确定"
             };
 
-            await msgDialog.ShowAsync();
+            await msgDialog.ShowAsyncQueue();
         }
 
     }

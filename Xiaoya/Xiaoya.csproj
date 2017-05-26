@@ -106,6 +106,7 @@
     <Compile Include="Controls\TimeTableItem.xaml.cs">
       <DependentUpon>TimeTableItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DialogExtension.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

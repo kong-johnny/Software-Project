@@ -256,7 +256,7 @@ namespace Xiaoya.Views
 
                 // login
                 LoginDialog loginDialog = new LoginDialog();
-                if (await loginDialog.ShowAsync() == ContentDialogResult.Primary)
+                if (await loginDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
                 {
                     isLogining = true;
                     app.Assist.Username = loginDialog.Username;
@@ -286,7 +286,7 @@ namespace Xiaoya.Views
                             CloseButtonText = "确定"
                         };
 
-                        await msgDialog.ShowAsync();
+                        await msgDialog.ShowAsyncQueue();
                     }
                     isLogining = false;
                 }
@@ -301,7 +301,7 @@ namespace Xiaoya.Views
                     CloseButtonText = "确定"
                 };
 
-                await msgDialog.ShowAsync();
+                await msgDialog.ShowAsyncQueue();
             }
             finally
             {

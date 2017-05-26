@@ -17,6 +17,9 @@ namespace Xiaoya
 {
     public class Assistant
     {
+
+        private const string TEST_USERNAME = "200000000000";
+
         /// <summary>
         /// Headers
         /// </summary>
@@ -198,6 +201,16 @@ namespace Xiaoya
                 return m_StudentInfo;
             }
 
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                m_StudentInfo = new StudentInfo(TEST_USERNAME, "2016", "计算机", "0", "2017", "0");
+                return m_StudentInfo;
+            }
+
+            // TEST
+
             try
             {
                 var res = await m_Session.Req
@@ -284,6 +297,17 @@ namespace Xiaoya
             {
                 return m_StudentDetails;
             }
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                m_StudentDetails = new StudentDetails("北京市", "0", "1996-10-31", "计算机班", "信科",
+                    "信科", "高中", "本科", "201411212027@mail.bnu.edu.cn", "0", "男", TEST_USERNAME, TEST_USERNAME, "山东省实验中学",
+                    "18888888888", "许宏旭", "汉族", TEST_USERNAME, "XUHONGXU", "2014", "20140901", "4", "计算机");
+                return m_StudentDetails;
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -353,6 +377,18 @@ namespace Xiaoya
             }
             if (IsLogin) return null;
             IsLogining = true;
+
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                IsLogining = false;
+                IsLogin = true;
+                return null;
+            }
+
+            // TEST
+
             try
             {
                 // Fetch login params needed
@@ -412,6 +448,19 @@ namespace Xiaoya
         /// <returns>A list of <see cref="ExamRound"/></returns>
         public async Task<List<ExamRound>> GetExamRounds()
         {
+
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new List<ExamRound>
+                {
+                    new ExamRound("2016-2017学年春季学期", "0")
+                };
+            }
+
+            // TEST
+
             try
             {
                 var res = await m_Session.Req
@@ -447,6 +496,20 @@ namespace Xiaoya
         /// <returns>A list of <see cref="ExamScore"/></returns>
         public async Task<List<ExamScore>> GetExamScores(int year, int semester, bool showMajor)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                if (year != 0 && semester == 0) return new List<ExamScore>();
+                return new List<ExamScore>
+                {
+                    new ExamScore("2016-2017春季学期", "[01]计算机网络", "3", "必修课", "90", "92", "91", true, true),
+                    new ExamScore("2016-2017春季学期", "[02]人工智能", "3", "必修课", "92", "95", "93", true, true),
+                    new ExamScore("2016-2017春季学期", "[03]数值分析", "3", "必修课", "89", "92", "90", true, true)
+                };
+            }
+
+            // TEST
             try
             {
                 var req = m_Session.Req
@@ -551,6 +614,17 @@ namespace Xiaoya
         /// <returns>A list of <see cref="ExamArrangement"/></returns>
         public async Task<List<ExamArrangement>> GetExamArrangement(ExamRound round)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new List<ExamArrangement>
+                {
+                    new ExamArrangement("[01]计算机网络", "3", "必修课", "考核", "2017-12-30(17周 星期五) 18:00-20:35", "教八楼101", "12"),
+                };
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -641,6 +715,17 @@ namespace Xiaoya
         /// <returns>A list of <see cref="TableSemester"/></returns>
         public async Task<List<TableSemester>> GetTableSemesters()
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new List<TableSemester>()
+                {
+                    new TableSemester("0", "2016-2017秋季学期")
+                };
+            }
+
+            // TEST
             try
             {
                 var res = await m_Session.Req
@@ -673,6 +758,18 @@ namespace Xiaoya
         /// <returns>A list of <see cref="TableCourse"/></returns>
         public async Task<TableCourses> GetTableCourses(TableSemester semester)
         {
+            // TEST
+
+            if (Username == TEST_USERNAME)
+            {
+                return new TableCourses("许宏旭", new List<TableCourse>()
+                {
+                    new TableCourse("0", "[01]计算机网络", "3", "[01]萧明忠", "1-8周 三[5-6] 电阶梯教室(159),1-17周 一[3-4] 电阶梯教室(159)", false),
+                    new TableCourse("1", "[02]人工智能", "3", "[01]王行测", "1-4,6,8-10,12-17周 三[1-3] 九304(118),6周 五[9-11] 九304(118),9周 三[5-7] 九301(118),11周 四[1-3] 九102(120)", false),
+                });
+            }
+
+            // TEST
             try
             {
                 // Base64 encoding content
