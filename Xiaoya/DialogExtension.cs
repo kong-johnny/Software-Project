@@ -34,7 +34,7 @@ namespace Xiaoya
             }
 
             var request = _currentDialogShowRequest = new TaskCompletionSource<ContentDialog>();
-            var result = await dialog.ShowAsyncQueue();
+            var result = await dialog.ShowAsync();
             _currentDialogShowRequest = null;
             request.SetResult(dialog);
 

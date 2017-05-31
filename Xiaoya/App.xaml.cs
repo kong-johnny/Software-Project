@@ -54,12 +54,17 @@ namespace Xiaoya
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            Assist = new Assistant();
-            LibraryClient = new LibraryClient();
-            SeatClient = new SeatClient();
-            GatewayClient = new GatewayClient();
-            AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
-            SavePC();
+            try
+            {
+                Assist = new Assistant();
+                LibraryClient = new LibraryClient();
+                SeatClient = new SeatClient();
+                GatewayClient = new GatewayClient();
+                AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
+                SavePC();
+            }
+            catch
+            { }
         }
 
         /// <summary>
@@ -67,12 +72,12 @@ namespace Xiaoya
         /// </summary>
         private async void SavePC()
         {
-            if (localSettings.Values.ContainsKey(AppConstants.ANALYTICS_SAVED)) return;
-
-            var pc = new AVObject("DotNet");
-
             try
             {
+                if (localSettings.Values.ContainsKey(AppConstants.ANALYTICS_SAVED)) return;
+
+                var pc = new AVObject("DotNet");
+
                 // get the system family information
                 var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
 
@@ -94,6 +99,14 @@ namespace Xiaoya
                 pc["OperatingSystem"] = clientDeviceInformation.OperatingSystem;
                 pc["SystemHardwareVersion"] = clientDeviceInformation.SystemHardwareVersion;
                 pc["systemFirmwareVersion"] = clientDeviceInformation.SystemFirmwareVersion;
+
+                Package package = Package.Current;
+                PackageId packageId = package.Id;
+                PackageVersion appVer = packageId.Version;
+
+                string xiaoyaVer = string.Format("{0}.{1}.{2}.{3}", appVer.Major, appVer.Minor, appVer.Build, appVer.Revision);
+                pc["XiaoyaVer"] = xiaoyaVer;
+
                 await pc.SaveAsync();
                 localSettings.Values[AppConstants.ANALYTICS_SAVED] = true;
             }
@@ -107,76 +120,95 @@ namespace Xiaoya
         /// </summary>
         private async void InitJumpList()
         {
-            JumpList jumpList = await JumpList.LoadCurrentAsync();
-            jumpList.SystemGroupKind = JumpListSystemGroupKind.None;
-            jumpList.Items.Clear();
+            try
+            {
+                JumpList jumpList = await JumpList.LoadCurrentAsync();
+                jumpList.SystemGroupKind = JumpListSystemGroupKind.None;
+                jumpList.Items.Clear();
 
-            var loginItem = JumpListItem.CreateWithArguments("/Login", "登录网关");
-            loginItem.Description = "登录北京师范大学上网认证网关";
-            var logoutItem = JumpListItem.CreateWithArguments("/Logout", "注销网关");
-            logoutItem.Description = "注销北京师范大学上网认证网关";
-            var forceItem = JumpListItem.CreateWithArguments("/ForceLogout", "强制离线网关");
-            forceItem.Description = "强制离线北京师范大学上网认证网关";
+                var loginItem = JumpListItem.CreateWithArguments("/Login", "登录网关");
+                loginItem.Description = "登录北京师范大学上网认证网关";
+                var logoutItem = JumpListItem.CreateWithArguments("/Logout", "注销网关");
+                logoutItem.Description = "注销北京师范大学上网认证网关";
+                var forceItem = JumpListItem.CreateWithArguments("/ForceLogout", "强制离线网关");
+                forceItem.Description = "强制离线北京师范大学上网认证网关";
 
-            jumpList.Items.Add(loginItem);
-            jumpList.Items.Add(logoutItem);
-            jumpList.Items.Add(forceItem);
+                jumpList.Items.Add(loginItem);
+                jumpList.Items.Add(logoutItem);
+                jumpList.Items.Add(forceItem);
 
-            await jumpList.SaveAsync();
+                await jumpList.SaveAsync();
+            }
+            catch
+            { }
         }
 
         private async void GatewayLogin()
         {
-            if (GatewayClient.GetDefaultUser() != null)
+            try
             {
-                this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
-                this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
-
-                var res = await this.GatewayClient.Login();
-                var dialog = new CommonDialog()
+                if (GatewayClient.GetDefaultUser() != null)
                 {
-                    Title = "提示",
-                    Message = res,
-                    CloseButtonText = "关闭"
-                };
-                await dialog.ShowAsyncQueue();
+                    this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                    this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                    var res = await this.GatewayClient.Login();
+                    var dialog = new CommonDialog()
+                    {
+                        Title = "提示",
+                        Message = res,
+                        CloseButtonText = "关闭"
+                    };
+                    await dialog.ShowAsyncQueue();
+                }
             }
+            catch { }
         }
 
         private async void GatewayLogout()
         {
-            if (GatewayClient.GetDefaultUser() != null)
+            try
             {
-                this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
-                this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
-
-                var res = await this.GatewayClient.Logout();
-                var dialog = new CommonDialog()
+                if (GatewayClient.GetDefaultUser() != null)
                 {
-                    Title = "提示",
-                    Message = res,
-                    CloseButtonText = "关闭"
-                };
-                await dialog.ShowAsyncQueue();
+                    this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                    this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                    var res = await this.GatewayClient.Logout();
+                    var dialog = new CommonDialog()
+                    {
+                        Title = "提示",
+                        Message = res,
+                        CloseButtonText = "关闭"
+                    };
+                    await dialog.ShowAsyncQueue();
+                }
             }
+            catch
+            { }
         }
 
         private async void GatewayForce()
         {
-            if (GatewayClient.GetDefaultUser() != null)
+            try
             {
-                this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
-                this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
-
-                var res = await this.GatewayClient.Force();
-                var dialog = new CommonDialog()
+                if (GatewayClient.GetDefaultUser() != null)
                 {
-                    Title = "提示",
-                    Message = res,
-                    CloseButtonText = "关闭"
-                };
-                await dialog.ShowAsyncQueue();
+                    this.GatewayClient.Username = GatewayClient.GetDefaultUser().Username;
+                    this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
+
+                    var res = await this.GatewayClient.Force();
+                    var dialog = new CommonDialog()
+                    {
+                        Title = "提示",
+                        Message = res,
+                        CloseButtonText = "关闭"
+                    };
+                    await dialog.ShowAsyncQueue();
+                }
             }
+            catch
+            { }
         }
 
         /// <summary>
