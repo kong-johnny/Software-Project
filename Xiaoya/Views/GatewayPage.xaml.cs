@@ -84,11 +84,9 @@ namespace Xiaoya.Views
             {
                 if (!GatewayClient.SaveUser(dialog.Username, dialog.Password))
                 {
-                    var msgDialog = new CommonDialog()
+                    var msgDialog = new CommonDialog("用户已存在")
                     {
                         Title = "提示",
-                        Message = "用户已存在",
-                        CloseButtonText = "确定"
                     };
                     await msgDialog.ShowAsyncQueue();
                 }

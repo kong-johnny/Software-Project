@@ -279,11 +279,9 @@ namespace Xiaoya.Views
                     else
                     {
                         LoginText.Text = "登录以启用所有功能";
-                        var msgDialog = new CommonDialog
+                        var msgDialog = new CommonDialog(res)
                         {
                             Title = "提示",
-                            Message = res,
-                            CloseButtonText = "确定"
                         };
 
                         await msgDialog.ShowAsyncQueue();
@@ -294,11 +292,9 @@ namespace Xiaoya.Views
             catch (Exception err)
             {
                 LoginText.Text = "登录以启用所有功能";
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog(err.Message)
                 {
                     Title = "错误",
-                    Message = err.Message,
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();

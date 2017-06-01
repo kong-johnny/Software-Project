@@ -22,20 +22,24 @@ namespace Xiaoya.Views
     public sealed partial class CommonDialog : ContentDialog
     {
 
-        public string Message { get; set; }
+        public string Message { get; private set; }
 
-        public CommonDialog()
+        public CommonDialog(string message)
         {
             this.InitializeComponent();
-            if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "DefaultButton"))
+            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "DefaultButton"))
             {
                 this.DefaultButton = ContentDialogButton.Primary;
             }
+            Message = message;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
         }
 
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+        }
     }
 }

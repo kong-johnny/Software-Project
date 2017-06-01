@@ -107,11 +107,9 @@ namespace Xiaoya.Views
             }
             catch (Exception err)
             {
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog(err.Message)
                 {
                     Title = "错误",
-                    Message = err.Message,
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();
@@ -145,11 +143,9 @@ namespace Xiaoya.Views
                 }
                 catch (Exception err)
                 {
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog("分享码格式错误：\n" + err.Message)
                     {
                         Title = "错误",
-                        Message = "分享码格式错误：\n" + err.Message,
-                        CloseButtonText = "确定"
                     };
                     await msgDialog.ShowAsyncQueue();
                 }
@@ -170,7 +166,7 @@ namespace Xiaoya.Views
 
                     if (code.Contains("："))
                     {
-                        code.Substring(code.IndexOf("：") + 1);
+                        code = code.Substring(code.IndexOf("：") + 1).Trim();
                     }
 
                     var content = AVObject.CreateWithoutData("TimeTable", code);
@@ -184,11 +180,9 @@ namespace Xiaoya.Views
                 }
                 catch (Exception err)
                 {
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog("分享码格式错误：\n" + err.Message)
                     {
                         Title = "错误",
-                        Message = "分享码格式错误：\n" + err.Message,
-                        CloseButtonText = "确定"
                     };
                     await msgDialog.ShowAsyncQueue();
                 }
@@ -263,11 +257,9 @@ namespace Xiaoya.Views
             }
             catch (Exception err)
             {
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog(err.Message)
                 {
                     Title = "错误",
-                    Message = err.Message,
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();
@@ -311,11 +303,9 @@ namespace Xiaoya.Views
             catch (Exception err)
             {
                 TimeTableProgressBar.Visibility = Visibility.Collapsed;
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog(err.Message)
                 {
                     Title = "错误",
-                    Message = err.Message,
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();
@@ -337,11 +327,9 @@ namespace Xiaoya.Views
         {
             if (app.TimeTables.Count == 0)
             {
-                var dialog = new CommonDialog
+                var dialog = new CommonDialog("请先导入课程表")
                 {
                     Title = "提示",
-                    Message = "请先导入课程表",
-                    CloseButtonText = "确定"
                 };
 
                 await dialog.ShowAsyncQueue();
@@ -351,11 +339,9 @@ namespace Xiaoya.Views
             localSettings.Values[AppConstants.TILE_TIMETABLE] = JsonConvert.SerializeObject(tableCourses);
             TileHelper.UpdateTile(await TileHelper.GetDefaultTileTimeTable());
 
-            var msgDialog = new CommonDialog
+            var msgDialog = new CommonDialog("设置成功！")
             {
                 Title = "提示",
-                Message = "设置成功！",
-                CloseButtonText = "确定"
             };
 
             await msgDialog.ShowAsyncQueue();

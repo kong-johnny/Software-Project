@@ -127,61 +127,40 @@ namespace Xiaoya.Views
 
         async Task LoadReservations()
         {
-            try
+            LoadingProgressBar2.Visibility = Visibility.Visible;
+            var currentReservation = await app.SeatClient.GetCurrentReservation();
+            ReservationModel.Clone(defaultReservation);
+            if (currentReservation.Data != null && currentReservation.Data.Count > 0)
             {
-                LoadingProgressBar2.Visibility = Visibility.Visible;
-                var currentReservation = await app.SeatClient.GetCurrentReservation();
-                ReservationModel.Clone(defaultReservation);
-                if (currentReservation.Data != null && currentReservation.Data.Count > 0)
-                {
-                    ReservationModel.Clone(currentReservation.Data.First());
-                }
-
-                var histories = await app.SeatClient.GetReservationHistory(1, 10);
-                ReservationHistoryModel.Clear();
-                if (histories.Data != null)
-                {
-                    foreach (var item in histories.Data.Items) ReservationHistoryModel.Add(item);
-                }
-                LoadingProgressBar2.Visibility = Visibility.Collapsed;
+                ReservationModel.Clone(currentReservation.Data.First());
             }
-            catch
+
+            var histories = await app.SeatClient.GetReservationHistory(1, 10);
+            ReservationHistoryModel.Clear();
+            if (histories.Data != null)
             {
-
+                foreach (var item in histories.Data.Items) ReservationHistoryModel.Add(item);
             }
+            LoadingProgressBar2.Visibility = Visibility.Collapsed;
         }
 
         async Task LoadBorrowedBooks()
         {
-            try
-            {
-                LoadingProgressBar.Visibility = Visibility.Visible;
-                BorrowedBooks.Clear();
-                var res = await app.LibraryClient.GetBorrowedBooks();
-                foreach (var item in res) BorrowedBooks.Add(item);
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
-            }
-            catch
-            {
-
-            }
+            LoadingProgressBar.Visibility = Visibility.Visible;
+            BorrowedBooks.Clear();
+            var res = await app.LibraryClient.GetBorrowedBooks();
+            foreach (var item in res) BorrowedBooks.Add(item);
+            LoadingProgressBar.Visibility = Visibility.Collapsed;
         }
 
         async Task LoadSeat()
         {
-            try
+            var res = await app.SeatClient.GetBuildings();
+            BuildingModel.Clear();
+            if (res.Data != null)
             {
-                var res = await app.SeatClient.GetBuildings();
-                BuildingModel.Clear();
-                if (res.Data != null)
-                {
-                    foreach (var item in res.Data.Buildings) BuildingModel.Add(item);
-                    BuildingComboBox.SelectedIndex = 0;
-                }
-            }
-            catch
-            {
-
+                foreach (var item in res.Data.Buildings) BuildingModel.Add(item);
+                BuildingComboBox.SelectedIndex = 0;
             }
         }
 
@@ -218,11 +197,9 @@ namespace Xiaoya.Views
                         }
                         else
                         {
-                            var msgDialog = new CommonDialog
+                            var msgDialog = new CommonDialog(res2.Message)
                             {
                                 Title = "提示",
-                                Message = res2.Message,
-                                CloseButtonText = "确定"
                             };
 
                             await msgDialog.ShowAsyncQueue();
@@ -230,11 +207,9 @@ namespace Xiaoya.Views
                     }
                     else
                     {
-                        var msgDialog = new CommonDialog
+                        var msgDialog = new CommonDialog(res)
                         {
                             Title = "提示",
-                            Message = res,
-                            CloseButtonText = "确定"
                         };
 
                         await msgDialog.ShowAsyncQueue();
@@ -252,250 +227,199 @@ namespace Xiaoya.Views
 
         private async void BorrowedBookListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            try
+            var item = (BorrowedBook)e.ClickedItem;
+            var msgDialog = new CommonDialog("应还日期：\t" + item.ReturnDate +
+                            "\n作者：\t\t" + item.Author +
+                            "\n位置：\t\t" + item.Building +
+                            "\n索书号：\t" + item.Position +
+                            "\n罚款：\t\t" + item.Fine)
             {
-                var item = (BorrowedBook)e.ClickedItem;
-                var msgDialog = new CommonDialog
-                {
-                    Title = item.Title + " " + item.Description,
-                    Message = "应还日期：\t" + item.ReturnDate +
-                                "\n作者：\t\t" + item.Author +
-                                "\n位置：\t\t" + item.Building +
-                                "\n索书号：\t" + item.Position +
-                                "\n罚款：\t\t" + item.Fine,
-                    CloseButtonText = "确定"
-                };
+                Title = item.Title + " " + item.Description,
+            };
 
-                await msgDialog.ShowAsyncQueue();
-            }
-            catch
-            {
-
-            }
+            await msgDialog.ShowAsyncQueue();
         }
 
         private async void RenewAll_Clicked(object sender, RoutedEventArgs e)
         {
-            try
+            LoadingProgressBar.Visibility = Visibility.Visible;
+            var res = await app.LibraryClient.RenewAll();
+
+            if (res == null) res = "未知错误";
+
+            var msgDialog = new CommonDialog(res)
             {
-                LoadingProgressBar.Visibility = Visibility.Visible;
-                var res = await app.LibraryClient.RenewAll();
+                Title = "提示",
+            };
 
-                if (res == null) res = "未知错误";
-
-                var msgDialog = new CommonDialog
-                {
-                    Title = "提示",
-                    Message = res,
-                    CloseButtonText = "确定"
-                };
-
-                await msgDialog.ShowAsyncQueue();
-                LoadingProgressBar.Visibility = Visibility.Collapsed;
-            } 
-            catch
-            {
-
-            }
+            await msgDialog.ShowAsyncQueue();
+            LoadingProgressBar.Visibility = Visibility.Collapsed;
         }
 
         private async void CancelReservation_Click(object sender, RoutedEventArgs e)
         {
-            try
+            LoadingProgressBar2.Visibility = Visibility.Visible;
+            var res = await app.SeatClient.CancelReservation(ReservationModel.Id);
+            if (res.Status == "success")
             {
-                LoadingProgressBar2.Visibility = Visibility.Visible;
-                var res = await app.SeatClient.CancelReservation(ReservationModel.Id);
-                if (res.Status == "success")
-                {
-                    await LoadReservations();
-                    await LoadSeat();
-                }
-                else
-                {
-                    var msgDialog = new CommonDialog
-                    {
-                        Title = "提示",
-                        Message = res.Message,
-                        CloseButtonText = "确定"
-                    };
-
-                    await msgDialog.ShowAsyncQueue();
-                }
-                LoadingProgressBar2.Visibility = Visibility.Collapsed;
+                await LoadReservations();
+                await LoadSeat();
             }
-            catch
+            else
             {
+                var msgDialog = new CommonDialog(res.Message)
+                {
+                    Title = "提示",
+                };
 
+                await msgDialog.ShowAsyncQueue();
             }
+            LoadingProgressBar2.Visibility = Visibility.Collapsed;
         }
 
         private async void BuildingComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            LoadingProgressBar3.Visibility = Visibility.Visible;
+            var item = (Building)BuildingComboBox.SelectedItem;
+            if (item == null) return;
+            var res = await app.SeatClient.GetRooms(item.Id);
+            RoomModel.Clear();
+            if (res.Data != null)
             {
-                LoadingProgressBar3.Visibility = Visibility.Visible;
-                var item = (Building)BuildingComboBox.SelectedItem;
-                if (item == null) return;
-                var res = await app.SeatClient.GetRooms(item.Id);
-                RoomModel.Clear();
-                if (res.Data != null)
-                {
-                    foreach (var room in res.Data) RoomModel.Add(room);
-                    RoomComboBox.SelectedIndex = 0;
-                }
-                LoadingProgressBar3.Visibility = Visibility.Collapsed;
+                foreach (var room in res.Data) RoomModel.Add(room);
+                RoomComboBox.SelectedIndex = 0;
             }
-            catch
-            { }
+            LoadingProgressBar3.Visibility = Visibility.Collapsed;
         }
 
         private async void RoomComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            LoadingProgressBar3.Visibility = Visibility.Visible;
+            var item = (Room)RoomComboBox.SelectedItem;
+            if (item == null) return;
+            var res = await app.SeatClient.GetSeatLayout(item.RoomId, DateTime.Now.ToString("yyyy-MM-dd"));
+
+            SeatLayoutGrid.RowDefinitions.Clear();
+            SeatLayoutGrid.ColumnDefinitions.Clear();
+            SeatLayoutGrid.Children.Clear();
+
+            if (res.Data != null)
             {
-                LoadingProgressBar3.Visibility = Visibility.Visible;
-                var item = (Room)RoomComboBox.SelectedItem;
-                if (item == null) return;
-                var res = await app.SeatClient.GetSeatLayout(item.RoomId, DateTime.Now.ToString("yyyy-MM-dd"));
-
-                SeatLayoutGrid.RowDefinitions.Clear();
-                SeatLayoutGrid.ColumnDefinitions.Clear();
-                SeatLayoutGrid.Children.Clear();
-
-                if (res.Data != null)
-                {
-                    for (int i = 0; i < res.Data.Rows; ++i)
-                        SeatLayoutGrid.RowDefinitions.Add(new RowDefinition()
-                        {
-                            Height = GridLength.Auto,
-                            MinHeight = 20
-                        });
-                    for (int i = 0; i < res.Data.Columns; ++i)
-                        SeatLayoutGrid.ColumnDefinitions.Add(new ColumnDefinition()
-                        {
-                            Width = GridLength.Auto,
-                            MinWidth = 20
-                        });
-
-                    foreach (var seat in res.Data.Layout)
+                for (int i = 0; i < res.Data.Rows; ++i)
+                    SeatLayoutGrid.RowDefinitions.Add(new RowDefinition()
                     {
-                        var i = Convert.ToInt32(seat.Key);
-                        var row = i / 1000;
-                        var col = i % 1000;
-                        if (seat.Value.Type == "seat")
+                        Height = GridLength.Auto,
+                        MinHeight = 20
+                    });
+                for (int i = 0; i < res.Data.Columns; ++i)
+                    SeatLayoutGrid.ColumnDefinitions.Add(new ColumnDefinition()
+                    {
+                        Width = GridLength.Auto,
+                        MinWidth = 20
+                    });
+
+                foreach (var seat in res.Data.Layout)
+                {
+                    var i = Convert.ToInt32(seat.Key);
+                    var row = i / 1000;
+                    var col = i % 1000;
+                    if (seat.Value.Type == "seat")
+                    {
+                        var button = new Button()
                         {
-                            var button = new Button()
-                            {
-                                Content = seat.Value.Name,
-                            };
-                            ToolTipService.SetToolTip(button, seat.Value.Name +
-                                "\n状态：" + seat.Value.ShowStatus +
-                                "\n电源：" + (seat.Value.Power.GetValueOrDefault(false) ? "有" : "无"));
-                            if (seat.Value.Status == "IN_USE")
-                            {
-                                button.Background = new SolidColorBrush(Color.FromArgb(180, 255, 100, 100));
-                            }
-                            else if (seat.Value.Status == "FREE")
-                            {
-                                if (seat.Value.Power.GetValueOrDefault(false))
-                                    button.Background = new SolidColorBrush(Color.FromArgb(180, 100, 100, 255));
-                                else
-                                    button.Background = new SolidColorBrush(Color.FromArgb(180, 100, 255, 100));
-                            }
-                            else if (seat.Value.Status == "BOOKED")
-                            {
-                                button.Background = new SolidColorBrush(Color.FromArgb(180, 155, 120, 100));
-                            }
-                            else if (seat.Value.Status == "AWAY")
-                            {
-                                button.Background = new SolidColorBrush(Color.FromArgb(180, 255, 220, 100));
-                            }
-                            button.DataContext = seat.Value;
-                            button.Click += Order_Clicked;
-                            SeatLayoutGrid.Children.Add(button);
-                            Grid.SetRow(button, row);
-                            Grid.SetColumn(button, col);
-                        }
-                        else if (seat.Value.Type == "word")
+                            Content = seat.Value.Name,
+                        };
+                        ToolTipService.SetToolTip(button, seat.Value.Name +
+                            "\n状态：" + seat.Value.ShowStatus +
+                            "\n电源：" + (seat.Value.Power.GetValueOrDefault(false) ? "有" : "无"));
+                        if (seat.Value.Status == "IN_USE")
                         {
-                            var text = new TextBlock()
-                            {
-                                Text = seat.Value.Name
-                            };
-                            SeatLayoutGrid.Children.Add(text);
-                            Grid.SetRow(text, row);
-                            Grid.SetColumn(text, col);
+                            button.Background = new SolidColorBrush(Color.FromArgb(180, 255, 100, 100));
                         }
+                        else if (seat.Value.Status == "FREE")
+                        {
+                            if (seat.Value.Power.GetValueOrDefault(false))
+                                button.Background = new SolidColorBrush(Color.FromArgb(180, 100, 100, 255));
+                            else
+                                button.Background = new SolidColorBrush(Color.FromArgb(180, 100, 255, 100));
+                        }
+                        else if (seat.Value.Status == "BOOKED")
+                        {
+                            button.Background = new SolidColorBrush(Color.FromArgb(180, 155, 120, 100));
+                        }
+                        else if (seat.Value.Status == "AWAY")
+                        {
+                            button.Background = new SolidColorBrush(Color.FromArgb(180, 255, 220, 100));
+                        }
+                        button.DataContext = seat.Value;
+                        button.Click += Order_Clicked;
+                        SeatLayoutGrid.Children.Add(button);
+                        Grid.SetRow(button, row);
+                        Grid.SetColumn(button, col);
+                    }
+                    else if (seat.Value.Type == "word")
+                    {
+                        var text = new TextBlock()
+                        {
+                            Text = seat.Value.Name
+                        };
+                        SeatLayoutGrid.Children.Add(text);
+                        Grid.SetRow(text, row);
+                        Grid.SetColumn(text, col);
                     }
                 }
-                LoadingProgressBar3.Visibility = Visibility.Collapsed;
             }
-            catch
-            { }
+            LoadingProgressBar3.Visibility = Visibility.Collapsed;
         }
 
         private async void Order_Clicked(object sender, RoutedEventArgs e)
         {
-            try
+            var button = (Button)e.OriginalSource;
+            if (button == null) return;
+
+            var seat = (SeatLayoutItem)button.DataContext;
+            if (seat == null) return;
+
+            var msgDialog = new CommonDialog("状态：" + seat.ShowStatus +
+                        "\n电源：" + (seat.Power.GetValueOrDefault(false) ? "有" : "无"))
             {
-                var button = (Button)e.OriginalSource;
-                if (button == null) return;
+                Title = "预约：" + seat.Name,
+                PrimaryButtonText = "预约",
+            };
 
-                var seat = (SeatLayoutItem)button.DataContext;
-                if (seat == null) return;
-
-                var msgDialog = new CommonDialog
+            if (await msgDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
+            {
+                // Order
+                var chooseTimeDialog = new ChooseSeatTimeDialog(seat.Id.GetValueOrDefault(0));
+                if (await chooseTimeDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
                 {
-                    Title = "预约：" + seat.Name,
-                    Message = "状态：" + seat.ShowStatus +
-                            "\n电源：" + (seat.Power.GetValueOrDefault(false) ? "有" : "无"),
-                    PrimaryButtonText = "预约",
-                    CloseButtonText = "取消"
-                };
+                    var res = await app.SeatClient.OrderSeat(seat.Id.GetValueOrDefault(0),
+                        DateTime.Now.ToString("yyyy-MM-dd"),
+                        chooseTimeDialog.StartTime.Id,
+                        chooseTimeDialog.EndTime.Id
+                    );
 
-                if (await msgDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
-                {
-                    // Order
-                    var chooseTimeDialog = new ChooseSeatTimeDialog()
+                    if (res.Status == "success" && res.Data != null)
                     {
-                        SeatId = seat.Id.GetValueOrDefault(0)
-                    };
-                    if (await chooseTimeDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
+                        var dialog = new CommonDialog(res.Data.Location + "\n" +
+                                "凭证号：" + res.Data.Receipt + "\n")
+                        {
+                            Title = "预约成功",
+                        };
+                        await dialog.ShowAsyncQueue();
+                        await LoadReservations();
+                        await LoadSeat();
+                    }
+                    else
                     {
-                        var res = await app.SeatClient.OrderSeat(seat.Id.GetValueOrDefault(0),
-                            DateTime.Now.ToString("yyyy-MM-dd"),
-                            chooseTimeDialog.StartTime.Id,
-                            chooseTimeDialog.EndTime.Id
-                        );
-
-                        if (res.Status == "success" && res.Data != null)
+                        var dialog = new CommonDialog(res.Message)
                         {
-                            var dialog = new CommonDialog
-                            {
-                                Title = "预约成功",
-                                Message = res.Data.Location + "\n" +
-                                    "凭证号：" + res.Data.Receipt + "\n",
-                                CloseButtonText = "确定"
-                            };
-                            await dialog.ShowAsyncQueue();
-                            await LoadReservations();
-                            await LoadSeat();
-                        }
-                        else
-                        {
-                            var dialog = new CommonDialog
-                            {
-                                Title = "错误",
-                                Message = res.Message,
-                                CloseButtonText = "确定"
-                            };
-                            await dialog.ShowAsyncQueue();
-                        }
+                            Title = "错误",
+                        };
+                        await dialog.ShowAsyncQueue();
                     }
                 }
             }
-            catch
-            { }
         }
 
         private async void Refresh_Click(object sender, RoutedEventArgs e)
@@ -505,83 +429,53 @@ namespace Xiaoya.Views
 
         private async void CheckIn_Clicked(object sender, RoutedEventArgs e)
         {
-            try
+            LoadingProgressBar2.Visibility = Visibility.Visible;
+            var res = await app.SeatClient.CheckIn();
+            var dialog = new CommonDialog(res.Message)
             {
-                LoadingProgressBar2.Visibility = Visibility.Visible;
-                var res = await app.SeatClient.CheckIn();
-                var dialog = new CommonDialog
-                {
-                    Title = "提示",
-                    Message = res.Message,
-                    CloseButtonText = "确定"
-                };
-                await dialog.ShowAsyncQueue();
-                LoadingProgressBar2.Visibility = Visibility.Collapsed;
-            }
-            catch
-            { }
+                Title = "提示",
+            };
+            await dialog.ShowAsyncQueue();
+            LoadingProgressBar2.Visibility = Visibility.Collapsed;
         }
         private async void Leave_Clicked(object sender, RoutedEventArgs e)
         {
-            try
+            LoadingProgressBar2.Visibility = Visibility.Visible;
+            var res = await app.SeatClient.Leave();
+            var dialog = new CommonDialog(res.Message)
             {
-                LoadingProgressBar2.Visibility = Visibility.Visible;
-                var res = await app.SeatClient.Leave();
-                var dialog = new CommonDialog
-                {
-                    Title = "提示",
-                    Message = res.Message,
-                    CloseButtonText = "确定"
-                };
-                await dialog.ShowAsyncQueue();
-                LoadingProgressBar2.Visibility = Visibility.Collapsed;
-            }
-            catch
-            {
-
-            }
+                Title = "提示",
+            };
+            await dialog.ShowAsyncQueue();
+            LoadingProgressBar2.Visibility = Visibility.Collapsed;
         }
         private async void Stop_Clicked(object sender, RoutedEventArgs e)
         {
-            try
+            LoadingProgressBar2.Visibility = Visibility.Visible;
+            var res = await app.SeatClient.Stop();
+            var dialog = new CommonDialog(res.Message)
             {
-                LoadingProgressBar2.Visibility = Visibility.Visible;
-                var res = await app.SeatClient.Stop();
-                var dialog = new CommonDialog
-                {
-                    Title = "提示",
-                    Message = res.Message,
-                    CloseButtonText = "确定"
-                };
-                await dialog.ShowAsyncQueue();
-                LoadingProgressBar2.Visibility = Visibility.Collapsed;
-            }
-            catch
-            { }
+                Title = "提示",
+            };
+            await dialog.ShowAsyncQueue();
+            LoadingProgressBar2.Visibility = Visibility.Collapsed;
         }
 
         private async void ReservationListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            try
+            var item = (ReservationHistory)e.ClickedItem;
+            if (item.State == "RESERVE")
             {
-                var item = (ReservationHistory)e.ClickedItem;
-                if (item.State == "RESERVE")
+                var dialog = new CommonDialog("是否取消预约：" + item.Date + item.Location)
                 {
-                    var dialog = new CommonDialog
-                    {
-                        Title = "取消预约",
-                        Message = "是否取消预约：" + item.Date + item.Location,
-                        PrimaryButtonText = "取消预约",
-                        CloseButtonText = "关闭"
-                    };
-                    if (await dialog.ShowAsyncQueue() == ContentDialogResult.Primary)
-                    {
-                        await app.SeatClient.CancelReservation(Convert.ToInt32(item.Id));
-                    }
+                    Title = "取消预约",
+                    PrimaryButtonText = "取消预约",
+                };
+                if (await dialog.ShowAsyncQueue() == ContentDialogResult.Primary)
+                {
+                    await app.SeatClient.CancelReservation(Convert.ToInt32(item.Id));
                 }
             }
-            catch
-            { }
         }
     }
 }

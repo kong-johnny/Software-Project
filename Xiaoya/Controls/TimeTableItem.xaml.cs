@@ -71,11 +71,9 @@ namespace Xiaoya.Controls
                     "时间地点：\n\n" + course.LocationTime + "\n\n--------\n\n";
             }
 
-            var msgDialog = new CommonDialog
+            var msgDialog = new CommonDialog(content)
             {
                 Title = "课程详情",
-                Message = content,
-                CloseButtonText = "确定"
             };
 
             await msgDialog.ShowAsyncQueue();

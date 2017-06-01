@@ -25,16 +25,7 @@ namespace Xiaoya.Views
 
         private App app = (App)Application.Current;
 
-        private int _seatId = 0;
-        public int SeatId
-        {
-            get => _seatId;
-            set
-            {
-                _seatId = value;
-                LoadStartTimes();
-            }
-        }
+        public int SeatId { get; private set; }
 
         private ObservableCollection<Time> m_StartTimeModel = new ObservableCollection<Time>();
         public ObservableCollection<Time> StartTimeModel { get => m_StartTimeModel; }
@@ -45,9 +36,11 @@ namespace Xiaoya.Views
         public Time StartTime { get; private set; }
         public Time EndTime { get; private set; }
 
-        public ChooseSeatTimeDialog()
+        public ChooseSeatTimeDialog(int seatId)
         {
             this.InitializeComponent();
+            SeatId = seatId;
+            LoadStartTimes();
             if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "DefaultButton"))
             {
                 this.DefaultButton = ContentDialogButton.Primary;

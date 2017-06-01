@@ -76,11 +76,9 @@ namespace Xiaoya.Views
             catch (Exception err)
             {
                 LoadingProgressBar.Visibility = Visibility.Collapsed;
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog(err.Message)
                 {
                     Title = "错误",
-                    Message = err.Message,
-                    CloseButtonText = "确定"
                 };
                 await msgDialog.ShowAsyncQueue();
             }

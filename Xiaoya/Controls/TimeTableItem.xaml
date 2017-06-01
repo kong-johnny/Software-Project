@@ -14,8 +14,8 @@
             <SolidColorBrush Color="{ThemeResource SystemAccentColor}" Opacity="{x:Bind Opacity}"/>
         </Button.Background>
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBlock Foreground="{ThemeResource AccentButtonForeground}" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Text="{x:Bind CourseName}"/>
-            <TextBlock FontSize="14" TextAlignment="Center" Foreground="{ThemeResource AccentButtonForeground}" Margin="8" VerticalAlignment="Stretch" TextWrapping="Wrap" MaxLines="0" Text="{x:Bind Description}"/>
+            <TextBlock Foreground="White" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Text="{x:Bind CourseName}"/>
+            <TextBlock FontSize="14" TextAlignment="Center" Foreground="White" Margin="8" VerticalAlignment="Stretch" TextWrapping="Wrap" MaxLines="0" Text="{x:Bind Description}"/>
         </StackPanel>
     </Button>
 </UserControl>

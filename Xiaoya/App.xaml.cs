@@ -1,4 +1,5 @@
 ﻿using LeanCloud;
+using Microsoft.HockeyApp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -56,6 +57,7 @@ namespace Xiaoya
             this.Suspending += OnSuspending;
             try
             {
+                HockeyClient.Current.Configure("87334d12c9e34259817be32a66c6a767");
                 Assist = new Assistant();
                 LibraryClient = new LibraryClient();
                 SeatClient = new SeatClient();
@@ -153,11 +155,9 @@ namespace Xiaoya
                     this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
 
                     var res = await this.GatewayClient.Login();
-                    var dialog = new CommonDialog()
+                    var dialog = new CommonDialog(res)
                     {
                         Title = "提示",
-                        Message = res,
-                        CloseButtonText = "关闭"
                     };
                     await dialog.ShowAsyncQueue();
                 }
@@ -175,11 +175,9 @@ namespace Xiaoya
                     this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
 
                     var res = await this.GatewayClient.Logout();
-                    var dialog = new CommonDialog()
+                    var dialog = new CommonDialog(res)
                     {
                         Title = "提示",
-                        Message = res,
-                        CloseButtonText = "关闭"
                     };
                     await dialog.ShowAsyncQueue();
                 }
@@ -198,11 +196,9 @@ namespace Xiaoya
                     this.GatewayClient.Password = GatewayClient.GetDefaultUser().Password;
 
                     var res = await this.GatewayClient.Force();
-                    var dialog = new CommonDialog()
+                    var dialog = new CommonDialog(res)
                     {
                         Title = "提示",
-                        Message = res,
-                        CloseButtonText = "关闭"
                     };
                     await dialog.ShowAsyncQueue();
                 }

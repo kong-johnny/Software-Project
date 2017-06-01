@@ -59,11 +59,9 @@ namespace Xiaoya.Views
 
             if (!app.Assist.IsLogin)
             {
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog("请先登录！")
                 {
                     Title = "提示",
-                    Message = "请先登录！",
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();
@@ -91,11 +89,9 @@ namespace Xiaoya.Views
                 catch (Exception err)
                 {
                     LoadingProgressBar.Visibility = Visibility.Collapsed;
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog(err.Message)
                     {
                         Title = "错误",
-                        Message = err.Message,
-                        CloseButtonText = "确定"
                     };
                     await msgDialog.ShowAsyncQueue();
                 }
@@ -121,11 +117,9 @@ namespace Xiaoya.Views
                 }
                 catch (Exception err)
                 {
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog(err.Message)
                     {
                         Title = "错误",
-                        Message = err.Message,
-                        CloseButtonText = "确定"
                     };
 
                     await msgDialog.ShowAsyncQueue();
@@ -170,11 +164,9 @@ namespace Xiaoya.Views
                 }
                 catch (Exception err)
                 {
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog(err.Message)
                     {
                         Title = "错误",
-                        Message = err.Message,
-                        CloseButtonText = "确定"
                     };
 
                     await msgDialog.ShowAsyncQueue();
@@ -191,17 +183,15 @@ namespace Xiaoya.Views
         private async void ExamArrangementListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExamArrangement)e.ClickedItem;
-            var msgDialog = new CommonDialog
-            {
-                Title = item.CourseName,
-                Message = "学分：" + item.Credit +
+            var msgDialog = new CommonDialog("学分：" + item.Credit +
                             "\n考核方式：" + item.ExamType +
                             "\n课程类别：" + item.Classification +
                             "\n\n倒计时：" + item.RemainingDays + "天" +
                             "\n时间：" + item.Time +
                             "\n地点：" + item.Location +
-                            "\n座号：" + item.Seat,
-                CloseButtonText = "确定"
+                            "\n座号：" + item.Seat)
+            {
+                Title = item.CourseName,
             };
 
             await msgDialog.ShowAsyncQueue();

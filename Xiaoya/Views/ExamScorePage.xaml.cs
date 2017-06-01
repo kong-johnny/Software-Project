@@ -62,11 +62,9 @@ namespace Xiaoya.Views
 
             if (!app.Assist.IsLogin)
             {
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog("请先登录！")
                 {
                     Title = "提示",
-                    Message = "请先登录！",
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();
@@ -114,11 +112,9 @@ namespace Xiaoya.Views
                 catch (Exception err)
                 {
                     LoadingProgressBar.Visibility = Visibility.Collapsed;
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog(err.Message)
                     {
                         Title = "错误",
-                        Message = err.Message,
-                        CloseButtonText = "确定"
                     };
 
                     await msgDialog.ShowAsyncQueue();
@@ -203,11 +199,9 @@ namespace Xiaoya.Views
                 }
                 catch (Exception err)
                 {
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog(err.Message)
                     {
                         Title = "错误",
-                        Message = err.Message,
-                        CloseButtonText = "确定"
                     };
 
                     await msgDialog.ShowAsyncQueue();
@@ -225,10 +219,7 @@ namespace Xiaoya.Views
         private async void ExamScoreListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExamScore)e.ClickedItem;
-            var msgDialog = new CommonDialog
-            {
-                Title = item.CourseName,
-                Message = "课程编号：" + item.CourseId +
+            var msgDialog = new CommonDialog("课程编号：" + item.CourseId +
                             "\n学期：" + item.Semester +
                             "\n学分：" + item.CourseCredit +
                             "\n类别：" + item.Classification +
@@ -236,8 +227,9 @@ namespace Xiaoya.Views
                             "\n是否初修：" + (item.DoLearnForFirstTime ? "是" : "否") +
                             "\n\n平时成绩：" + item.Score1 +
                             "\n期末成绩：" + item.Score2 +
-                            "\n综合成绩：" + item.Score,
-                CloseButtonText = "确定"
+                            "\n综合成绩：" + item.Score)
+            {
+                Title = item.CourseName,
             };
 
             await msgDialog.ShowAsyncQueue();
@@ -261,11 +253,9 @@ namespace Xiaoya.Views
                 }
                 catch (Exception err)
                 {
-                    var msgDialog = new CommonDialog
+                    var msgDialog = new CommonDialog(err.Message)
                     {
                         Title = "错误",
-                        Message = err.Message,
-                        CloseButtonText = "确定"
                     };
 
                     await msgDialog.ShowAsyncQueue();
@@ -485,11 +475,9 @@ namespace Xiaoya.Views
             catch (Exception err)
             {
                 LoadingProgressBar.Visibility = Visibility.Collapsed;
-                var msgDialog = new CommonDialog
+                var msgDialog = new CommonDialog(err.Message)
                 {
                     Title = "错误",
-                    Message = err.Message,
-                    CloseButtonText = "确定"
                 };
 
                 await msgDialog.ShowAsyncQueue();

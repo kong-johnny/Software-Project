@@ -10,7 +10,7 @@
     d:DesignWidth="800">
     <UserControl.Resources>
         <Style x:Key="WeekBarStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
