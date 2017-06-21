@@ -22,5 +22,7 @@ namespace Xiaoya.Helpers
 
         public const string GATEWAY_USERS = "gateway.users";
         public const string GATEWAY_IP = "gateway.ip";
+
+        public const string QRCODE = "qrcode";
     }
 }

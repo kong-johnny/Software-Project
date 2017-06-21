@@ -1,4 +1,5 @@
-﻿using LeanCloud;
+﻿using CXHttpNS;
+using LeanCloud;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -71,6 +72,12 @@ namespace Xiaoya.Views
 
             LoadTimeTables();
             LoadNews();
+            if (localSettings.Values.ContainsKey(AppConstants.QRCODE))
+            {
+                qrcode.Visibility = Visibility.Collapsed;
+                qrcodeRow.Height = new GridLength(0);
+            }
+
 
             if (app.Assist.IsLogin)
             {
@@ -122,6 +129,32 @@ namespace Xiaoya.Views
                 {
                     isLogining = false;
                 }
+            }
+        }
+
+        private async void LoadQrCode(String usnm)
+        {
+            if (usnm == null)
+            {
+                localSettings.Values.Remove(AppConstants.QRCODE);
+                qrcode.Visibility = Visibility.Visible;
+                qrcodeRow.Height = GridLength.Auto;
+                return;
+            }
+            var res = await CXHttp.Connect("http://xuhongxu.cn/xiaoya/has.php?name=" + usnm)
+                .Get();
+            var body = await res.Content();
+            if (body.Contains("TRUE"))
+            {
+                localSettings.Values[AppConstants.QRCODE] = true;
+                qrcode.Visibility = Visibility.Collapsed;
+                qrcodeRow.Height = new GridLength(0);
+            }
+            else
+            {
+                localSettings.Values.Remove(AppConstants.QRCODE);
+                qrcode.Visibility = Visibility.Visible;
+                qrcodeRow.Height = GridLength.Auto;
             }
         }
 
@@ -250,6 +283,7 @@ namespace Xiaoya.Views
                     localSettings.Values[AppConstants.PASSWORD_SETTINGS] = "";
                     app.Assist.Logout();
                     LoginText.Text = "登录以启用所有功能";
+                    LoadQrCode(null);
 
                     isLogining = false;
                 }
@@ -275,6 +309,8 @@ namespace Xiaoya.Views
 
                         SaveUser();
 
+                        LoadQrCode(app.Assist.Username);
+
                     }
                     else
                     {
@@ -298,6 +334,7 @@ namespace Xiaoya.Views
                 };
 
                 await msgDialog.ShowAsyncQueue();
+                LoadQrCode(null);
             }
             finally
             {
@@ -384,6 +421,11 @@ namespace Xiaoya.Views
             {
                 ResultText.Text = "请先设置默认网关账号";
             }
+        }
+
+        private async void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("http://xuhongxu.cn/xiaoya"));
         }
     }
 }
