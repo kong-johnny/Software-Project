@@ -26,6 +26,7 @@ namespace Xiaoya.Views
         private App app = (App)Application.Current;
 
         public int SeatId { get; private set; }
+        public string Date { get; private set; }
 
         private ObservableCollection<Time> m_StartTimeModel = new ObservableCollection<Time>();
         public ObservableCollection<Time> StartTimeModel { get => m_StartTimeModel; }
@@ -36,10 +37,11 @@ namespace Xiaoya.Views
         public Time StartTime { get; private set; }
         public Time EndTime { get; private set; }
 
-        public ChooseSeatTimeDialog(int seatId)
+        public ChooseSeatTimeDialog(int seatId, string date)
         {
             this.InitializeComponent();
             SeatId = seatId;
+            Date = date;
             LoadStartTimes();
             if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.ContentDialog", "DefaultButton"))
             {
@@ -60,7 +62,7 @@ namespace Xiaoya.Views
         private async void LoadStartTimes()
         {
             if (SeatId == 0) return;
-            var startTimes = await app.SeatClient.GetStartTimes(SeatId, DateTime.Now.ToString("yyyy-MM-dd"));
+            var startTimes = await app.SeatClient.GetStartTimes(SeatId, Date);
             if (startTimes.Data != null)
             {
                 foreach (var time in startTimes.Data.Items)
@@ -75,7 +77,7 @@ namespace Xiaoya.Views
         {
             var endTimes = await app.SeatClient.GetEndTimes(
                 SeatId,
-                DateTime.Now.ToString("yyyy-MM-dd"),
+                Date,
                 ((Time)StartTimeComboBox.SelectedItem).Id
             );
             foreach (var time in endTimes.Data.Items)

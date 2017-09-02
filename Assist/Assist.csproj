@@ -158,17 +158,20 @@
     <PackageReference Include="AngleSharp">
       <Version>0.9.9</Version>
     </PackageReference>
+    <PackageReference Include="ChakraCore.NET">
+      <Version>1.0.1</Version>
+    </PackageReference>
     <PackageReference Include="CXHttp">
       <Version>1.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>5.2.3</Version>
+      <Version>5.3.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>1.4.1</Version>
+      <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>10.0.2</Version>
+      <Version>10.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

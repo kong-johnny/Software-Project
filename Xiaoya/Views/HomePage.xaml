@@ -79,7 +79,7 @@
         <Grid x:Name="ContentContainer" Grid.Row="1" Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="80"/>
-                <RowDefinition x:Name="qrcodeRow"/>
+                <RowDefinition x:Name="qrcodeRow" Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <HyperlinkButton x:Name="LoginButton" Grid.Row="0" Grid.Column="0" Margin="10" Click="LoginButton_Click" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -94,7 +94,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Source="ms-appx:///Assets/Alipay.jpg" />
+                <Image Grid.Column="0" Source="ms-appx:///Assets/Alipay.jpg" Height="200"/>
                 <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -102,9 +102,8 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="自愿捐赠" TextWrapping="Wrap"/>
-                    <HyperlinkButton Grid.Row="1" HorizontalAlignment="Center" Content="点此提交订单号，关闭二维码" Click="HyperlinkButton_Click" />
                 </Grid>
-                <Image Grid.Column="2" Source="ms-appx:///Assets/Wechat.png" />
+                <Image Grid.Column="2" Source="ms-appx:///Assets/Wechat.png" Height="200"/>
             </Grid>
             <ScrollViewer Grid.Row="2" Grid.Column="0">
                 <Grid Margin="24, 0">

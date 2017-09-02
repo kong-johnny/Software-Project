@@ -314,6 +314,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="位置" Margin="12, 4"/>
@@ -332,8 +333,9 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" x:Name="LoadingProgressBar3" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
-                                <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" 
+                                <CheckBox x:Name="tomorrowCheckBox" Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Content="明天" Checked="tomorrowCheckBox_Checked" Unchecked="tomorrowCheckBox_Checked"/>
+                                <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" x:Name="LoadingProgressBar3" Width="150" Height="20" VerticalAlignment="Center" IsIndeterminate="True" Visibility="Collapsed"/>
+                                <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" 
                                           ZoomMode="Enabled" HorizontalScrollMode="Enabled"
                                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MinZoomFactor="0.3" MaxZoomFactor="2">
                                     <Grid x:Name="SeatLayoutGrid">

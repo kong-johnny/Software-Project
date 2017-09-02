@@ -345,6 +345,10 @@ namespace Xiaoya.Helpers
                 model.Weeks.Add(ParseTableCourses(tableCourses, i, out weekCount));
             }
             model.CurrentWeek = (await GetCurrentWeek()) - 1;
+            if (model.CurrentWeek >= weekCount)
+                model.CurrentWeek = weekCount - 1;
+            if (model.CurrentWeek < 0)
+                model.CurrentWeek = 0;
             Debug.WriteLine("Finished: Generate TimeTableModel");
             return model;
         }

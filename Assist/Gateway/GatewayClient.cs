@@ -50,6 +50,12 @@ namespace Xiaoya.Gateway
             if (list.Items.Find(o => o.Username == username) != null) return false;
             list.Items.Add(new GatewayUser(username, password));
             localSettings.Values[AppConstants.GATEWAY_USERS] = JsonConvert.SerializeObject(list);
+
+            if (list.Items.Count == 1)
+            {
+                SetDefaultUser(0);
+            }
+
             return true;
         }
 

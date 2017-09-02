@@ -297,7 +297,14 @@ namespace Xiaoya.Views
             LoadingProgressBar3.Visibility = Visibility.Visible;
             var item = (Room)RoomComboBox.SelectedItem;
             if (item == null) return;
-            var res = await app.SeatClient.GetSeatLayout(item.RoomId, DateTime.Now.ToString("yyyy-MM-dd"));
+
+            var time = DateTime.Now.ToString("yyyy-MM-dd");
+            if (tomorrowCheckBox.IsChecked.GetValueOrDefault(false))
+            {
+                time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+            }
+
+            var res = await app.SeatClient.GetSeatLayout(item.RoomId, time);
 
             SeatLayoutGrid.RowDefinitions.Clear();
             SeatLayoutGrid.ColumnDefinitions.Clear();
@@ -389,12 +396,18 @@ namespace Xiaoya.Views
 
             if (await msgDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
             {
+                var time = DateTime.Now.ToString("yyyy-MM-dd");
+                if (tomorrowCheckBox.IsChecked.GetValueOrDefault(false))
+                {
+                    time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+                }
+
                 // Order
-                var chooseTimeDialog = new ChooseSeatTimeDialog(seat.Id.GetValueOrDefault(0));
+                var chooseTimeDialog = new ChooseSeatTimeDialog(seat.Id.GetValueOrDefault(0), time);
                 if (await chooseTimeDialog.ShowAsyncQueue() == ContentDialogResult.Primary)
                 {
                     var res = await app.SeatClient.OrderSeat(seat.Id.GetValueOrDefault(0),
-                        DateTime.Now.ToString("yyyy-MM-dd"),
+                        time,
                         chooseTimeDialog.StartTime.Id,
                         chooseTimeDialog.EndTime.Id
                     );
@@ -477,5 +490,11 @@ namespace Xiaoya.Views
                 }
             }
         }
+
+        private void tomorrowCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            RoomComboBox_SelectionChanged(null, null);
+        }
+
     }
 }

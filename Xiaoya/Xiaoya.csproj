@@ -21,7 +21,7 @@
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>168A4D1CE4408CD00EB002C09D1B800A7C363FAE</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>29BBE064A6083C5D334961F49D3F5459696A1AE3</PackageCertificateThumbprint>
     <HockeyAppResourceId>fb8180f252ef4d3fb05341570cf91764</HockeyAppResourceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -167,8 +167,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Xiaoya_StoreKey.pfx" />
-    <None Include="Xiaoya_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Alipay.jpg" />
@@ -225,6 +223,8 @@
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <None Include="Xiaoya_StoreKey.pfx" />
+    <None Include="Xiaoya_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
