@@ -16,7 +16,7 @@ namespace Xiaoya.Classroom
 
             try
             {
-                var res = await CXHttp.Connect("http://202.112.88.59:8082/buildings").Get();
+                var res = await CXHttp.Connect("http://123.206.51.151:1221/buildings").UseProxy(false).Get();
                 var body = await res.Content();
                 body = body.Trim();
 
@@ -44,7 +44,7 @@ namespace Xiaoya.Classroom
 
             try
             {
-                var res = await CXHttp.Connect("http://202.112.88.59:8082/building/" + buildingId).Get();
+                var res = await CXHttp.Connect("http://123.206.51.151:1221/building/" + buildingId).UseProxy(false).Get();
                 var body = await res.Content();
                 body = body.Trim();
 

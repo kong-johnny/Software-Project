@@ -102,6 +102,9 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="自愿捐赠" TextWrapping="Wrap"/>
+                    <HyperlinkButton Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Center" Margin="8" Click="NoticeText_Click">
+                        <TextBlock x:Name="NoticeText" TextWrapping="Wrap" />
+                    </HyperlinkButton>
                 </Grid>
                 <Image Grid.Column="2" Source="ms-appx:///Assets/Wechat.png" Height="200"/>
             </Grid>

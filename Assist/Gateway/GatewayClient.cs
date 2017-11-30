@@ -177,44 +177,58 @@ namespace Xiaoya.Gateway
             try
             {
                 isLoading = true;
-                var res = await CXHttp.Connect("http://gw.bnu.edu.cn:803/srun_portal_pc.php?ac_id=1&")
-                    .Data("action", "login")
-                    .Data("ac_id", "1")
-                    .Data("user_ip", "")
-                    .Data("nas_ip", "")
-                    .Data("user_mac", "")
-                    .Data("url", "")
-                    .Data("ajax", "1")
-                    .Data("save_me", "1")
-                    .Data("username", Username)
-                    .Data("password", Password)
-                    .Post();
-
-                var body = await res.Content("UTF-8");
-                var info = body.Split(',')[0];
-
-                res = await CXHttp.Connect("http://gw.bnu.edu.cn:803/include/auth_action.php?k=")
-                    .Data("action", "get_online_info")
-                    .Post();
-                body = await res.Content("UTF-8");
-                if (body == "not_online")
+                string ret = "错误";
+                for (var i = 1; i <= 4; ++i)
                 {
-                    return info;
+                    try
+                    {
+
+                        var res = await CXHttp.Connect("http://172.16.202.204:803/srun_portal_pc.php?ac_id=1&")
+                            .UseProxy(false)
+                            .Data("action", "login")
+                            .Data("ac_id", "1")
+                            .Data("user_ip", "")
+                            .Data("nas_ip", "")
+                            .Data("user_mac", "")
+                            .Data("url", "")
+                            .Data("ajax", "1")
+                            .Data("save_me", "1")
+                            .Data("username", Username)
+                            .Data("password", Password)
+                            .Post();
+
+                        var body = await res.Content("UTF-8");
+                        var info = body.Split(',')[0];
+
+                        res = await CXHttp.Connect("http://172.16.202.204:803/include/auth_action.php?k=")
+                            .UseProxy(false)
+                            .Data("action", "get_online_info")
+                            .Post();
+                        body = await res.Content("UTF-8");
+                        if (body == "not_online")
+                        {
+                            return info;
+                        }
+                        info += "," + body;
+                        var fields = info.Split(',');
+                        localSettings.Values[AppConstants.GATEWAY_IP] = fields[6];
+
+                        int s = Convert.ToInt32(fields[2]);
+                        int m = s / 60;
+                        s %= 60;
+                        int h = m / 60;
+                        m %= 60;
+
+
+                        ret = "已用流量：" + (Convert.ToDouble(fields[1]) / 1024 / 1024).ToString("0.##MB") + "\n"
+                            + "已用时长：" + h + "时" + m + "分" + s + "秒\n"
+                            + "账户余额：" + fields[3] + "元\n";
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
-                info += "," + body;
-                var fields = info.Split(',');
-                localSettings.Values[AppConstants.GATEWAY_IP] = fields[6];
-
-                int s = Convert.ToInt32(fields[2]);
-                int m = s / 60;
-                s %= 60;
-                int h = m / 60;
-                m %= 60;
-
-                string ret = "已用流量：" + (Convert.ToDouble(fields[1]) / 1024 / 1024).ToString("0.##MB") + "\n"
-                    + "已用时长：" + h + "时" + m + "分" + s + "秒\n"
-                    + "账户余额：" + fields[3] + "元\n";
-
                 return ret;
             }
             catch (Exception e)
@@ -233,7 +247,7 @@ namespace Xiaoya.Gateway
             try
             {
                 isLoading = true;
-                var res = await CXHttp.Connect("http://172.16.202.201:8069/user/status/" + Username).Get();
+                var res = await CXHttp.Connect("http://172.16.202.201:8069/user/status/" + Username).UseProxy(false).Get();
 
                 var body = await res.Content();
                 var info = JsonConvert.DeserializeObject<UserInfo>(body);
@@ -262,6 +276,7 @@ namespace Xiaoya.Gateway
                 var ip = (string)localSettings.Values[AppConstants.GATEWAY_IP];
 
                 var res = await CXHttp.Connect("http://gw.bnu.edu.cn:803/srun_portal_pc.php")
+                    .UseProxy(false)
                     .Data("action", "auto_logout")
                     .Data("ajax", "1")
                     .Data("info", "")
@@ -288,6 +303,7 @@ namespace Xiaoya.Gateway
             {
                 isLoading = true;
                 var res = await CXHttp.Connect("http://gw.bnu.edu.cn:803/srun_portal_pc.php")
+                    .UseProxy(false)
                     .Data("action", "logout")
                     .Data("ajax", "1")
                     .Data("username", Username)

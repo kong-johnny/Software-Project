@@ -52,6 +52,9 @@ namespace Xiaoya
             = "http://zyfw.bnu.edu.cn/STU_BaseInfoAction.do?" +
             "hidOption=InitData&menucode_current=JW13020101";
 
+        private const string URL_SCORE_TOKEN
+            = "http://zyfw.bnu.edu.cn/frame/menus/js/SetTokenkey.jsp";
+
         private const string URL_EXAM_SCORE     // 成绩
             = "http://zyfw.bnu.edu.cn/student/xscj.stuckcj_data.jsp";
 
@@ -82,7 +85,7 @@ namespace Xiaoya
         /// Other fields
         /// </summary>
         private HtmlParser m_Parser = new HtmlParser();
-        private CXSession m_Session = CXHttp.Session();
+        private CXSession m_Session;
 
         private string m_Username = "", m_Password = "";
         public string Username { get => m_Username; set { Reset(); m_Username = value; } }
@@ -112,6 +115,8 @@ namespace Xiaoya
         /// </summary>
         public Assistant()
         {
+            m_Session = CXHttp.Session();
+            m_Session.Req.UseProxy(false);
             Logout();
         }
 
@@ -122,6 +127,8 @@ namespace Xiaoya
         /// <param name="password">Password</param>
         public Assistant(string username, string password)
         {
+            m_Session = CXHttp.Session();
+            m_Session.Req.UseProxy(false);
             Logout();
             m_Username = username;
             m_Password = password;
@@ -530,6 +537,18 @@ namespace Xiaoya
             // TEST
             try
             {
+
+                var tokenRes = await m_Session.Req
+                    .Url(URL_SCORE_TOKEN)
+                    .Header(HEADER_USER_AGENT, USER_AGENT)
+                    .Header(HEADER_REFERER, REFERER_EXAM_SCORE)
+                    .Data("menucode", "xscj.stuckcj.my.jsp")
+                    .Post();
+
+                var token = await tokenRes.Content("GBK");
+                if (!UpdateLoginState(token))
+                    return null;
+
                 var req = m_Session.Req
                     .Url(URL_EXAM_SCORE)
                     .Header(HEADER_USER_AGENT, USER_AGENT)
@@ -537,6 +556,7 @@ namespace Xiaoya
                     .Data("ysyx", "yscj")
                     .Data("userCode", (await GetStudentInfo()).StudentId)
                     .Data("zfx", showMajor ? "0" : "1")
+                    .Data("t", token)
                     .Data("ysyxS", "on")
                     .Data("sjxzS", "on")
                     .Data("zfxS", "on");

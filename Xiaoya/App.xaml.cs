@@ -65,8 +65,10 @@ namespace Xiaoya
                 AVClient.Initialize("vXdeiDEvPWNif2dvtCVc7Q1N-9Nh9j0Va", "CVlURpsG9thauLU2xUwnbuFi");
                 SavePC();
             }
-            catch
-            { }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         /// <summary>

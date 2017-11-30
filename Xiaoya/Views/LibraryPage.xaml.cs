@@ -186,24 +186,6 @@ namespace Xiaoya.Views
                     if (res == null)
                     {
                         await LoadBorrowedBooks();
-
-                        app.SeatClient.Username = loginDialog.Username;
-                        app.SeatClient.Password = loginDialog.Password;
-                        var res2 = await app.SeatClient.Login();
-                        if (res2.Status == "success")
-                        {
-                            await LoadReservations();
-                            await LoadSeat();
-                        }
-                        else
-                        {
-                            var msgDialog = new CommonDialog(res2.Message)
-                            {
-                                Title = "提示",
-                            };
-
-                            await msgDialog.ShowAsyncQueue();
-                        }
                     }
                     else
                     {
@@ -214,6 +196,26 @@ namespace Xiaoya.Views
 
                         await msgDialog.ShowAsyncQueue();
                     }
+
+                    app.SeatClient.Username = loginDialog.Username;
+                    app.SeatClient.Password = loginDialog.Password;
+                    var res2 = await app.SeatClient.Login();
+                    if (res2.Status == "success")
+                    {
+                        await LoadReservations();
+                        await LoadSeat();
+                    }
+                    else
+                    {
+                        var msgDialog = new CommonDialog(res2.Message)
+                        {
+                            Title = "提示",
+                        };
+
+                        await msgDialog.ShowAsyncQueue();
+                    }
+
+                  
                 }
                 finally
                 {

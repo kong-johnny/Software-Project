@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xiaoya.Library.Seat.Models;
+using Windows.Security.Cryptography.Certificates;
 
 namespace Xiaoya.Library.Seat
 {
@@ -17,31 +18,44 @@ namespace Xiaoya.Library.Seat
         public string Username { get; set; }
         public string Password { get; set; }
 
-        private CXSession m_Session = new CXSession();
+        private CXSession m_Session;
 
         private string m_Token = "";
 
-        private const string URL_LOGIN = "http://219.224.23.151/rest/auth?username={0}&password={1}";
-        private const string URL_HISTORY = "http://219.224.23.151/rest/v2/history/{0}/{1}?token={2}";
-        private const string URL_BUILDING = "http://219.224.23.151/rest/v2/free/filters?token={0}";
-        private const string URL_ROOM = "http://219.224.23.151/rest/v2/room/stats2/{0}?token={1}";
-        private const string URL_CURRENT_RESERVATION = "http://219.224.23.151/rest/v2/user/reservations/?token={0}";
-        private const string URL_RESERVATION = "http://219.224.23.151/rest/view/{0}?token={1}";
-        private const string URL_CANCEL_RESERVATION = "http://219.224.23.151/rest/v2/cancel/{0}?token={1}";
-        private const string URL_LAYOUT = "http://219.224.23.151/rest/v2/room/layoutByDate/{0}/{1}?token={2}";
-        private const string URL_START_TIME = "http://219.224.23.151/rest/v2/startTimesForSeat/{0}/{1}?token={2}";
-        private const string URL_END_TIME = "http://219.224.23.151/rest/v2/endTimesForSeat/{0}/{1}/{2}?token={3}";
-        private const string URL_ORDER = "http://219.224.23.151/rest/v2/freeBook";
-        private const string URL_CHECKIN = "http://219.224.23.151/rest/v2/checkIn?token={0}";
-        private const string URL_LEAVE = "http://219.224.23.151/rest/v2/leave?token={0}";
-        private const string URL_STOP = "http://219.224.23.151/rest/v2/stop?token={0}";
+        private const string URL_LOGIN = "https://219.224.23.151:8443/rest/auth?username={0}&password={1}";
+        private const string URL_HISTORY = "https://219.224.23.151:8443/rest/v2/history/{0}/{1}?token={2}";
+        private const string URL_BUILDING = "https://219.224.23.151:8443/rest/v2/free/filters?token={0}";
+        private const string URL_ROOM = "https://219.224.23.151:8443/rest/v2/room/stats2/{0}?token={1}";
+        private const string URL_CURRENT_RESERVATION = "https://219.224.23.151:8443/rest/v2/user/reservations/?token={0}";
+        private const string URL_RESERVATION = "https://219.224.23.151:8443/rest/view/{0}?token={1}";
+        private const string URL_CANCEL_RESERVATION = "https://219.224.23.151:8443/rest/v2/cancel/{0}?token={1}";
+        private const string URL_LAYOUT = "https://219.224.23.151:8443/rest/v2/room/layoutByDate/{0}/{1}?token={2}";
+        private const string URL_START_TIME = "https://219.224.23.151:8443/rest/v2/startTimesForSeat/{0}/{1}?token={2}";
+        private const string URL_END_TIME = "https://219.224.23.151:8443/rest/v2/endTimesForSeat/{0}/{1}/{2}?token={3}";
+        private const string URL_ORDER = "https://219.224.23.151:8443/rest/v2/freeBook";
+        private const string URL_CHECKIN = "https://219.224.23.151:8443/rest/v2/checkIn?token={0}";
+        private const string URL_LEAVE = "https://219.224.23.151:8443/rest/v2/leave?token={0}";
+        private const string URL_STOP = "https://219.224.23.151:8443/rest/v2/stop?token={0}";
 
-        public SeatClient() { }
+        public SeatClient()
+        {
+            m_Session = new CXSession();
+            m_Session.Req.UseProxy(false);
+
+            m_Session.Req.IgnoreServerCertificateError(ChainValidationResult.Untrusted);
+            m_Session.Req.IgnoreServerCertificateError(ChainValidationResult.InvalidName);
+            m_Session.Req.IgnoreServerCertificateError(ChainValidationResult.Expired);
+        }
 
         public SeatClient(string username, string password)
         {
+            m_Session = new CXSession();
             Username = username;
-            Password = password;
+            Password = password;    
+            m_Session.Req.UseProxy(false);
+            m_Session.Req.IgnoreServerCertificateError(ChainValidationResult.Untrusted);
+            m_Session.Req.IgnoreServerCertificateError(ChainValidationResult.InvalidName);
+            m_Session.Req.IgnoreServerCertificateError(ChainValidationResult.Expired);
         }
 
         public async Task<Result<LoginToken>> Login()

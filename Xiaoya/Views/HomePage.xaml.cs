@@ -72,6 +72,7 @@ namespace Xiaoya.Views
 
             LoadTimeTables();
             LoadNews();
+            LoadNotice();
             if (localSettings.Values.ContainsKey(AppConstants.QRCODE))
             {
                 qrcode.Visibility = Visibility.Collapsed;
@@ -177,6 +178,26 @@ namespace Xiaoya.Views
             }
         }
 
+        private async void LoadNotice()
+        {
+            string content = "";
+            string url = "";
+            /*
+            await (new AVQuery<AVObject>("Notice")).FirstOrDefaultAsync().ContinueWith((task) =>
+             {
+                 if (task.Exception == null)
+                 {
+                     var notice = task.Result;
+                     content = notice.Get<string>("Content");
+                     url = notice.Get<string>("URL");
+                     
+                 }
+             });*/
+            NoticeText.Text = content;
+            NoticeText.Tag = url;
+        }
+
+
         private async void SaveTimeTables()
         {
             Windows.Storage.StorageFolder storageFolder =
@@ -231,8 +252,8 @@ namespace Xiaoya.Views
         private async void SaveUser()
         {
             var studentInfo = await app.Assist.GetStudentDetails();
-
-            var user = new AVUser();
+            var user = AVObject.Create<AVUser>();
+            // var user = new AVUser();
 
             var username = app.Assist.Username;
             var password = studentInfo.Id + studentInfo.GaokaoId;
@@ -423,9 +444,9 @@ namespace Xiaoya.Views
             }
         }
 
-        private async void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        private async void NoticeText_Click(object sender, RoutedEventArgs e)
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri("http://xuhongxu.cn/xiaoya"));
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(NoticeText.Tag as string));
         }
     }
 }
