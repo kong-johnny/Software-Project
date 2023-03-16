@@ -957,7 +957,7 @@
                                             </ObjectAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Y" Storyboard.TargetName="ContentTransform">
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding TemplateSettings.HiddenVerticalDelta, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
-                                                <SplineDoubleKeyFrame KeySpline="0.2,0 0,1" KeyTime="0:0:0.167" Value="0}"/>
+                                                <SplineDoubleKeyFrame KeySpline="0.2,0 0,1" KeyTime="0:0:0.167" Value="0"/>
                                             </DoubleAnimationUsingKeyFrames>
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Y" Storyboard.TargetName="OverflowContentTransform">
                                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0"/>

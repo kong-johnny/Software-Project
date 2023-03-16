@@ -1,4 +1,5 @@
-﻿using AngleSharp.Parser.Html;
+﻿// using AngleSharp.Parser.Html;
+using AngleSharp.Html.Parser;
 using Xiaoya.Gateway.Models;
 using CXHttpNS;
 using Newtonsoft.Json;
@@ -180,10 +181,12 @@ namespace Xiaoya.Gateway
                 string ret = "错误";
                 for (var i = 1; i <= 4; ++i)
                 {
+                    
                     try
                     {
 
-                        var res = await CXHttp.Connect("http://172.16.202.204:803/srun_portal_pc.php?ac_id=1&")
+                        // var res = await CXHttp.Connect("http://172.16.202.204:803/srun_portal_pc.php?ac_id=1&")
+                        var res = await CXHttp.Connect("http://172.16.202.204/srun_portal_pc?ac_id=1&theme=bnu")
                             .UseProxy(false)
                             .Data("action", "login")
                             .Data("ac_id", "1")
@@ -199,8 +202,10 @@ namespace Xiaoya.Gateway
 
                         var body = await res.Content("UTF-8");
                         var info = body.Split(',')[0];
+                        System.Diagnostics.Debug.WriteLine(info);
 
-                        res = await CXHttp.Connect("http://172.16.202.204:803/include/auth_action.php?k=")
+                        // res = await CXHttp.Connect("http://172.16.202.204:803/include/auth_action.php?k=")
+                        res = await CXHttp.Connect("http://172.16.202.204/srun_portal_success?ac_id=1&theme=bnu&srun_domain=")
                             .UseProxy(false)
                             .Data("action", "get_online_info")
                             .Post();

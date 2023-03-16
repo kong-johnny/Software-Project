@@ -1,4 +1,5 @@
-﻿using AngleSharp.Parser.Html;
+﻿// using AngleSharp.Parser.Html;
+using AngleSharp.Html.Parser;
 using CXHttpNS;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,8 @@ namespace Xiaoya.News
                     .Get();
                 var body = await res.Content();
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var programList = doc.GetElementsByClassName("program_list");
                 if (programList.Length > 0)
@@ -67,7 +69,8 @@ namespace Xiaoya.News
                     .Get();
                 var body = await res.Content("UTF-8");
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var list = doc.GetElementsByClassName("ul_list");
                 if (list.Length > 0)
@@ -109,7 +112,8 @@ namespace Xiaoya.News
                     .Get();
                 var body = await res.Content();
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var list = doc.GetElementsByClassName("item-list");
                 if (list.Length > 0)

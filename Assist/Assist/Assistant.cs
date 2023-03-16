@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
 using CXHttpNS;
-using AngleSharp.Parser.Html;
-using AngleSharp.Parser.Xml;
+// using AngleSharp.Parser.Html;
+using AngleSharp.Html.Parser;
+// using AngleSharp.Parser.Xml;
 using Xiaoya.Helpers;
 using Xiaoya.Assist.Models;
 using Newtonsoft.Json;
@@ -161,7 +162,8 @@ namespace Xiaoya
                 string body = await res.Content();                  // fetch the response body (html)
 
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
                 var ltElement = doc.GetElementsByName("lt");
                 if (ltElement.Count() > 0)
                 {
@@ -248,8 +250,9 @@ namespace Xiaoya
                     return null;
 
                 // Parse the fetched XML body
-                var xmlParser = new XmlParser();
-                var doc = xmlParser.Parse(body);
+                var xmlParser = new HtmlParser();
+                // var doc = xmlParser.Parse(body);
+                var doc = xmlParser.ParseDocument(body);
 
                 string studentId, grade, major, majorId, schoolYear, semester;
 
@@ -343,8 +346,9 @@ namespace Xiaoya
                 if (!UpdateLoginState(body))
                     return null;
 
-                var xmlParser = new XmlParser();
-                var doc = xmlParser.Parse(body);
+                var xmlParser = new HtmlParser();
+                // var doc = xmlParser.Parse(body);
+                var doc = xmlParser.ParseDocument(body);
 
                 var info = ParserHelper.GetFirstElement(doc.GetElementsByTagName("info"));
                 if (info == null)
@@ -434,7 +438,8 @@ namespace Xiaoya
                 string body = "";
                 body = res.Content("GBK").Result;
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 // Init error message
                 string error = "登录失败";
@@ -443,7 +448,8 @@ namespace Xiaoya
                 if (!body.Contains("KINGOSOFT高校数字校园综合管理平台"))
                 {
                     body = res.Content("UTF-8").Result;
-                    doc = m_Parser.Parse(body);
+                    // doc = m_Parser.Parse(body);
+                    doc = m_Parser.ParseDocument(body);
                     // Get error message element: <span id="error_message_show">
                     var msg = doc.GetElementById("msg");
                     // Element found, then assign error message
@@ -581,7 +587,8 @@ namespace Xiaoya
                 if (!UpdateLoginState(body))
                     return null;
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var scores = new List<ExamScore>();
 
@@ -681,7 +688,8 @@ namespace Xiaoya
                 if (!UpdateLoginState(body))
                     return null;
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var arrangementList = new List<ExamArrangement>();
 
@@ -828,7 +836,8 @@ namespace Xiaoya
                 if (!UpdateLoginState(body))
                     return null;
 
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var courses = new List<TableCourse>();
 

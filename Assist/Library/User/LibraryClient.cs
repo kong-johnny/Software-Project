@@ -1,4 +1,5 @@
-﻿using AngleSharp.Parser.Html;
+﻿using AngleSharp.Html.Parser;
+// using AngleSharp.Parser.Html;
 using CXHttpNS;
 using System;
 using System.Collections.Generic;
@@ -113,7 +114,8 @@ namespace Xiaoya.Library.User
                     .Get();
 
                 var body = await res.Content("UTF-8");
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var tables = doc.GetElementsByTagName("table");
                 foreach (var table in tables)
@@ -172,7 +174,8 @@ namespace Xiaoya.Library.User
                     .Get();
 
                 var body = await res.Content("UTF-8");
-                var doc = m_Parser.Parse(body);
+                // var doc = m_Parser.Parse(body);
+                var doc = m_Parser.ParseDocument(body);
 
                 var title = doc.GetElementsByClassName("title");
                 if (title.Length == 0)

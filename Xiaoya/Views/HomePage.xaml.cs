@@ -182,7 +182,7 @@ namespace Xiaoya.Views
         {
             string content = "";
             string url = "";
-            /*
+
             await (new AVQuery<AVObject>("Notice")).FirstOrDefaultAsync().ContinueWith((task) =>
              {
                  if (task.Exception == null)
@@ -190,9 +190,9 @@ namespace Xiaoya.Views
                      var notice = task.Result;
                      content = notice.Get<string>("Content");
                      url = notice.Get<string>("URL");
-                     
+
                  }
-             });*/
+             });
             NoticeText.Text = content;
             NoticeText.Tag = url;
         }
