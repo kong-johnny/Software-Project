@@ -221,6 +221,10 @@ namespace Xiaoya.Views
                     Windows.Storage.StorageFile file =
                         await storageFolder.GetFileAsync("timetable.txt");
                     string text = await Windows.Storage.FileIO.ReadTextAsync(file);
+                    if (text == "")
+                    {
+                        text = "[]";
+                    }
                     app.TimeTables = JsonConvert.DeserializeObject<List<TableCourses>>(text);
                     Debug.WriteLine("Finished: Load Timetable");
                 }
