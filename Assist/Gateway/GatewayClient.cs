@@ -291,7 +291,7 @@ public async Task<string> Login()
                 string ret = "错误";
                 for (var i = 1; i <= 4; ++i)
                 {
-                    
+
                     try
                     {
                         string url = "http://172.16.202.201/srun_portal_pc?ac_id=50&theme=bnu";
@@ -338,13 +338,13 @@ public async Task<string> Login()
                         {
                             { "User-Agent", "Mozilla/5.0 (Windows NT 10.0 WOW64 Trident/7.0 rv:11.0) like Gecko" }
                         };
-                        foreach ( var header in headers )
+                        foreach (var header in headers)
                         {
                             client.DefaultRequestHeaders.Add(header.Key, header.Value);
                         }
                         string responseBody = await client.GetStringAsync(baseUrl + "/cgi-bin/srun_portal" + param);
                         string jsonString = responseBody.Split(new char[] { '(', ')' })[1];
-                        foreach ( var pair in jsonString.Split(','))
+                        foreach (var pair in jsonString.Split(','))
                         {
                             string key = pair.Split(':')[0];
                             string value = pair.Split(":")[1];
@@ -355,82 +355,87 @@ public async Task<string> Login()
                                     Debug.WriteLine($"result = {value.Trim('\"')}");
                                     break;
                                 }
+                            }
+                            /*var res = await CXHttp.Connect("http://172.16.202.204:803/srun_portal_pc.php?ac_id=1&")
+                                .UseProxy(false)
+                                .Data("action", "login")
+                                .Data("ac_id", "1")
+                                .Data("user_ip", "")
+                                .Data("nas_ip", "")
+                                .Data("user_mac", "")
+                                .Data("url", "")
+                                .Data("ajax", "1")
+                                .Data("save_me", "1")
+                                .Data("username", Username)
+                                .Data("password", Password)
+                                .Post();*/
+                            /*var res = await CXHttp.Connect("http://172.16.202.201/srun_portal_pc?ac_id=1&theme=bnu")
+                                .UseProxy(false)
+                                .Data("action", "login")
+                                .Data("ac_id", "1")
+                                .Data("usename", Username)
+                                .Data("password", Password)
+                                .Data("ip", userIp)
+                                .Data("chksum", CalcChksum(chkstr))
+                                .Data("info", inf.Replace("+", "%2B").Replace("/", "%2F").Replace("=", "%3D"))
+                                .Data("n", n.ToString())
+                                .Data("type", type.ToString())
+                                .Data("os", "Windows+10")
+                                .Data("name", "Windows")
+                                .Data("double_stack", "0")
+                                .Data("_", t)
+                                .Post();*/
 
-                        var res = await CXHttp.Connect("http://172.16.202.204:803/srun_portal_pc.php?ac_id=1&")
-                            .UseProxy(false)
-                            .Data("action", "login")
-                            .Data("ac_id", "1")
-                            .Data("user_ip", "")
-                            .Data("nas_ip", "")
-                            .Data("user_mac", "")
-                            .Data("url", "")
-                            .Data("ajax", "1")
-                            .Data("save_me", "1")
-                            .Data("username", Username)
-                            .Data("password", Password)
-                            .Post();*/
-                        /*var res = await CXHttp.Connect("http://172.16.202.201/srun_portal_pc?ac_id=1&theme=bnu")
-                            .UseProxy(false)
-                            .Data("action", "login")
-                            .Data("ac_id", "1")
-                            .Data("usename", Username)
-                            .Data("password", Password)
-                            .Data("ip", userIp)
-                            .Data("chksum", CalcChksum(chkstr))
-                            .Data("info", inf.Replace("+", "%2B").Replace("/", "%2F").Replace("=", "%3D"))
-                            .Data("n", n.ToString())
-                            .Data("type", type.ToString())
-                            .Data("os", "Windows+10")
-                            .Data("name", "Windows")
-                            .Data("double_stack", "0")
-                            .Data("_", t)
-                            .Post();
+                            /*var body = await res.Content("UTF-8");
+                            var info = body.Split(',')[0];
+                            System.Diagnostics.Debug.WriteLine(info);*/
 
-                        var body = await res.Content("UTF-8");
-                        var info = body.Split(',')[0];
-                        System.Diagnostics.Debug.WriteLine(info);
+                            /*res = await CXHttp.Connect("http://172.16.202.204:803/include/auth_action.php?k=")
+                                .UseProxy(false)
+                                .Data("action", "get_online_info")
+                                .Data("ac_id", "1")
+                                .Data("usename", Username)
+                                .Data("password", Password)
+                                .Data("ip", userIp)
+                                .Data("chksum", CalcChksum(chkstr))
+                                .Data("info", inf.Replace("+", "%2B").Replace("/", "%2F").Replace("=", "%3D"))
+                                .Data("n", n.ToString())
+                                .Data("type", type.ToString())
+                                .Data("os", "Windows+10")
+                                .Data("name", "Windows")
+                                .Data("double_stack", "0")
+                                .Data("_", t)
+                                .Post();*/
+                            /*body = await res.Content("UTF-8");
+                            if (body == "not_online")
+                            {
+                                return info;
+                            }
+                            info += "," + body;
+                            var fields = info.Split(',');
+                            localSettings.Values[AppConstants.GATEWAY_IP] = fields[6];
 
-                        res = await CXHttp.Connect("http://172.16.202.204:803/include/auth_action.php?k=")
-                            .UseProxy(false)
-                            .Data("action", "get_online_info")
-                            .Data("ac_id", "1")
-                            .Data("usename", Username)
-                            .Data("password", Password)
-                            .Data("ip", userIp)
-                            .Data("chksum", CalcChksum(chkstr))
-                            .Data("info", inf.Replace("+", "%2B").Replace("/", "%2F").Replace("=", "%3D"))
-                            .Data("n", n.ToString())
-                            .Data("type", type.ToString())
-                            .Data("os", "Windows+10")
-                            .Data("name", "Windows")
-                            .Data("double_stack", "0")
-                            .Data("_", t)
-                            .Post();
-                        body = await res.Content("UTF-8");
-                        if (body == "not_online")
-                        {
-                            return info;
+                            int s = Convert.ToInt32(fields[2]);
+                            int m = s / 60;
+                            s %= 60;
+                            int h = m / 60;
+                            m %= 60;
+
+
+                            ret = "已用流量：" + (Convert.ToDouble(fields[1]) / 1024 / 1024).ToString("0.##MB") + "\n"
+                                + "已用时长：" + h + "时" + m + "分" + s + "秒\n"
+                                + "账户余额：" + fields[3] + "元\n";*/
                         }
-                        info += "," + body;
-                        var fields = info.Split(',');
-                        localSettings.Values[AppConstants.GATEWAY_IP] = fields[6];
-
-                        int s = Convert.ToInt32(fields[2]);
-                        int m = s / 60;
-                        s %= 60;
-                        int h = m / 60;
-                        m %= 60;
-
-
-                        ret = "已用流量：" + (Convert.ToDouble(fields[1]) / 1024 / 1024).ToString("0.##MB") + "\n"
-                            + "已用时长：" + h + "时" + m + "分" + s + "秒\n"
-                            + "账户余额：" + fields[3] + "元\n";*/
                     }
                     catch
                     {
                         continue;
                     }
                 }
+                UserInfo user = await GetUserInfo();
+                ret = "已用流量：" + user.SumBytes + "GB\n"
+                                + "已用时长：" + user.SumSeconds + "\n"
+                                + "账户余额：" + user.UserBalance + "元\n";
                 return ret;
             }
             catch (Exception e)
