@@ -205,7 +205,7 @@
                                     <Setter Property="Margin" Value="4"/>
                                 </Style>
                             </Pivot.Resources>
-                            <PivotItem Header="教务处动态">
+                            <PivotItem Header="头条关注">
                                 <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind JWCNewsModel}" ItemClick="ListView_ItemClick">
                                     <ListView.ItemContainerTransitions>
                                         <TransitionCollection>
@@ -239,7 +239,7 @@
                                     </ListView.ItemTemplate>
                                 </ListView>
                             </PivotItem>
-                            <PivotItem Header="国际交流处动态">
+                            <PivotItem Header="综合新闻">
                                 <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind OIECNewsModel}" ItemClick="ListView_ItemClick">
                                     <ListView.ItemContainerTransitions>
                                         <TransitionCollection>
@@ -273,7 +273,7 @@
                                     </ListView.ItemTemplate>
                                 </ListView>
                             </PivotItem>
-                            <PivotItem Header="图书馆动态">
+                            <PivotItem Header="学术动态">
                                 <ListView IsItemClickEnabled="True" ItemsSource="{x:Bind LIBNewsModel}" ItemClick="ListView_ItemClick">
                                     <ListView.ItemContainerTransitions>
                                         <TransitionCollection>

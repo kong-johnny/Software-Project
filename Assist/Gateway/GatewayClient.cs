@@ -25,7 +25,7 @@ namespace Xiaoya.Gateway
 {
     public class GatewayClient
     {
-
+        public static bool isLogin = false;
         class UserList
         {
             public List<GatewayUser> Items { get; private set; }
@@ -282,7 +282,7 @@ namespace Xiaoya.Gateway
         }
 
 
-public async Task<string> Login()
+        public async Task<string> Login()
         {
             if (isLoading) return "请等待上次操作完成";
             try
@@ -433,6 +433,7 @@ public async Task<string> Login()
                     }
                 }
                 UserInfo user = await GetUserInfo();
+                isLogin = true;
                 ret = "已用流量：" + user.SumBytes + "GB\n"
                                 + "已用时长：" + user.SumSeconds + "\n"
                                 + "账户余额：" + user.UserBalance + "元\n";
