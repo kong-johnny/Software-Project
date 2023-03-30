@@ -436,7 +436,7 @@ namespace Xiaoya
 
                 // Decode html body by GBK
                 string body = "";
-                body = res.Content("GBK").Result;
+                body = res.Content("UTF-8").Result;
 
                 // var doc = m_Parser.Parse(body);
                 var doc = m_Parser.ParseDocument(body);
@@ -445,7 +445,7 @@ namespace Xiaoya
                 string error = "登录失败";
 
                 // If no "KINGOSOFT高校数字校园综合管理平台" found, then there will be errors
-                if (!body.Contains("KINGOSOFT高校数字校园综合管理平台"))
+                /*if (!body.Contains("KINGOSOFT高校数字校园综合管理平台"))
                 {
                     body = res.Content("UTF-8").Result;
                     // doc = m_Parser.Parse(body);
@@ -458,7 +458,7 @@ namespace Xiaoya
                         error = msg.TextContent;
                     }
                     return error;
-                }
+                }*/
                 // Otherwise, logined successfully.
                 IsLogin = true;
                 return null;
