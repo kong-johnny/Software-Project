@@ -46,7 +46,7 @@ namespace Xiaoya.Assist.Models
         /// </summary>
         public DateTime? EndTime { get; private set; }
 
-        public int? RemainingDays { get
+        public int? RemainingDays { get  // 可能需要修改，负多少天太反直觉了
             {
                 if (BeginTime.HasValue && EndTime.HasValue)
                 {
