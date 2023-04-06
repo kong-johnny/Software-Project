@@ -13,9 +13,9 @@ namespace Xiaoya.Classroom.Models
 
         public Building(string id, string name)
         {
-            if (Id !=  null) { Id = id.Trim(); }
+            if (id !=  null) { Id = id.Trim(); }
             else { Id = "0"; }
-            if (Name != null) { Name = name.Trim(); }
+            if (name != null) { Name = name.Trim(); }
             else { Name = "jiaojiu"; }
         }
     }

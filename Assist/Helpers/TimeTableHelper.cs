@@ -63,9 +63,16 @@ namespace Xiaoya.Helpers
                     var body = await res.Content();
 
                     Semester s = JsonConvert.DeserializeObject<Semester>(body);
-
-                    year = s.Xn;
-                    semester = s.XqM;
+                    if (s != null)
+                    {
+                        year = s.Xn;
+                        semester = s.XqM;
+                    }
+                    else
+                    {
+                        year = "2020";
+                        semester = "0";
+                    }
                 }
 
                 var res2 = await CXHttp.Connect("http://zyfw.prsc.bnu.edu.cn/public/getTeachingWeekByDate.action")

@@ -6,7 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="using:Xiaoya.Assist.Models"
+    xmlns:local="using:Xiaoya.Views"
     mc:Ignorable="d">
+    <Page.Resources>
+        <local:RemainingDaysConverter x:Key="RemainingDaysConverter" />
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <VisualStateManager.VisualStateGroups>
@@ -112,10 +116,10 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind RemainingDays}" Margin="10" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Bind CourseName}" Grid.Row="0" Grid.Column="1" FontSize="18" Grid.ColumnSpan="3" TextWrapping="Wrap" />
-                            <TextBlock Text="{x:Bind Time}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
-                            <TextBlock Text="{x:Bind Location}" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind RemainingDays, Converter={StaticResource RemainingDaysConverter}}" Height="40" Width="100" Margin="0" FontSize="15" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind CourseName}" Margin="8, 0" Grid.Row="0" Grid.Column="1" FontSize="18" Grid.ColumnSpan="3" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind Time}" Margin="8, 0" FontSize="14" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind Location}" Width="140" Margin="4, 0" FontSize="14" Grid.Row="1" Grid.Column="2" TextWrapping="Wrap" />
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="1" Grid.Column="3">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -135,7 +139,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="考核方式：" FontSize="14" TextWrapping="Wrap"/>
+                                <TextBlock Margin="4, 0" Grid.Row="0" Grid.Column="0" Text="考核方式：" FontSize="14" TextWrapping="Wrap"/>
                                 <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind ExamType}" FontSize="14" TextWrapping="Wrap"/>
                             </Grid>
                             <Grid HorizontalAlignment="Stretch" Margin="4, 0" Grid.Row="2" Grid.Column="3">

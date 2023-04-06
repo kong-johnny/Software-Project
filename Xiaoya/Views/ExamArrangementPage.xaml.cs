@@ -183,10 +183,11 @@ namespace Xiaoya.Views
         private async void ExamArrangementListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var item = (ExamArrangement)e.ClickedItem;
+
             var msgDialog = new CommonDialog("学分：" + item.Credit +
                             "\n考核方式：" + item.ExamType +
                             "\n课程类别：" + item.Classification +
-                            "\n\n倒计时：" + item.RemainingDays + "天" +
+                            (item.RemainingDays >= 0 ? ("\n\n倒计时：" + item.RemainingDays + "天") : ("\n\n已结束" + (-item.RemainingDays) + "天")) +
                             "\n时间：" + item.Time +
                             "\n地点：" + item.Location +
                             "\n座号：" + item.Seat)
@@ -227,4 +228,19 @@ namespace Xiaoya.Views
             }
         }
     }
+    public class RemainingDaysConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            int remainingDays = (int)value;
+
+            return remainingDays >= 0 ? $"还有{remainingDays}天" : $"结束{-remainingDays}天";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
