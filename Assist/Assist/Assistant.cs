@@ -272,7 +272,9 @@ namespace Xiaoya
                     majorId = gradeInfo.MajorId;
                     grade = gradeInfo.Grade;
                 }
+                schoolYear = "2020";
 
+                semester = "0";
                 m_StudentInfo = new StudentInfo(studentId, grade, major, majorId, schoolYear, semester);
                 return m_StudentInfo;
             }

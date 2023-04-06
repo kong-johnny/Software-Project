@@ -24,6 +24,8 @@ namespace Xiaoya.Library.User
         private HtmlParser m_Parser = new HtmlParser();
 
         private const string URL_PREFIX = "http://opac.lib.bnu.edu.cn:8080";
+        // private const string URL_PREFIX = "https://bnu.primo.exlibrisgroup.com.cn/";
+       // private const string URL_PREFIX = "https://bnu.primo.exlibrisgroup.com.cn/discovery/account?vid=86BNU_INST:86BNU&lang=zh&section=overview";
         private const string URL_LOGIN_GET = URL_PREFIX + "/F/?func=bor-loan&adm_library=";
         private const string URL_LOGIN_POST = URL_PREFIX + "/pds";
         private const string URL_LOGIN_JUMP = URL_PREFIX + "/F/{0}?func=bor-info";

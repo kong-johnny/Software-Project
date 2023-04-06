@@ -20,6 +20,8 @@ using Windows.System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Edge;
 
 namespace Xiaoya.Gateway
 {
@@ -285,6 +287,15 @@ namespace Xiaoya.Gateway
         public async Task<string> Login()
         {
             if (isLoading) return "请等待上次操作完成";
+
+            var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+            using (IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service))
+            {
+                driver.Navigate().GoToUrl("http://www.baidu.com");  //driver.Url = "http://www.baidu.com"是一样的
+                var source = driver.PageSource;
+                Console.WriteLine(source.ToString());
+            }
+
             try
             {
                 isLoading = true;
