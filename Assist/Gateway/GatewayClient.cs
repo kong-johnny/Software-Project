@@ -288,13 +288,13 @@ namespace Xiaoya.Gateway
         {
             if (isLoading) return "请等待上次操作完成";
 
-            var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
+            /*var service = EdgeDriverService.CreateDefaultService(@".", "msedgedriver.exe");
             using (IWebDriver driver = new OpenQA.Selenium.Edge.EdgeDriver(service))
             {
                 driver.Navigate().GoToUrl("http://www.baidu.com");  //driver.Url = "http://www.baidu.com"是一样的
                 var source = driver.PageSource;
                 Console.WriteLine(source.ToString());
-            }
+            }*/
 
             try
             {

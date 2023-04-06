@@ -16,7 +16,7 @@ namespace Xiaoya.Classroom
 
             try
             {
-                var res = await CXHttp.Connect("http://123.206.51.151:1221/buildings").UseProxy(false).Get();
+                var res = await CXHttp.Connect("http://seat.lib.bnu.edu.cn/").UseProxy(true).Get();
                 var body = await res.Content();
                 body = body.Trim();
 
