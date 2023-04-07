@@ -446,12 +446,12 @@ namespace Xiaoya
                 // Init error message
                 string error = "登录失败";
 
-                // If no "KINGOSOFT高校数字校园综合管理平台" found, then there will be errors
-                /*if (!body.Contains("KINGOSOFT高校数字校园综合管理平台"))
+                // If no "KINGOSOFT高校教学综合管理服务平台" found, then there will be errors
+                if (!body.Contains("KINGOSOFT高校教学综合管理服务平台"))
                 {
-                    body = res.Content("UTF-8").Result;
+                    //body = res.Content("UTF-8").Result;
                     // doc = m_Parser.Parse(body);
-                    doc = m_Parser.ParseDocument(body);
+                    //doc = m_Parser.ParseDocument(body);
                     // Get error message element: <span id="error_message_show">
                     var msg = doc.GetElementById("msg");
                     // Element found, then assign error message
@@ -460,7 +460,7 @@ namespace Xiaoya
                         error = msg.TextContent;
                     }
                     return error;
-                }*/
+                }
                 // Otherwise, logined successfully.
                 IsLogin = true;
                 return null;
@@ -865,7 +865,7 @@ namespace Xiaoya
                     }
                 }
 
-                return new TableCourses((await GetStudentDetails()).Name + " (" + semester.Code + ")", courses);
+                return new TableCourses(semester.Code.Substring(0, 4) + "年" + (semester.Code.Substring(5, 1) == "0" ? "秋" : "春"), courses);
             }
             catch
             {
