@@ -273,8 +273,8 @@ namespace Xiaoya
                     grade = gradeInfo.Grade;
                 }
                 schoolYear = "2020";
-
                 semester = "0";
+                // 只要StudentInfo成员非空即可
                 m_StudentInfo = new StudentInfo(studentId, grade, major, majorId, schoolYear, semester);
                 return m_StudentInfo;
             }
@@ -620,16 +620,19 @@ namespace Xiaoya
 
                     if (cols.Count() < 9) continue;
 
+                    //string tmp1 = cols[5].TextContent.Trim();
+                    //string tmp2 = cols[9].TextContent.Trim();
+
                     scores.Add(new ExamScore(
                             semester: currentTerm,
                             courseName: cols[1].TextContent,
                             courseCredit: cols[2].TextContent,
                             classification: cols[3].TextContent,
-                            score1: cols[6].TextContent,
-                            score2: cols[7].TextContent,
-                            score: cols[8].TextContent,
-                            doLearnForFirstTime: "初修" == cols[5].TextContent.Trim(),
-                            isMajor: "主修" == cols[9].TextContent.Trim()
+                            score1: cols[7].TextContent,
+                            score2: cols[8].TextContent,
+                            score: cols[9].TextContent,
+                            doLearnForFirstTime: "初修" == cols[6].TextContent.Trim(),
+                            isMajor: "主修" == cols[10].TextContent.Trim()
                     ));
                 }
 
