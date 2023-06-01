@@ -35,5 +35,7 @@ Only for Windows
 
 - Look up network traffic usage
 
-  
+注意：选课期间，除正在选课的年级之外，账号会被锁定，无法登录，已登录的用户可以正常使用。
+
+Warning: During the course selection period, only the grade that is currently selecting courses can log in. The accounts of other grades will be temporarily locked. The users who are already logged in can use the system normally.
 
