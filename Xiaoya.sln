@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,14 +81,6 @@ Global
 		{12C370CA-309E-4E65-8988-8BC6FE2BC65D}.Release|x86.ActiveCfg = Release|x86
 		{12C370CA-309E-4E65-8988-8BC6FE2BC65D}.Release|x86.Build.0 = Release|x86
 		{12C370CA-309E-4E65-8988-8BC6FE2BC65D}.Release|x86.Deploy.0 = Release|x86
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Debug|Any CPU.ActiveCfg = Debug
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Debug|ARM.ActiveCfg = Debug
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Debug|x64.ActiveCfg = Debug
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Debug|x86.ActiveCfg = Debug
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Release|Any CPU.ActiveCfg = Release
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Release|ARM.ActiveCfg = Release
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Release|x64.ActiveCfg = Release
-		{19C35C6A-2C95-4E7C-92F9-6973E2CB5373}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
