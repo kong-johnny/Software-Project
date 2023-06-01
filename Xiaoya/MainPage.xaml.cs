@@ -57,7 +57,7 @@ namespace Xiaoya
                     Label = "考试成绩",
                     DestPage = typeof(ExamScorePage)
                 },
-                new NavMenuItem()
+                /*new NavMenuItem()
                 {
                     Symbol = (char) Symbol.Library,
                     Label = "图书馆",
@@ -68,7 +68,7 @@ namespace Xiaoya
                     Symbol = (char) Symbol.Edit,
                     Label = "自习室",
                     DestPage = typeof(ClassroomPage)
-                },
+                },*/
                 new NavMenuItem()
                 {
                     Symbol = (char) Symbol.ThreeBars,
