@@ -517,7 +517,7 @@ namespace Xiaoya.Gateway
                     Account = id.ToString(),
                     SumBytes = used_GB.ToString("F3"),
                     SumSeconds = used_time.ToString(@"hh\:mm\:ss"),
-                    UserBalance = float.Parse(elements[9]).ToString("F2")
+                    UserBalance = float.Parse(elements[10]).ToString("F2")  
                 };
 
                 return user;
